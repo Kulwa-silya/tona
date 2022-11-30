@@ -1,0 +1,1 @@
+web: gunicorn tona_backend.wsgi --log-file -
