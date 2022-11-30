@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:tona_frontend/Admin/Pages/Users/view.dart';
-import 'package:tona_frontend/Auth/signIn.dart';
-import 'package:tona_frontend/Admin/Pages/dashboard.dart';
+import 'package:machafuapp/Admin/Pages/Users/view.dart';
+import 'package:machafuapp/Auth/signIn.dart';
+import 'package:machafuapp/Admin/Pages/dashboard.dart';
 import '../../../Shared/myTextFormField.dart';
 import '../../../consts/colorTheme.dart';
 

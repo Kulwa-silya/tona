@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:tona_frontend/Admin/consts/colorTheme.dart';
+import 'package:machafuapp/Admin/consts/colorTheme.dart';
 
 class Loading extends StatelessWidget {
   @override

@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tona_frontend/Admin/Pages/Income/Income.dart';
-import 'package:tona_frontend/Admin/Pages/dashboard.dart';
+import 'package:machafuapp/Admin/Pages/Income/Income.dart';
+import 'package:machafuapp/Admin/Pages/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
-import 'package:tona_frontend/Admin/Shared/loading.dart';
-import 'package:tona_frontend/Admin/consts/sharedPrefsInitiations.dart';
+import 'package:machafuapp/Admin/Shared/loading.dart';
+import 'package:machafuapp/Admin/consts/sharedPrefsInitiations.dart';
 
 import '../Admin/consts/colorTheme.dart';
 

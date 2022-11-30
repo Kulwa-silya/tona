@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tona_frontend/Admin/Pages/Expenditure_and_Expenses/ExpenditureExpenses.dart';
-import 'package:tona_frontend/Admin/Pages/Income/Income.dart';
-import 'package:tona_frontend/Admin/Pages/Purchases/purchases.dart';
-import 'package:tona_frontend/Admin/Pages/Report/report.dart';
-import 'package:tona_frontend/Admin/Pages/Users/view.dart';
-import 'package:tona_frontend/Admin/consts/colorTheme.dart';
+import 'package:machafuapp/Admin/Pages/Expenditure_and_Expenses/ExpenditureExpenses.dart';
+import 'package:machafuapp/Admin/Pages/Income/Income.dart';
+import 'package:machafuapp/Admin/Pages/Purchases/purchases.dart';
+import 'package:machafuapp/Admin/Pages/Report/report.dart';
+import 'package:machafuapp/Admin/Pages/Users/view.dart';
+import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Shared/dashboardContainer.dart';
 import 'Users/Registration/registerUsers.dart';

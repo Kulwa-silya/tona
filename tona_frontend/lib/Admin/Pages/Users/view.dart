@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:tona_frontend/Admin/Pages/dashboard.dart';
+import 'package:machafuapp/Admin/Pages/dashboard.dart';
 import 'package:http/http.dart' as http;
-import 'package:tona_frontend/Admin/Pages/users/Registration/registerUsers.dart';
+import 'package:machafuapp/Admin/Pages/users/Registration/registerUsers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/getUserList.dart';
