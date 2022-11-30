@@ -1,7 +1,7 @@
 # created by virtualenv automatically
 pyvenv.cfg
 bin/
-lib/
+# lib/
 lib64/
 include/
 
