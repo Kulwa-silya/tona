@@ -24,31 +24,56 @@ class _UserConfigState extends State<UserConfig> {
 
   String? accesTok;
 
+  List<dynamic>? userdata;
+
   @override
   void initState() {
     getAccessToken();
     getRefreshToken();
-    getUsers();
+    fetchInfo();
+    // getUsers();
     super.initState();
   }
 
-  Future getUsers() async {
-    print("JWT $accesTok");
-    final resp = await http
-        .get(Uri.parse('https://tona-production.up.railway.app/auth/users/'), headers: {
-      HttpHeaders.authorizationHeader: "JWT $accesTok",
+  Future<UsersDataModel> fetchInfo() async {
+    final response = await http.get(
+        Uri.parse('https://tona-production.up.railway.app/auth/users/'),
+        headers: {
+          HttpHeaders.authorizationHeader: "JWT $accesTok",
+        });
+    final jsonresponse = json.decode(response.body);
+
+    print(response.body);
+
+    List<dynamic> userlist = [];
+    jsonresponse.forEach((s) => userlist.add(s["email"]));
+
+    setState(() {
+      userdata = userlist;
     });
 
-    print(resp.body);
-
-   List<UserModel> users = (json.decode(resp.body) as List)
-      .map((data) => UserModel.fromJson(data))
-      .toList();
-   
-    return users;
+    final len = jsonresponse.length;
+    print(len);
+    return UsersDataModel.fromJson(jsonresponse[4]);
   }
 
-  
+  // Future getUsers() async {
+  //   print("JWT $accesTok");
+  //   final resp = await http.get(
+  //       Uri.parse('https://tona-production.up.railway.app/auth/users/'),
+  //       headers: {
+  //         HttpHeaders.authorizationHeader: "JWT $accesTok",
+  //       });
+
+  //   Map<String, dynamic> map = json.decode(resp.body);
+
+  //   // print(map[0]['email']);
+
+  //   // setState(() {
+  //   //   users = userdata;
+  //   // });
+  //   return map;
+  // }
 
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -73,7 +98,6 @@ class _UserConfigState extends State<UserConfig> {
     });
     return stringValue;
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +124,10 @@ class _UserConfigState extends State<UserConfig> {
           ),
         ),
         actions: [
+          Text(
+            accesTok!,
+            style: TextStyle(color: Colors.black),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
@@ -123,26 +151,32 @@ class _UserConfigState extends State<UserConfig> {
       body: Container(
         color: ColorTheme.m_white,
         child: FutureBuilder(
-          future: getUsers(),
-          builder: (contx, AsyncSnapshot snap) {
-            
-            return 
-            !snap.hasData
-                ? Center(
-                    child: CircularProgressIndicator(
-                      color: ColorTheme.m_blue,
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (cxt, i) {
-                      return ListTile(
-                        title: Text(snap.data()[i]['email']),
-                        trailing: Icon(Icons.edit),
-                      );
-                    });
-          },
-        ),
+            future: fetchInfo(),
+            builder: (contx, AsyncSnapshot snap) {
+              return !snap.hasData
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: ColorTheme.m_blue,
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: 4,
+                      itemBuilder: (cnt, index) {
+                        return ListTile(
+                          title: Text(snap.data.email),
+                        );
+                      });
+
+              // ListView(
+              //     children: userdata!.map((dat) {
+              //     return Container(
+              //       child: Text(dat.email!),
+              //       margin: EdgeInsets.all(5),
+              //       padding: EdgeInsets.all(15),
+              //       color: Colors.green[100],
+              //     );
+              //   }).toList());
+            }),
       ),
     );
   }
