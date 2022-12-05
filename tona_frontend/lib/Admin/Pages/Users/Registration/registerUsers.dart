@@ -32,7 +32,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
         leading: GestureDetector(
           onTap: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => DashBoard()));
+                .push(MaterialPageRoute(builder: (context) => UserConfig()));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),

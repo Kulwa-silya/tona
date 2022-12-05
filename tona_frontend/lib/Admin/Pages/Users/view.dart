@@ -24,6 +24,8 @@ class _UserConfigState extends State<UserConfig> {
 
   String? accesTok;
 
+  String? stringValue;
+
   List<dynamic>? userdata;
 
   @override
@@ -45,16 +47,16 @@ class _UserConfigState extends State<UserConfig> {
 
     print(response.body);
 
-    List<dynamic> userlist = [];
-    jsonresponse.forEach((s) => userlist.add(s["email"]));
+    // List<dynamic> userlist = [];
+    // jsonresponse.forEach((s) => userlist.add(s["email"]));
 
-    setState(() {
-      userdata = userlist;
-    });
+    // setState(() {
+    //   userdata = userlist;
+    // });
 
     final len = jsonresponse.length;
     print(len);
-    return UsersDataModel.fromJson(jsonresponse[4]);
+    return UsersDataModel.fromJson(jsonresponse[3]);
   }
 
   // Future getUsers() async {
@@ -78,14 +80,14 @@ class _UserConfigState extends State<UserConfig> {
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
-    String? stringValue = prefs.getString('accesstoken');
+    accesTok = prefs.getString('accesstoken');
 
-    setState(() {
-      accesTok = stringValue;
-    });
+    // setState(() {
+    //   accesTok = stringValue;
+    // });
 
     print(accesTok);
-    return stringValue;
+    return accesTok;
   }
 
   getRefreshToken() async {
@@ -124,10 +126,13 @@ class _UserConfigState extends State<UserConfig> {
           ),
         ),
         actions: [
-          Text(
-            accesTok!,
-            style: TextStyle(color: Colors.black),
-          ),
+            // accesTok == null?
+            // CircularProgressIndicator()
+            // :
+          // Text(
+          //   accesTok!,
+          //   style: TextStyle(color: Colors.black),
+          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
