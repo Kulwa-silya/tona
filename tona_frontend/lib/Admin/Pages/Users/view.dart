@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:machafuapp/Admin/Pages/dashboard.dart';
 import 'package:http/http.dart' as http;
+import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Shared/getTokens.dart';
 import '../../Shared/myDeleteDialog.dart';
@@ -134,8 +135,16 @@ class _UserConfigState extends State<UserConfig> {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => DashBoard()));
+            // Navigator.pushReplacementNamed(context, '/dash');
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainView()),
+              (Route<dynamic> route) => false,
+            );
+            // Navigator.of(context)
+            //     .pushNamedAndRemoveUntil('/dash', (route) => false);
+            // Navigator.of(context)
+            //     .push(MaterialPageRoute(builder: (context) => DashBoard()));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),

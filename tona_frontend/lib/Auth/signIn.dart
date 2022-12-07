@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:machafuapp/Admin/Pages/Income/Income.dart';
 import 'package:machafuapp/Admin/Pages/dashboard.dart';
+import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
 import 'package:machafuapp/Admin/Shared/loading.dart';
@@ -89,7 +90,7 @@ class _SingInState extends State<SingIn> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DashBoard(
+              builder: (context) => MainView(
                     
                   )));
 

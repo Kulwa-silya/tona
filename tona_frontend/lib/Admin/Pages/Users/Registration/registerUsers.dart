@@ -24,7 +24,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
 
   @override
   void initState() {
-    print(widget.axxton);
+    // print(widget.axxton);
     super.initState();
   }
 
@@ -44,10 +44,23 @@ class _RegisterUsersState extends State<RegisterUsers> {
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => UserConfig(
-                      acctok: widget.axxton,
-                    )));
+            // Navigator.of(context)
+            //     .pushNamedAndRemoveUntil('/users', (route) => false);
+
+//             Navigator.pushAndRemoveUntil(
+//   context,
+//   MaterialPageRoute(builder: (context) => UserConfig(acctok: widget.axxton,)),
+//   (Route<dynamic> route) => false,
+// );
+
+            Navigator.pop(context);
+            Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    UserConfig(acctok: widget.axxton)));
+            // Navigator.of(context).push(MaterialPageRoute(
+            //     builder: (context) => UserConfig(
+            //           acctok: widget.axxton,
+            //         )));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),

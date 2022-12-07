@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:machafuapp/Auth/signIn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Admin/Pages/Users/Registration/registerUsers.dart';
 import 'Admin/Pages/Users/view.dart';
 import 'Admin/Pages/dashboard.dart';
 
@@ -32,17 +33,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
+  void initState() {
+    getAccessToken();
+    print(accesTok);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        routes: {
-          '/home': (context) => DashBoard(),
-          '/Users': (context) => UserConfig(
-                acctok: accesTok!,
-              ),
-          '/signin': (context) => SingIn(
-                accsstok: accesTok!,
-              ),
-        },
         title: 'TONA Trader',
         theme: ThemeData(
           primarySwatch: Colors.blue,

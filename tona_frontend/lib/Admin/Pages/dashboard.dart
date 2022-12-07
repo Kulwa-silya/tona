@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Expenditure_and_Expenses/ExpenditureExpenses.dart';
 import 'package:machafuapp/Admin/Pages/Income/Income.dart';
+import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Purchases/purchases.dart';
 import 'package:machafuapp/Admin/Pages/Report/report.dart';
 import 'package:machafuapp/Admin/Pages/Users/view.dart';
@@ -28,6 +29,7 @@ class _DashBoardState extends State<DashBoard> {
   void initState() {
     getAccessToken();
     getRefreshToken();
+
     // print(accesTok);
     super.initState();
   }
@@ -57,139 +59,155 @@ class _DashBoardState extends State<DashBoard> {
   Widget build(BuildContext context) {
     // positioncontrol.text = position;
 
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: ColorTheme.m_blue,
-          actions: [IconButton(icon: Icon(Icons.person), onPressed: () {})],
-        ),
-        drawer: Drawer(
-          elevation: 30,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            // crossAxisAlignment: CrossAxisAlignment.baseline,
-            children: [
-              Text(
-                'Karibu : $accesTok',
-                style: TextStyle(color: ColorTheme.m_blue),
-              ),
-              // Text(
-              //   'Karibu : $refreshTok',
-              //   style: TextStyle(color: ColorTheme.m_blue),
-              // ),
-              SizedBox(
-                height: 30,
-              ),
-              ListTile(
-                trailing: Icon(Icons.link),
-                leading: Icon(
-                  Icons.person,
-                  color: Colors.white,
-                ),
-                title: Text(
-                  "My Account",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              ListTile(
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, "/Login");
-                },
-                tileColor: ColorTheme.m_blue,
-                title: Text(
-                  "Logout",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ],
+    return MaterialApp(
+      home: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: ColorTheme.m_blue,
+            actions: [IconButton(icon: Icon(Icons.person), onPressed: () {})],
           ),
-        ),
-        body: GridView.custom(
-          physics: BouncingScrollPhysics(),
-          gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          childrenDelegate: SliverChildListDelegate(
-            [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
+          drawer: Drawer(
+            elevation: 30,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              // crossAxisAlignment: CrossAxisAlignment.baseline,
+              children: [
+                Text(
+                  'Karibu : $accesTok',
+                  style: TextStyle(color: ColorTheme.m_blue),
+                ),
+                // Text(
+                //   'Karibu : $refreshTok',
+                //   style: TextStyle(color: ColorTheme.m_blue),
+                // ),
+                SizedBox(
+                  height: 30,
+                ),
+                ListTile(
+                  trailing: Icon(Icons.link),
+                  leading: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
+                  title: Text(
+                    "My Account",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                ListTile(
                   onTap: () {
-                    // Navigator.pushNamed(context, '/Users');
+                    Navigator.pushReplacementNamed(context, "/Login");
+                  },
+                  tileColor: ColorTheme.m_blue,
+                  title: Text(
+                    "Logout",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          body: GridView.custom(
+            
+            physics: BouncingScrollPhysics(),
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            childrenDelegate: SliverChildListDelegate(
+              [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Navigator.pushNamed(context, '/Users');
 
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UserConfig(
-                              acctok: accesTok!,
-                            )));
-                  },
-                  child: dashboardContainer(
-                    name: "Users",
-                    iconName: Icons.person,
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => UserConfig(
+                                acctok: accesTok!,
+                              )));
+                    },
+                    child: dashboardContainer(
+                      name: "Users",
+                      iconName: Icons.person,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ExpenditureExpenses()));
-                  },
-                  child: dashboardContainer(
-                    name: "Expenditure & Expenses",
-                    iconName: Icons.airline_stops_sharp,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Products()));
+                    },
+                    child: dashboardContainer(
+                      name: "My Products",
+                      iconName: Icons.airline_stops_sharp,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Income()));
-                  },
-                  child: dashboardContainer(
-                    name: "Income",
-                    iconName: Icons.input,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ExpenditureExpenses()));
+                    },
+                    child: dashboardContainer(
+                      name: "Expenditure & Expenses",
+                      iconName: Icons.airline_stops_sharp,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Purchases()));
-                  },
-                  child: dashboardContainer(
-                    name: "Purchases",
-                    iconName: Icons.webhook_outlined,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Income()));
+                    },
+                    child: dashboardContainer(
+                      name: "Income",
+                      iconName: Icons.input,
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Report()));
-                  },
-                  child: dashboardContainer(
-                    name: "Monthy Report",
-                    iconName: Icons.bar_chart_outlined,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Purchases()));
+                    },
+                    child: dashboardContainer(
+                      name: "Purchases",
+                      iconName: Icons.webhook_outlined,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ));
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => Report()));
+                    },
+                    child: dashboardContainer(
+                      name: "Monthy Report",
+                      iconName: Icons.bar_chart_outlined,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
+    );
   }
 }
