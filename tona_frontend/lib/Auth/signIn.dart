@@ -12,7 +12,8 @@ import 'package:machafuapp/Admin/consts/sharedPrefsInitiations.dart';
 import '../Admin/consts/colorTheme.dart';
 
 class SingIn extends StatefulWidget {
-  const SingIn({Key? key}) : super(key: key);
+  String accsstok;
+  SingIn({Key? key, required this.accsstok}) : super(key: key);
 
   @override
   State<SingIn> createState() => _SingInState();
@@ -36,7 +37,7 @@ class _SingInState extends State<SingIn> {
 
   final formkey = GlobalKey<FormState>();
 
-  late String accesTok;
+  String? accesTok;
   void clearText() {
     user.clear();
     pass.clear();
@@ -48,12 +49,15 @@ class _SingInState extends State<SingIn> {
     });
   }
 
+ 
+
   void _login() async {
-    final response = await http
-        .post(Uri.parse("https://tona-production.up.railway.app/auth/jwt/create/"), body: {
-      "username": user.text,
-      "password": pass.text,
-    });
+    final response = await http.post(
+        Uri.parse("https://tona-production.up.railway.app/auth/jwt/create/"),
+        body: {
+          "username": user.text,
+          "password": pass.text,
+        });
     var res = json.decode(response.body);
 
     // print(res);
@@ -83,7 +87,11 @@ class _SingInState extends State<SingIn> {
       setState(() {});
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => DashBoard()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => DashBoard(
+                    
+                  )));
 
       addAccessToken(res['access']);
       addRefreshToken(res['refresh']);

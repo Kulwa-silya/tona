@@ -7,10 +7,11 @@ import 'package:machafuapp/Admin/Pages/Users/view.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Shared/dashboardContainer.dart';
-import 'Users/Registration/registerUsers.dart';
+import '../Shared/getTokens.dart';
 
 class DashBoard extends StatefulWidget {
-  const DashBoard({Key? key}) : super(key: key);
+  // String axxtok;
+  DashBoard({Key? key}) : super(key: key);
 
   @override
   State<DashBoard> createState() => _DashBoardState();
@@ -23,23 +24,21 @@ class _DashBoardState extends State<DashBoard> {
 
   String? refreshTok;
 
-    @override
+  @override
   void initState() {
     getAccessToken();
     getRefreshToken();
+    // print(accesTok);
     super.initState();
   }
 
-getAccessToken() async {
+  getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
     String? stringValue = prefs.getString('accesstoken');
-
     setState(() {
       accesTok = stringValue;
     });
-
-    print(accesTok);
     return stringValue;
   }
 
@@ -75,10 +74,10 @@ getAccessToken() async {
                 'Karibu : $accesTok',
                 style: TextStyle(color: ColorTheme.m_blue),
               ),
-              Text(
-                'Karibu : $refreshTok',
-                style: TextStyle(color: ColorTheme.m_blue),
-              ),
+              // Text(
+              //   'Karibu : $refreshTok',
+              //   style: TextStyle(color: ColorTheme.m_blue),
+              // ),
               SizedBox(
                 height: 30,
               ),
@@ -124,8 +123,12 @@ getAccessToken() async {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => UserConfig()));
+                    // Navigator.pushNamed(context, '/Users');
+
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => UserConfig(
+                              acctok: accesTok!,
+                            )));
                   },
                   child: dashboardContainer(
                     name: "Users",

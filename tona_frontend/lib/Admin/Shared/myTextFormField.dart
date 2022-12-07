@@ -22,7 +22,6 @@ class mytextField extends StatelessWidget {
   TextEditingController contro;
   AutovalidateMode autoval;
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -42,7 +41,7 @@ class mytextField extends StatelessWidget {
         controller: contro,
         inputFormatters: inputFormatter,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.person),
+          prefixIcon: Icon(icodata),
           labelText: hintLebel,
           hintText: hint,
           enabledBorder: OutlineInputBorder(

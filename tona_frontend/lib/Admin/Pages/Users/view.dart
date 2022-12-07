@@ -2,18 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:machafuapp/Admin/Pages/dashboard.dart';
 import 'package:http/http.dart' as http;
-import 'package:machafuapp/Admin/Pages/users/Registration/registerUsers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../Models/getUserList.dart';
+import '../../Shared/getTokens.dart';
+import '../../Shared/myDeleteDialog.dart';
+import '../../Shared/myEditorDialog.dart';
 import '../../consts/colorTheme.dart';
 
 class UserConfig extends StatefulWidget {
-  const UserConfig({Key? key}) : super(key: key);
+  String acctok;
+  UserConfig({Key? key, required this.acctok}) : super(key: key);
 
   @override
   State<UserConfig> createState() => _UserConfigState();
@@ -28,67 +28,94 @@ class _UserConfigState extends State<UserConfig> {
 
   List<dynamic>? userdata;
 
+  List<String>? emaild;
+
+  List<int>? Id;
+
+  List<String>? uname;
+
   @override
   void initState() {
     getAccessToken();
-    getRefreshToken();
+    // getRefreshToken();
     fetchInfo();
     // getUsers();
     super.initState();
   }
 
-  Future<UsersDataModel> fetchInfo() async {
+  List userdatas = [];
+
+  // getAccessToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String? stringValue = prefs.getString('accesstoken');
+  //   setState(() {
+  //     accesTok = stringValue;
+  //   });
+  //   return stringValue;
+  // }
+
+  Future fetchInfo() async {
     final response = await http.get(
         Uri.parse('https://tona-production.up.railway.app/auth/users/'),
         headers: {
-          HttpHeaders.authorizationHeader: "JWT $accesTok",
+          HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
         });
     final jsonresponse = json.decode(response.body);
 
-    print(response.body);
-
-    // List<dynamic> userlist = [];
-    // jsonresponse.forEach((s) => userlist.add(s["email"]));
-
-    // setState(() {
-    //   userdata = userlist;
-    // });
-
-    final len = jsonresponse.length;
-    print(len);
-    return UsersDataModel.fromJson(jsonresponse[3]);
+    return jsonresponse;
   }
 
-  // Future getUsers() async {
-  //   print("JWT $accesTok");
-  //   final resp = await http.get(
-  //       Uri.parse('https://tona-production.up.railway.app/auth/users/'),
-  //       headers: {
-  //         HttpHeaders.authorizationHeader: "JWT $accesTok",
-  //       });
-
-  //   Map<String, dynamic> map = json.decode(resp.body);
-
-  //   // print(map[0]['email']);
-
-  //   // setState(() {
-  //   //   users = userdata;
-  //   // });
-  //   return map;
-  // }
-
-  getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    accesTok = prefs.getString('accesstoken');
-
-    // setState(() {
-    //   accesTok = stringValue;
-    // });
-
-    print(accesTok);
-    return accesTok;
+  void editdialog() {
+    AlertDialog(
+      title: Text("Success"),
+      titleTextStyle: TextStyle(
+          fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+      actionsOverflowButtonSpacing: 20,
+      actions: [
+        ElevatedButton(onPressed: () {}, child: Text("Back")),
+        ElevatedButton(onPressed: () {}, child: Text("Next")),
+      ],
+      content: Text("Saved successfully"),
+    );
   }
+
+//   Future<UsersDataModel> fetchInfo() async {
+
+//     final response = await http.get(
+//         Uri.parse('https://tona-production.up.railway.app/auth/users/'),
+//         headers: {
+//           HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
+//         });
+//     final jsonresponse = json.decode(response.body);
+
+//     // dynamic l = json.decode(response.body);
+//     // List<UsersDataModel> posts = List<UsersDataModel>.from(
+//     //     l.map((model) => UsersDataModel.fromJson(model)));
+
+//     // print(response.body);
+
+// // userdatas.add(value)
+//     // List<dynamic> userlist = [];
+//     // jsonresponse.forEach((s) => userlist.add(s["email"]));
+
+//     // setState(() {
+//     //   userdata = userlist;
+//     // });
+
+//     // final len = jsonresponse.length;
+
+//     // for (int i = 0; i < len; i++) {
+//     //   setState(() {
+//     //     UsersDataModel.fromJson(jsonresponse[i]).email = emaild!;
+//     //     UsersDataModel.fromJson(jsonresponse[i]).id = Id!;
+//     //     UsersDataModel.fromJson(jsonresponse[i]).username = uname!;
+//     //   });
+//     // }
+//     // print(UsersDataModel.fromJson(jsonresponse[2]).email);
+//     return UsersDataModel.fromJson(jsonresponse[2]);
+//     // return jsonresponse;
+//   }
 
   getRefreshToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -111,7 +138,7 @@ class _UserConfigState extends State<UserConfig> {
                 .push(MaterialPageRoute(builder: (context) => DashBoard()));
           },
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
@@ -120,15 +147,16 @@ class _UserConfigState extends State<UserConfig> {
                       padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
                       child: Icon(
                         Icons.arrow_back_ios,
+                        size: 10,
                         color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                       ),
                     ))),
           ),
         ),
         actions: [
-            // accesTok == null?
-            // CircularProgressIndicator()
-            // :
+          // accesTok == null?
+          // CircularProgressIndicator()
+          // :
           // Text(
           //   accesTok!,
           //   style: TextStyle(color: Colors.black),
@@ -137,8 +165,9 @@ class _UserConfigState extends State<UserConfig> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => RegisterUsers()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        RegisterUsers(axxton: widget.acctok)));
               },
               child: Center(
                 child: Text(
@@ -165,10 +194,68 @@ class _UserConfigState extends State<UserConfig> {
                       ),
                     )
                   : ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: 4,
                       itemBuilder: (cnt, index) {
-                        return ListTile(
-                          title: Text(snap.data.email),
+                        String? email = snap.data[index]['email'];
+                        String? uname = snap.data[index]['username'];
+                        int? id = snap.data[index]['id'];
+
+                        return ExpansionTile(
+                          leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(30),
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                color: ColorTheme.m_blue,
+                              )),
+                          title: Text(
+                            email!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: ColorTheme.m_grey),
+                          ),
+                          subtitle: Text(
+                            uname!,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                color: ColorTheme.m_blue),
+                          ),
+                          trailing: Wrap(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          myEditordialog(
+                                            email: email,
+                                            uname: uname,
+                                          ));
+                                },
+                                icon: Icon(Icons.edit_outlined),
+                                color: ColorTheme.m_blue,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          myDeletedialog(
+                                            email: email,
+                                            uname: uname,
+                                          ));
+                                },
+                                icon: Icon(Icons.delete_outline_outlined),
+                                color: ColorTheme.m_red,
+                              ),
+                            ],
+                          ),
+
+                          children: [Text(id.toString())],
+
+                          // title: Text(snap.data.email),
+                          // subtitle: Text(snap.data.username),
                         );
                       });
 

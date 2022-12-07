@@ -2,22 +2,54 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Auth/signIn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Admin/Pages/Users/view.dart';
+import 'Admin/Pages/dashboard.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String? accesTok = "null";
+
+  getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue;
+    });
+    return stringValue;
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        routes: {
+          '/home': (context) => DashBoard(),
+          '/Users': (context) => UserConfig(
+                acctok: accesTok!,
+              ),
+          '/signin': (context) => SingIn(
+                accsstok: accesTok!,
+              ),
+        },
         title: 'TONA Trader',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-        ), 
-        home: const SingIn());
+        ),
+        home: SingIn(
+          accsstok: accesTok!,
+        ));
   }
 }
 
@@ -82,7 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    
     super.initState();
 
     controllerCode.text;
