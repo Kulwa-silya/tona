@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
-    'tona_users',
-    
 
 ]
 
@@ -126,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS =  [
     os.path.join(BASE_DIR,'static')
@@ -146,10 +144,10 @@ SIMPLE_JWT = {
    'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
 }
 
-# DJOSER = {
-#     'SERIALIZERS':
-#     {
-#         'user_create': 'tona_backend.serializers.UserCreateSerializer',
-#         'current_user': 'tona_backend.serializers.UserSerializer'
-#     }
-# }
+DJOSER = {
+    'SERIALIZERS':
+    {
+        'user_create': 'tona_backend.serializers.UserCreateSerializer',
+        'current_user': 'tona_backend.serializers.UserSerializer'
+    }
+}
