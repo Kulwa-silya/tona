@@ -64,7 +64,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
                     side: const BorderSide(color: kTertiaryColor4),
                     checkColor: kBlackColor,
                     title: Text(
-                      'Received',
+                      'Credits',
                       style:
                           kSmallRegularTextStyle.copyWith(color: kBlackColor),
                     ),
@@ -79,7 +79,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
                     side: const BorderSide(color: kTertiaryColor4),
                     checkColor: kBlackColor,
                     title: Text(
-                      'Send',
+                      'Derbits',
                       style:
                           kSmallRegularTextStyle.copyWith(color: kBlackColor),
                     ),
@@ -102,7 +102,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
                   ),
                   verticalSpaceTiny,
                   Text(
-                    '\$289,000',
+                    '289,000 TZS',
                     style: kBodyTextStyle.copyWith(color: kBlackColor),
                   ),
                 ]),
@@ -117,7 +117,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
                     ),
                     verticalSpaceTiny,
                     Text(
-                      '\$120,000',
+                      '120,000 TZS',
                       style: kBodyTextStyle.copyWith(color: kBlackColor),
                     ),
                   ],
@@ -133,7 +133,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
                     ),
                     verticalSpaceTiny,
                     Text(
-                      '\$438,000',
+                      '438,000 TZS',
                       style: kBodyTextStyle.copyWith(color: kBlackColor),
                     ),
                   ],

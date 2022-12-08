@@ -79,6 +79,7 @@ class DashBoardView extends StatelessWidget {
               verticalSpaceRegular,
               Expanded(
                 child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
