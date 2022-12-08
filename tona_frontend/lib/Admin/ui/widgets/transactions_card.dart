@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import '../../Models/transaction_model.dart';
 import '../shared/colors.dart';
 import '../shared/spacing.dart';
 import '../shared/text_styles.dart';
 
 class TransactionsCard extends StatelessWidget {
-  const TransactionsCard({Key? key, required this.transaction})
-      : super(key: key);
-
+  TransactionsCard({Key? key, required this.transaction}) : super(key: key);
   final TransactionModel transaction;
+
+  // Future fetchInfo() async {
+  //   final response = await http.get(
+  //       Uri.parse('https://tona-production.up.railway.app/auth/users/'),
+  //       headers: {
+  //         HttpHeaders.authorizationHeader: "JWT ${Accxk}",
+  //       });
+  //   final jsonresponse = json.decode(response.body);
+  //   print(response.body);
+  //   return jsonresponse;
+  // }
 
   @override
   Widget build(BuildContext context) {

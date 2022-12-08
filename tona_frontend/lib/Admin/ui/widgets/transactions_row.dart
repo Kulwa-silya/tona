@@ -66,7 +66,7 @@ class _TransactionRowState extends State<TransactionRow> {
                   style: kTinyBoldTextStyle.copyWith(color: kBlackColor),
                 ),
                 const Icon(
-                  Icons.arrow_drop_down,
+                  Icons.arrow_right,
                   color: kBlackColor,
                   size: 20,
                 )

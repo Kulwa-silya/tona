@@ -7,11 +7,10 @@ import '../shared/edge_insect.dart';
 import '../shared/text_styles.dart';
 
 class ExpeRow extends StatefulWidget {
-  const ExpeRow({Key? key, required this.title, required this.cardText})
-      : super(key: key);
+  const ExpeRow({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  final String cardText;
+  // final String cardText;
 
   @override
   State<ExpeRow> createState() => _TransactionRowState();
@@ -19,6 +18,8 @@ class ExpeRow extends StatefulWidget {
 
 class _TransactionRowState extends State<ExpeRow> {
   String? accesTok;
+
+  String selectd = "Choose Plan";
 
   @override
   void initState() {
@@ -47,28 +48,68 @@ class _TransactionRowState extends State<ExpeRow> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ExpenditureExpenses(
-                    )));
+            // Navigator.of(context).push(MaterialPageRoute(
+            //     builder: (context) => ExpenditureExpenses(
+            //         )));
           },
           child: Container(
             padding: kEdgeInsetsHorizontalTiny,
             height: 30,
-            width: 70,
+            width: 120,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7), color: kTertiaryColor5),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  widget.cardText,
+                  selectd,
                   style: kTinyBoldTextStyle.copyWith(color: kBlackColor),
                 ),
-                const Icon(
-                  Icons.arrow_drop_down,
-                  color: kBlackColor,
-                  size: 20,
-                )
+                // const Icon(
+                //   Icons.arrow_drop_down,
+                //   color: kBlackColor,
+                //   size: 20,
+                // ),
+                PopupMenuButton(
+                    // add icon, by default "3 dot" icon
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                      color: kBlackColor,
+                    ),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: Text("Daily"),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 1,
+                          child: Text("Weekly"),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 2,
+                          child: Text("Monthly"),
+                        ),
+                      ];
+                    },
+                    onSelected: (value) {
+                      if (value == 0) {
+                        setState(() {
+                          selectd = "Daily";
+                        });
+                        print("My account menu is selected.");
+                      } else if (value == 1) {
+                        setState(() {
+                          selectd = "Weekly";
+                        });
+                        print("Settings menu is selected.");
+                      } else if (value == 2) {
+                        setState(() {
+                          selectd = "Monthly";
+                        });
+                        print("Logout menu is selected.");
+                      }
+                    }),
               ],
             ),
           ),

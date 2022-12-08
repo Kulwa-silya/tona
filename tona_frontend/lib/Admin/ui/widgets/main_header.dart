@@ -13,6 +13,7 @@ class MainHeader extends ViewModelWidget<MainViewModel> {
   @override
   Widget build(BuildContext context, viewModel) {
     return Row(
+      
       children: [
         SizedBox(
           height: 100,

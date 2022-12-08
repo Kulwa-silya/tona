@@ -16,6 +16,7 @@ class MainView extends StatelessWidget {
     return ViewModelBuilder<MainViewModel>.reactive(
       builder: (context, model, child) {
         return Scaffold(
+          
           key: model.scaffoldKey,
           drawer: const SideMenu(),
           body: Row(

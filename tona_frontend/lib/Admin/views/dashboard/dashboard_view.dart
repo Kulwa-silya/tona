@@ -2,6 +2,7 @@ import 'package:machafuapp/Admin/ui/shared/edge_insect.dart';
 import 'package:machafuapp/Admin/ui/shared/spacing.dart';
 import 'package:machafuapp/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/transaction_model.dart';
 import '../../ui/shared/colors.dart';
@@ -9,14 +10,27 @@ import '../../ui/shared/text_styles.dart';
 import '../../ui/widgets/all_expenses_card.dart';
 import '../../ui/widgets/expenses_details.dart';
 import '../../ui/widgets/main_header.dart';
-import '../../ui/widgets/quick_transfer_card.dart';
 import '../../ui/widgets/transactions_card.dart';
 import '../../ui/widgets/transactions_gridview.dart';
 import '../../ui/widgets/transactions_row.dart';
 
-class DashBoardView extends StatelessWidget {
+class DashBoardView extends StatefulWidget {
   const DashBoardView({Key? key}) : super(key: key);
 
+  @override
+  State<DashBoardView> createState() => _DashBoardViewState();
+}
+
+class _DashBoardViewState extends State<DashBoardView> {
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+ 
+  
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -101,7 +115,7 @@ class DashBoardView extends StatelessWidget {
                       ),
                       verticalSpaceRegular,
                       for (final transaction in transactionsData) ...[
-                        TransactionsCard(transaction: transaction),
+                        TransactionsCard(transaction: transaction,),
                       ],
                       verticalSpaceRegular,
                       if (!Responsive.isDesktop(context))

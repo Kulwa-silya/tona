@@ -29,7 +29,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
           verticalSpaceMedium,
           const ExpeRow(
             title: 'All Expenses',
-            cardText: 'Monthly',
+            // cardText: 'Monthly',
           ),
           verticalSpaceMedium,
           CircularPercentIndicator(
@@ -37,16 +37,16 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
             lineWidth: 30,
             backgroundColor: kBlackColor,
             progressColor: kTertiaryColor5,
-            percent: 0.3,
+            percent: 0.1,
             center: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '60.8%',
+                  '90.8%',
                   style: kHeading3TextStyle,
                 ),
                 Text(
-                  'Total transactions',
+                  'Total Expenses',
                   style: kSmallRegularTextStyle,
                 ),
               ],
