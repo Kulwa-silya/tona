@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:machafuapp/Admin/ui/widgets/expensesRow.dart';
 import 'package:machafuapp/Admin/ui/widgets/transactions_row.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:stacked/stacked.dart';
@@ -26,7 +27,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
       child: Column(
         children: [
           verticalSpaceMedium,
-          const TransactionRow(
+          const ExpeRow(
             title: 'All Expenses',
             cardText: 'Monthly',
           ),
