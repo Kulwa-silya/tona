@@ -61,7 +61,7 @@ class _UserConfigState extends State<UserConfig> {
         Uri.parse('https://tona-production.up.railway.app/auth/users/'),
         headers: {
           HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
-        });
+        }  );
     final jsonresponse = json.decode(response.body);
 
     return jsonresponse;
