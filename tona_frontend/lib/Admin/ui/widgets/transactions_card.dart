@@ -10,8 +10,8 @@ import '../shared/spacing.dart';
 import '../shared/text_styles.dart';
 
 class TransactionsCard extends StatefulWidget {
-  TransactionsCard({Key? key, required this.transaction}) : super(key: key);
-  final TransactionModel transaction;
+  TransactionsCard({Key? key}) : super(key: key);
+  // final TransactionModel transaction;
 
   @override
   State<TransactionsCard> createState() => _TransactionsCardState();
@@ -45,39 +45,49 @@ class _TransactionsCardState extends State<TransactionsCard> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          height: 60,
-          width: 60,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-              image: AssetImage(
-                widget.transaction.image,
-              ),
-            ),
-            color: kWhiteColor,
-          ),
-        ),
         horizontalSpaceRegular,
         isloading == false
             ? Column(
                 children: [
                   ...userList.map(
                     (e) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      return Row(
+                        // mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            e.email,
-                            style:
-                                kSubtitleTextStyle.copyWith(color: kBlackColor),
+                          Container(
+                            height: 60,
+                            width: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              // image: DecorationImage(
+                              //   image: AssetImage(
+                              //     widget.transaction.image,
+                              //   ),
+                              // ),
+
+                              color: kBlackColor,
+                            ),
                           ),
-                          verticalSpaceSmall,
-                          Text(
-                            widget.transaction.description,
-                            style: kTinyRegularTextStyle.copyWith(
-                                color: kBlackColor),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                e.email,
+                                style: kSubtitleTextStyle.copyWith(
+                                    color: kBlackColor),
+                              ),
+                              verticalSpaceSmall,
+                              Text(
+                                e.username,
+                                style: kTinyRegularTextStyle.copyWith(
+                                    color: kBlackColor),
+                              ),
+                            ],
                           ),
                         ],
                       );
@@ -92,15 +102,26 @@ class _TransactionsCardState extends State<TransactionsCard> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              widget.transaction.amount,
-              style: kSubtitleTextStyle.copyWith(color: kBlackColor),
-            ),
-            verticalSpaceSmall,
-            Text(
-              widget.transaction.date,
-              style: kSmallRegularTextStyle.copyWith(color: kBlackColor),
-            ),
+            ...userList.map(
+              (e) {
+                return Column(
+                  children: [
+                    Text(
+                      // widget.transaction.amount,
+                      e.username,
+
+                      style: kSubtitleTextStyle.copyWith(color: kBlackColor),
+                    ),
+                    verticalSpaceSmall,
+                    Text(
+                      e.username,
+                      style:
+                          kSmallRegularTextStyle.copyWith(color: kBlackColor),
+                    ),
+                  ],
+                );
+              },
+            )
           ],
         ),
       ],

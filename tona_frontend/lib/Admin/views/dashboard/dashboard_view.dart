@@ -3,7 +3,9 @@ import 'package:machafuapp/Admin/ui/shared/spacing.dart';
 import 'package:machafuapp/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
+import '../../Controllers/provider.dart';
+import '../../Models/getUserList.dart';
 import '../../Models/transaction_model.dart';
 import '../../ui/shared/colors.dart';
 import '../../ui/shared/text_styles.dart';
@@ -22,15 +24,6 @@ class DashBoardView extends StatefulWidget {
 }
 
 class _DashBoardViewState extends State<DashBoardView> {
-
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
- 
-  
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -114,9 +107,9 @@ class _DashBoardViewState extends State<DashBoardView> {
                         cardText: 'More',
                       ),
                       verticalSpaceRegular,
-                      for (final transaction in transactionsData) ...[
-                        TransactionsCard(transaction: transaction,),
-                      ],
+                      // for (final transaction in userList) ...[
+                      TransactionsCard(),
+                      // ],
                       verticalSpaceRegular,
                       if (!Responsive.isDesktop(context))
                         const SizedBox(height: defaultPadding),

@@ -36,4 +36,11 @@ List<TransactionModel> transactionsData = [
     date: 'Dom',
     image: 'assets/icons/face3.png',
   ),
+  TransactionModel(
+    title: 'Williffffe',
+    description: 'Accountancy',
+    amount: '500,000 TZS',
+    date: 'Dom',
+    image: 'assets/icons/face3.png',
+  ),
 ];
