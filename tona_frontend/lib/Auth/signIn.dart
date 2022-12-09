@@ -13,8 +13,7 @@ import 'package:machafuapp/Admin/consts/sharedPrefsInitiations.dart';
 import '../Admin/consts/colorTheme.dart';
 
 class SingIn extends StatefulWidget {
-  String accsstok;
-  SingIn({Key? key, required this.accsstok}) : super(key: key);
+    SingIn({Key? key}) : super(key: key);
 
   @override
   State<SingIn> createState() => _SingInState();

@@ -13,6 +13,8 @@
 //   }
 // }
 
+import 'dart:convert';
+
 class Userget {
   String? email;
   int? id;
@@ -72,3 +74,40 @@ class UsersDataModel {
 //         items: itemsList);
 //   }
 // }
+
+
+
+
+// To parse this JSON data, do
+//
+//     final welcome = welcomeFromJson(jsonString);
+
+
+
+List<Wel> welcomeFromJson(String str) => List<Wel>.from(json.decode(str).map((x) => Wel.fromJson(x)));
+
+String welcomeToJson(List<Wel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class Wel {
+    Wel({
+        required this.email,
+        required this.id,
+        required this.username,
+    });
+
+    String email;
+    int id;
+    String username;
+
+    factory Wel.fromJson(Map<String, dynamic> json) => Wel(
+        email: json["email"],
+        id: json["id"],
+        username: json["username"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "email": email,
+        "id": id,
+        "username": username,
+    };
+}

@@ -2,25 +2,45 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../../Controllers/provider.dart';
+import '../../Models/getUserList.dart';
 import '../../Models/transaction_model.dart';
 import '../shared/colors.dart';
 import '../shared/spacing.dart';
 import '../shared/text_styles.dart';
 
-class TransactionsCard extends StatelessWidget {
+class TransactionsCard extends StatefulWidget {
   TransactionsCard({Key? key, required this.transaction}) : super(key: key);
   final TransactionModel transaction;
 
-  // Future fetchInfo() async {
-  //   final response = await http.get(
-  //       Uri.parse('https://tona-production.up.railway.app/auth/users/'),
-  //       headers: {
-  //         HttpHeaders.authorizationHeader: "JWT ${Accxk}",
-  //       });
-  //   final jsonresponse = json.decode(response.body);
-  //   print(response.body);
-  //   return jsonresponse;
-  // }
+  @override
+  State<TransactionsCard> createState() => _TransactionsCardState();
+}
+
+class _TransactionsCardState extends State<TransactionsCard> {
+  UserProvider userProvider = UserProvider();
+
+  List userList = [];
+
+  bool isloading = false;
+
+  fetchUserinfo() async {
+    http.Response res = await userProvider.fetchInfoe();
+
+    setState(() {
+      userList = welcomeFromJson(res.body);
+    });
+
+    // print(accesTok);
+  }
+
+  @override
+  void initState() {
+    isloading = true;
+    fetchUserinfo();
+    isloading = false;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,38 +53,52 @@ class TransactionsCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
               image: AssetImage(
-                transaction.image,
+                widget.transaction.image,
               ),
             ),
             color: kWhiteColor,
           ),
         ),
         horizontalSpaceRegular,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              transaction.title,
-              style: kSubtitleTextStyle.copyWith(color: kBlackColor),
-            ),
-            verticalSpaceSmall,
-            Text(
-              transaction.description,
-              style: kTinyRegularTextStyle.copyWith(color: kBlackColor),
-            ),
-          ],
-        ),
+        isloading == false
+            ? Column(
+                children: [
+                  ...userList.map(
+                    (e) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            e.email,
+                            style:
+                                kSubtitleTextStyle.copyWith(color: kBlackColor),
+                          ),
+                          verticalSpaceSmall,
+                          Text(
+                            widget.transaction.description,
+                            style: kTinyRegularTextStyle.copyWith(
+                                color: kBlackColor),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
         const Spacer(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              transaction.amount,
+              widget.transaction.amount,
               style: kSubtitleTextStyle.copyWith(color: kBlackColor),
             ),
             verticalSpaceSmall,
             Text(
-              transaction.date,
+              widget.transaction.date,
               style: kSmallRegularTextStyle.copyWith(color: kBlackColor),
             ),
           ],
