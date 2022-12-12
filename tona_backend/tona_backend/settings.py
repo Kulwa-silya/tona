@@ -156,6 +156,6 @@ DJOSER = {
     }
 }
 
-CSRF_TRUSTED_ORIGINS = ['https://tona-production.up.railway.app/']
+CSRF_TRUSTED_ORIGINS = ['https://tona-production.up.railway.app/admin']
 
 # PHONENUMBER_DEFAULT_REGION = "TZ"
