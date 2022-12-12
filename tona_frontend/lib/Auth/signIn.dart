@@ -13,7 +13,7 @@ import 'package:machafuapp/Admin/consts/sharedPrefsInitiations.dart';
 import '../Admin/consts/colorTheme.dart';
 
 class SingIn extends StatefulWidget {
-    SingIn({Key? key}) : super(key: key);
+  SingIn({Key? key}) : super(key: key);
 
   @override
   State<SingIn> createState() => _SingInState();
@@ -48,8 +48,6 @@ class _SingInState extends State<SingIn> {
       _obscureText = !_obscureText;
     });
   }
-
- 
 
   void _login() async {
     final response = await http.post(
@@ -87,11 +85,7 @@ class _SingInState extends State<SingIn> {
       setState(() {});
     } else {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MainView(
-                    
-                  )));
+          context, MaterialPageRoute(builder: (context) => MainView()));
 
       addAccessToken(res['access']);
       addRefreshToken(res['refresh']);
@@ -297,7 +291,7 @@ class _SingInState extends State<SingIn> {
                               }
 
                               // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (context) => DashBoard()));
+                              //     builder: (context) => MainView()));
 
                               // _saveDeviceToken();
 

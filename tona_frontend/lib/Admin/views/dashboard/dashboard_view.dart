@@ -44,7 +44,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                   borderRadius: BorderRadius.circular(10),
                   color: kBlackColor,
                 ),
-                child: Row(
+                child:  Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(

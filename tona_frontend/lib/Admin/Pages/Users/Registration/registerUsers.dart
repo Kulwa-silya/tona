@@ -41,11 +41,12 @@ class _RegisterUsersState extends State<RegisterUsers> {
             //   HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
             // } ,
             body: {
-          "username": uname.text,
+          "first_name": fname.text,
+          "last_name": lname.text,
+          "phone_number": { "+255 " + uname.text},
           "password": pass.text,
           "email": email.text,
-          "first_name": fname.text,
-          "last_name": lname.text
+          
         });
     var res = json.decode(response.body);
 

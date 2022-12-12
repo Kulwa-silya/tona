@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:machafuapp/Admin/Pages/Expenditure_and_Expenses/ExpenditureExpenses.dart';
+import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/Pages/Report/report.dart';
+import 'package:machafuapp/Admin/views/main/main_view.dart';
 
+import '../../Pages/Users/view.dart';
 import '../shared/colors.dart';
 import '../shared/text_styles.dart';
 
@@ -23,7 +28,7 @@ class SideMenu extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    'tona Trade',
+                    'TONA Trade',
                     style: kHeading3TextStyle,
                   ),
                 )
@@ -33,27 +38,55 @@ class SideMenu extends StatelessWidget {
           DrawerListTile(
             title: "Home",
             icon: Icons.home,
-            press: () {},
+            press: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (BuildContext context) => MainView()));
+
+              //option 2
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => MainView()),
+                (Route<dynamic> route) => false,
+              );
+            },
           ),
           DrawerListTile(
             title: "Users",
             icon: Icons.card_giftcard,
-            press: () {},
+            press: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                  builder: (BuildContext context) => Products()));
+            },
           ),
           DrawerListTile(
             title: "Products",
             icon: Icons.transform,
-            press: () {},
+            press: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                  builder: (BuildContext context) => Products()));
+            },
           ),
           DrawerListTile(
             title: "Expenses & Expe",
             icon: Icons.calculate,
-            press: () {},
+            press: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                  builder: (BuildContext context) => ExpenditureExpenses()));
+            },
           ),
           DrawerListTile(
             title: "Settings",
             icon: Icons.settings,
-            press: () {},
+            press: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                  builder: (BuildContext context) => Report()));
+            },
           ),
           DrawerListTile(
             title: "Logout",
