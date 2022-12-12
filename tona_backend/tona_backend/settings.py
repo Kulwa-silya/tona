@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
-
+    'phonenumber_field',
+    'tona_users',
 ]
 
 MIDDLEWARE = [
@@ -130,6 +131,8 @@ STATICFILES_DIRS =  [
     os.path.join(BASE_DIR,'static')
 ]
 
+AUTH_USER_MODEL = "tona_users.UserAccount"
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -148,6 +151,9 @@ DJOSER = {
     'SERIALIZERS':
     {
         'user_create': 'tona_backend.serializers.UserCreateSerializer',
-        'current_user': 'tona_backend.serializers.UserSerializer'
+        'user': 'tona_backend.serializers.UserCreateSerializer',
+        'current_user': 'tona_backend.serializers.UserSerializer',
     }
 }
+
+# PHONENUMBER_DEFAULT_REGION = "TZ"
