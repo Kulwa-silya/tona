@@ -38,16 +38,18 @@ class Userget {
 }
 
 class UsersDataModel {
-   int id;
-   String username;
-   String email;
-  UsersDataModel({required this.id, required this.username, required this.email});
+  int id;
+  String username;
+  String email;
+  UsersDataModel(
+      {required this.id, required this.username, required this.email});
 
-  factory UsersDataModel.fromJson(Map<String, dynamic> usersjson)=> UsersDataModel(
-      id: usersjson["id"],
-      username: usersjson["username"],
-      email: usersjson["email"],
-  );
+  factory UsersDataModel.fromJson(Map<String, dynamic> usersjson) =>
+      UsersDataModel(
+        id: usersjson["id"],
+        username: usersjson["username"],
+        email: usersjson["email"],
+      );
 }
 
 // class UsersDataModel {
@@ -75,39 +77,41 @@ class UsersDataModel {
 //   }
 // }
 
-
-
-
 // To parse this JSON data, do
 //
 //     final welcome = welcomeFromJson(jsonString);
 
+List<Wel> welcomeFromJson(String str) =>
+    List<Wel>.from(json.decode(str).map((x) => Wel.fromJson(x)));
 
-
-List<Wel> welcomeFromJson(String str) => List<Wel>.from(json.decode(str).map((x) => Wel.fromJson(x)));
-
-String welcomeToJson(List<Wel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String welcomeToJson(List<Wel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Wel {
-    Wel({
-        required this.email,
-        required this.id,
-        required this.username,
-    });
+  Wel({
+    required this.phone_number,
+    required this.id,
+    required this.first_name,
+    required this.last_name,
+    required this.user_type,
+  });
 
-    String email;
-    int id;
-    String username;
+  int id;
+  int? user_type;
+  String phone_number, first_name, last_name;
 
-    factory Wel.fromJson(Map<String, dynamic> json) => Wel(
-        email: json["email"],
-        id: json["id"],
-        username: json["username"],
-    );
+  factory Wel.fromJson(Map<String, dynamic> json) => Wel(
+      first_name: json["first_name"],
+      last_name: json["last_name"],
+      id: json["id"],
+      phone_number: json["phone_number"],
+      user_type: json["user_type"]);
 
-    Map<String, dynamic> toJson() => {
-        "email": email,
+  Map<String, dynamic> toJson() => {
+        "phone_number": phone_number,
         "id": id,
-        "username": username,
-    };
+        "first_name": first_name,
+        "last_name": last_name,
+        "user_type": user_type
+      };
 }

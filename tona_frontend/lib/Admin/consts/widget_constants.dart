@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 const List<Widget> demoTransactions = [
   WalletCard(
-   onBTap: Products(),
+    onBTap: Products(),
     icon: Icons.money,
     text: 'Products',
     desc: 'Idadi ya bidhaa zilizopo',
@@ -24,7 +24,7 @@ const List<Widget> demoTransactions = [
     onBTap: ExpenditureExpenses(),
     icon: Icons.content_paste_go_sharp,
     desc: 'Matumizi na gharama za siku',
-    text: 'Expenses & Expenditure',
+    text: 'Expenses',
     amount: '20,000 (today)',
   ),
   WalletCard(
@@ -36,5 +36,4 @@ const List<Widget> demoTransactions = [
   ),
 ];
 
-ontap() {
-}
+ontap() {}

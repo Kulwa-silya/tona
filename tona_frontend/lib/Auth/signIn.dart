@@ -53,12 +53,12 @@ class _SingInState extends State<SingIn> {
     final response = await http.post(
         Uri.parse("https://tona-production.up.railway.app/auth/jwt/create/"),
         body: {
-          "username": user.text,
+          "phone_number": user.text,
           "password": pass.text,
         });
     var res = json.decode(response.body);
 
-    // print(res);
+    print(res);
 
     // print(res['detail']);
 
@@ -84,11 +84,13 @@ class _SingInState extends State<SingIn> {
       // }
       setState(() {});
     } else {
+     await addAccessToken(res['access']);
+      await addRefreshToken(res['refresh']);
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MainView()));
 
-      addAccessToken(res['access']);
-      addRefreshToken(res['refresh']);
+     
     }
   }
 
@@ -287,11 +289,11 @@ class _SingInState extends State<SingIn> {
                                 // displayDialog();
                                 setState(() => loading = false);
 
-                                _login();
+                                // _login();
                               }
 
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (context) => MainView()));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MainView()));
 
                               // _saveDeviceToken();
 

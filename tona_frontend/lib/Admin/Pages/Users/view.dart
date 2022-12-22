@@ -1,17 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Controllers/provider.dart';
 import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
-import 'package:machafuapp/Admin/Pages/dashboard.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/getUserList.dart';
-import '../../Shared/getTokens.dart';
-import '../../Shared/myDeleteDialog.dart';
-import '../../Shared/myEditorDialog.dart';
 import '../../consts/colorTheme.dart';
 
 class UserConfig extends StatefulWidget {
@@ -24,8 +17,6 @@ class UserConfig extends StatefulWidget {
 
 class _UserConfigState extends State<UserConfig> {
   UserProvider userProvider = UserProvider();
-
-  Token token = Token();
 
   List userList = [];
 
@@ -201,7 +192,7 @@ class _UserConfigState extends State<UserConfig> {
                           (e) {
                             return Column(
                               children: [
-                                Text(e.email),
+                                Text(e.first_name),
                               ],
                             );
                           },

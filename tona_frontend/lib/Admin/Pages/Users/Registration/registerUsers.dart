@@ -35,19 +35,19 @@ class _RegisterUsersState extends State<RegisterUsers> {
   }
 
   void _useradd() async {
-    final response = await http
-        .post(Uri.parse("https://tona-production.up.railway.app/auth/users/"),
-            // headers: {
-            //   HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
-            // } ,
-            body: {
-          "first_name": fname.text,
-          "last_name": lname.text,
-          "phone_number": { "+255 " + uname.text},
-          "password": pass.text,
-          "email": email.text,
-          
-        });
+    final response =
+        await http.post(Uri.parse("http://192.168.4.87:8000/auth/users/"),
+            headers: {
+              // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: json.encode({
+              "first_name": fname.text,
+              "last_name": lname.text,
+              "phone_number": "+255${uname.text}",
+              "password": lname.text.toUpperCase(),
+              "user_type": 2,
+            }));
     var res = json.decode(response.body);
 
     print(res);
@@ -96,7 +96,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
           ),
         ),
         elevation: 0,
-        backgroundColor: ColorTheme.m_white,
+        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -104,124 +104,132 @@ class _RegisterUsersState extends State<RegisterUsers> {
           color: ColorTheme.m_white,
           child: Column(
             children: [
-              Form(
-                key: formkey,
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        "New User",
-                        style: TextStyle(
-                            color: ColorTheme.m_blue,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 8, 10, 8),
+                child: Form(
+                  key: formkey,
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          "New User",
+                          style: TextStyle(
+                              color: ColorTheme.m_blue,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
                       ),
-                    ),
-                    mytextField(
-                        contro: fname,
-                        autoval: AutovalidateMode.onUserInteraction,
-                        hint: "Ex: Norman",
-                        hintLebel: "First Name",
-                        validateText: "Fill in your first name",
-                        finalvalidateText: "Invalid Name Format",
-                        icodata: Icons.person,
-                        inputFormatter: [
-                          FilteringTextInputFormatter.allow(
-                              new RegExp('[a-zA-Z]'))
-                        ],
-                        regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                    mytextField(
-                        contro: lname,
-                        autoval: AutovalidateMode.onUserInteraction,
-                        hint: "Ex: Mush",
-                        hintLebel: "Last Name",
-                        validateText: "Fill in your last name",
-                        finalvalidateText: "Invalid Name Format",
-                        icodata: Icons.person,
-                        inputFormatter: [
-                          FilteringTextInputFormatter.allow(
-                              new RegExp('[a-zA-Z]'))
-                        ],
-                        regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
-                    mytextField(
-                        contro: uname,
-                        autoval: AutovalidateMode.onUserInteraction,
-                        hint: "Ex: Bojo",
-                        hintLebel: "Username",
-                        validateText: "Fill in your username number",
-                        finalvalidateText: "Invalid username Format",
-                        icodata: Icons.nest_cam_wired_stand_outlined,
-                        inputFormatter: [
-                          FilteringTextInputFormatter.deny(
-                              new RegExp(r"\s\b|\b\s"))
-                        ],
-                        regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                    mytextField(
-                        contro: email,
-                        autoval: AutovalidateMode.onUserInteraction,
-                        hint: "Ex: example@example.com",
-                        hintLebel: "Email",
-                        validateText: "Fill in your email",
-                        finalvalidateText: "Invalid Email Format",
-                        icodata: Icons.email,
-                        inputFormatter: [
-                          FilteringTextInputFormatter.deny(
-                              new RegExp(r"\s\b|\b\s"))
-                        ],
-                        regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                            "\\@" +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                            "(" +
-                            "\\." +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                            ")+"),
-                    mytextField(
-                        contro: pass,
-                        autoval: AutovalidateMode.onUserInteraction,
-                        hint: "Ex: *****",
-                        hintLebel: "Password",
-                        validateText: "Fill in your password number",
-                        finalvalidateText: "Invalid Password Format",
-                        icodata: Icons.password,
-                        inputFormatter: [
-                          FilteringTextInputFormatter.deny(
-                              new RegExp(r"\s\b|\b\s"))
-                        ],
-                        regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                    Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 60.0, vertical: 25.0),
-                        child: ElevatedButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Add',
-                                style: TextStyle(fontWeight: FontWeight.w200),
-                              )
-                            ],
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: ColorTheme.m_blue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              saveAttempt = true;
-                            });
+                      SizedBox(height: 20),
+                      mytextField(
+                          contro: fname,
+                          autoval: AutovalidateMode.onUserInteraction,
+                          hint: "Ex: Norman",
+                          hintLebel: "First Name",
+                          validateText: "Fill in your first name",
+                          finalvalidateText: "Invalid Name Format",
+                          icodata: Icons.person,
+                          inputFormatter: [
+                            FilteringTextInputFormatter.allow(
+                                new RegExp('[a-zA-Z]'))
+                          ],
+                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                              "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                      mytextField(
+                          contro: lname,
+                          autoval: AutovalidateMode.onUserInteraction,
+                          hint: "Ex: Mush",
+                          hintLebel: "Last Name",
+                          validateText: "Fill in your last name",
+                          finalvalidateText: "Invalid Name Format",
+                          icodata: Icons.person,
+                          inputFormatter: [
+                            FilteringTextInputFormatter.allow(
+                                new RegExp('[a-zA-Z]'))
+                          ],
+                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
+                      mytextField(
+                          contro: uname,
+                          autoval: AutovalidateMode.onUserInteraction,
+                          hint: "Ex: Bojo",
+                          hintLebel: "Phone",
+                          validateText: "Fill in your phone number",
+                          finalvalidateText: "Invalid phone no Format",
+                          icodata: Icons.phone,
+                          inputFormatter: [
+                            FilteringTextInputFormatter.deny(
+                                new RegExp(r"\s\b|\b\s"))
+                          ],
+                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                              "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
 
-                            if (formkey.currentState!.validate()) {
-                              formkey.currentState!.save();
+                      // mytextField(
+                      //     contro: email,
+                      //     autoval: AutovalidateMode.onUserInteraction,
+                      //     hint: "Ex: example@example.com",
+                      //     hintLebel: "Email",
+                      //     validateText: "Fill in your email",
+                      //     finalvalidateText: "Invalid Email Format",
+                      //     icodata: Icons.email,
+                      //     inputFormatter: [
+                      //       FilteringTextInputFormatter.deny(
+                      //           new RegExp(r"\s\b|\b\s"))
+                      //     ],
+                      //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"
+                      //     // regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                      //     //     "\\@" +
+                      //     //     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                      //     //     "(" +
+                      //     //     "\\." +
+                      //     //     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                      //     //     ")+"
 
-                              _useradd();
-                            }
-                          },
-                        )),
-                  ],
+                      //     ),
+                      // mytextField(
+                      //     contro: pass,
+                      //     autoval: AutovalidateMode.onUserInteraction,
+                      //     hint: "Ex: *****",
+                      //     hintLebel: "Password",
+                      //     validateText: "Fill in your password number",
+                      //     finalvalidateText: "Invalid Password Format",
+                      //     icodata: Icons.password,
+                      //     inputFormatter: [
+                      //       FilteringTextInputFormatter.deny(
+                      //           new RegExp(r"\s\b|\b\s"))
+                      //     ],
+                      //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                      //         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                      Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 60.0, vertical: 25.0),
+                          child: ElevatedButton(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Add',
+                                  style: TextStyle(fontWeight: FontWeight.w200),
+                                )
+                              ],
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: ColorTheme.m_blue,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                saveAttempt = true;
+                              });
+
+                              if (formkey.currentState!.validate()) {
+                                formkey.currentState!.save();
+
+                                _useradd();
+                              }
+                            },
+                          )),
+                    ],
+                  ),
                 ),
               ),
             ],

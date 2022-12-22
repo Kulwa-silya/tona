@@ -18,23 +18,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String? accesTok = "null";
 
-  getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue;
-    });
-    return stringValue;
-  }
-
-  @override
-  void initState() {
-    getAccessToken();
-    print(accesTok);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,8 +26,8 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.blue,
         ),
         home: SingIn(
-          // accsstok: accesTok!,
-        ));
+            // accsstok: accesTok!,
+            ));
   }
 }
 

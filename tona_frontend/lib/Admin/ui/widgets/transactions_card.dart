@@ -31,6 +31,7 @@ class _TransactionsCardState extends State<TransactionsCard> {
       userList = welcomeFromJson(res.body);
     });
 
+    print(res.body);
     // print(accesTok);
   }
 
@@ -77,13 +78,13 @@ class _TransactionsCardState extends State<TransactionsCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                e.email,
+                                e.first_name,
                                 style: kSubtitleTextStyle.copyWith(
                                     color: kBlackColor),
                               ),
                               verticalSpaceSmall,
                               Text(
-                                e.username,
+                                e.last_name,
                                 style: kTinyRegularTextStyle.copyWith(
                                     color: kBlackColor),
                               ),
@@ -108,13 +109,13 @@ class _TransactionsCardState extends State<TransactionsCard> {
                   children: [
                     Text(
                       // widget.transaction.amount,
-                      e.username,
+                      e.first_name,
 
                       style: kSubtitleTextStyle.copyWith(color: kBlackColor),
                     ),
                     verticalSpaceSmall,
                     Text(
-                      e.username,
+                      e.last_name,
                       style:
                           kSmallRegularTextStyle.copyWith(color: kBlackColor),
                     ),
