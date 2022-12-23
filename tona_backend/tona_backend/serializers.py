@@ -24,6 +24,13 @@ class UserCreateSerializer(BaseUserCreateSerializer):
                 user.save()
             return user
 
+    def update(self, validated_data):
+        phone_number = validated_data['phone_number']
+        user = User.objects.get(phone_number=phone_number)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 class UserSerializer(UserSerializer):
     """
     displays current logged in user details
@@ -31,3 +38,4 @@ class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         Model = User  
         fields = ['id', 'first_name','last_name','phone_number','user_type']  
+
