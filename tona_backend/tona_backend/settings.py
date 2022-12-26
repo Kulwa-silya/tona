@@ -41,9 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
+    'django_filters',
     'phonenumber_field',
     'tona_users',
-    # 'store',
+    'store',
 ]
 
 MIDDLEWARE = [
