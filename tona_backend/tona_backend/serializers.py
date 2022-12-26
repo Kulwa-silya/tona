@@ -24,12 +24,26 @@ class UserCreateSerializer(BaseUserCreateSerializer):
                 user.save()
             return user
 
-    def update(self, validated_data):
-        phone_number = validated_data['phone_number']
-        user = User.objects.get(phone_number=phone_number)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+
+    # def update(self, instance, validated_data):
+    #     phone_number = validated_data['id']
+    #     user = User.objects.get(phone_number=phone_number)
+    #     user.set_password(validated_data['password'])
+    #     user.first_name = validated_data['first_name']
+    #     user.last_name = validated_data['last_name']
+    #     # user.phone_number = phone_number
+    #     print(validated_data['id'])
+    #     # user.user_type = validated_data['user_type']
+    #     user.save()
+    #     return user
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password'])
+        validated_data.pop('password')
+        return super().update(instance, validated_data)
+
+   
+
 
 class UserSerializer(UserSerializer):
     """
