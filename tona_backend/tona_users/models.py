@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth import get_user_model
 
 from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
@@ -55,4 +56,15 @@ class UserAccount(AbstractBaseUser,PermissionsMixin):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+User = get_user_model()
+
+class UserActivity(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    path = models.CharField(max_length=255)
+    method = models.CharField(max_length=10)
+    form_data = models.TextField(blank=True, null=True)
+    query_params = models.TextField(blank=True,null=True)
+    table = models.CharField(max_length=255,blank=True,null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     
