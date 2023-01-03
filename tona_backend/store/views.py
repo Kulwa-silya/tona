@@ -3,6 +3,7 @@ from store.pagination import DefaultPagination
 from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+# from django.contrib.auth.mixins import UserPassesTestMixin
 from rest_framework.decorators import action, permission_classes
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.mixins import CreateModelMixin, DestroyModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -21,7 +22,8 @@ class ProductViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
     search_fields = ['title', 'description']
     ordering_fields = ['unit_price', 'last_update']
 
@@ -39,7 +41,7 @@ class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(
         products_count=Count('products')).all()
     serializer_class = CollectionSerializer
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
     def destroy(self, request, *args, **kwargs):
         if Product.objects.filter(collection_id=kwargs['pk']):
