@@ -61,10 +61,10 @@ User = get_user_model()
 
 class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_group = models.CharField(max_length=255,blank=True,null=True)
     path = models.CharField(max_length=255)
     method = models.CharField(max_length=10)
     form_data = models.TextField(blank=True, null=True)
-    query_params = models.TextField(blank=True,null=True)
     table = models.CharField(max_length=255,blank=True,null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     

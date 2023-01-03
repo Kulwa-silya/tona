@@ -26,8 +26,7 @@ schema_view = get_schema_view(
       title="Tona Trading API",
       default_version='v1',
       description="This is a documentation for the tona backend api",
-      contact=openapi.Contact(email="kulwamalyango@gmail.com"),
-      license=openapi.License(name="BSD License"),
+      contact=openapi.Contact(email="kulwamalyango@gmail.com")
    ),
    public=True,
    permission_classes=(AllowAny,),
