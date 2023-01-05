@@ -23,18 +23,23 @@ class InventoryFilter(admin.SimpleListFilter):
 class ProductImageInline(admin.TabularInline):
     model = models.ProductImage
     readonly_fields = ['thumbnail']
+    extra = 2
 
     def thumbnail(self, instance):
         if instance.image.name != '':
             return format_html(f'<img src="{instance.image.url}" class="thumbnail" />')
         return ''
 
+class ProductReviewInline(admin.TabularInline):
+    model = models.Review
+    extra = 1
+    
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ['collection']
     actions = ['clear_inventory']
-    inlines = [ProductImageInline]
+    inlines = [ProductImageInline,ProductReviewInline]
     list_display = ['title', 'unit_price',
                     'inventory_status', 'collection_title']
     list_editable = ['unit_price']

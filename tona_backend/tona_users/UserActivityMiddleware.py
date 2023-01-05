@@ -41,7 +41,6 @@ class UserActivityMiddleware:
                 # If the token is not in the cache, decode it and store it in the cache
                 TOKEN_DICT = jwt.decode(TOKEN, options={"verify_signature": False})
                 cache.set(TOKEN, TOKEN_DICT)
-            print(cache)
 
             User = get_user_model()
             user = User.objects.get(id=TOKEN_DICT['user_id'])

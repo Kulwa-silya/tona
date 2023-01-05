@@ -14,6 +14,8 @@ products_router = routers.NestedDefaultRouter(
     router, 'products', lookup='product')
 products_router.register('reviews', views.ReviewViewSet,
                          basename='product-reviews')
+# products_router.urls.append(path('<int:product_pk>/reviews/', views.ReviewViewSet.as_view({'get': 'list'}), name='review-list'))
+
 products_router.register(
     'images', views.ProductImageViewSet, basename='product-images')
 
