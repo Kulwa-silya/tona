@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Controllers/provider.dart';
+import 'package:machafuapp/Admin/Models/sqlite/tokenModel.dart';
 import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/views/main/main_view.dart';
@@ -16,6 +17,7 @@ class UserConfig extends StatefulWidget {
 }
 
 class _UserConfigState extends State<UserConfig> {
+  // DatabaseHelper databaseHelper = DatabaseHelper();
   UserProvider userProvider = UserProvider();
 
   List userList = [];
@@ -31,6 +33,22 @@ class _UserConfigState extends State<UserConfig> {
 
     // print(accesTok);
   }
+
+  // fetchToks() {
+  //   dynamic res = DatabaseHelper.instance.getTokens();
+
+  //   print(res);
+  // }
+
+  // fetchTocken() async {
+  //   dynamic res = DatabaseHelper.instance.getTokens();
+
+  //   setState(() {
+  //     tokn = Tokening.fromMap(res.body);
+  //   });
+
+  //   // print(accesTok);
+  // }
 
   String? refreshTok;
 
@@ -60,6 +78,7 @@ class _UserConfigState extends State<UserConfig> {
     setState(() {
       isloading = true;
       fetchUserinfo();
+      // fetchToks();
       isloading = false;
     });
 

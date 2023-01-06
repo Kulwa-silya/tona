@@ -10,6 +10,7 @@ import 'package:wc_form_validators/wc_form_validators.dart';
 import 'package:machafuapp/Admin/Shared/loading.dart';
 import 'package:machafuapp/Admin/consts/sharedPrefsInitiations.dart';
 
+import '../Admin/Models/sqlite/tokenModel.dart';
 import '../Admin/consts/colorTheme.dart';
 
 class SingIn extends StatefulWidget {
@@ -51,7 +52,7 @@ class _SingInState extends State<SingIn> {
 
   void _login() async {
     final response = await http.post(
-        Uri.parse("https://tona-production.up.railway.app/auth/jwt/create/"),
+        Uri.parse("https://tona-production-8953.up.railway.app/auth/jwt/create/"),
         body: {
           "phone_number": user.text,
           "password": pass.text,
@@ -87,11 +88,19 @@ class _SingInState extends State<SingIn> {
      await addAccessToken(res['access']);
       await addRefreshToken(res['refresh']);
 
+      // setState(() {
+      //    DatabaseHelper.instance.add(Tokening(
+      //                                                                           accesstok: res['access'],
+      //                                                                           refreshtok: res['refresh'])
+      //                                                                         );
+      //                                                                       });
+    }
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MainView()));
 
      
-    }
+    
   }
 
   @override
@@ -289,11 +298,11 @@ class _SingInState extends State<SingIn> {
                                 // displayDialog();
                                 setState(() => loading = false);
 
-                                // _login();
+                                _login();
                               }
 
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => MainView()));
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (context) => MainView()));
 
                               // _saveDeviceToken();
 

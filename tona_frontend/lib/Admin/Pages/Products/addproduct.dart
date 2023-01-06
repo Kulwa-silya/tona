@@ -1,22 +1,20 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:machafuapp/Admin/Pages/Users/view.dart';
-import '../../../Shared/myTextFormField.dart';
-import 'package:http/http.dart' as http;
-import '../../../consts/colorTheme.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:machafuapp/Admin/Pages/Products/products.dart';
 
-class RegisterUsers extends StatefulWidget {
-  String axxton;
-  RegisterUsers({Key? key, required this.axxton}) : super(key: key);
+import '../../Shared/myTextFormField.dart';
+import '../../consts/colorTheme.dart';
+
+class Addproduct extends StatefulWidget {
+  const Addproduct({Key? key}) : super(key: key);
 
   @override
-  State<RegisterUsers> createState() => _RegisterUsersState();
+  State<Addproduct> createState() => _AddproductState();
 }
 
-class _RegisterUsersState extends State<RegisterUsers> {
+class _AddproductState extends State<Addproduct> {
   TextEditingController uname = new TextEditingController();
   TextEditingController email = new TextEditingController();
   TextEditingController pass = new TextEditingController();
@@ -26,62 +24,28 @@ class _RegisterUsersState extends State<RegisterUsers> {
 
   bool loading = false;
 
+  String dropdownvalue = 'Select Category     ';
+
+  // List of items in our dropdown menu
+  var items = [
+    'Select Category     ',
+    'Cat 1',
+    'Cat 2',
+    'Cat 3',
+    'Cat 4',
+    'Cat 5',
+  ];
+
   bool saveAttempt = false;
-
-  @override
-  void initState() {
-    // print(widget.axxton);
-    super.initState();
-  }
-
-  void _useradd() async {
-    final response =
-        await http.post(Uri.parse("https://tona-production-8953.up.railway.app/auth/users/"),
-            headers: {
-              // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: json.encode({
-              "first_name": fname.text,
-              "last_name": lname.text,
-              "phone_number": "+255${uname.text}",
-              "password": lname.text.toUpperCase(),
-              "user_type": 2,
-            }));
-    var res = json.decode(response.body);
-
-    print(res);
-
-    print(response.body);
-
-    
-  }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
-            // Navigator.of(context)
-            //     .pushNamedAndRemoveUntil('/users', (route) => false);
-
-//             Navigator.pushAndRemoveUntil(
-//   context,
-//   MaterialPageRoute(builder: (context) => UserConfig(acctok: widget.axxton,)),
-//   (Route<dynamic> route) => false,
-// );
-
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    UserConfig(acctok: widget.axxton)));
-            // Navigator.of(context).push(MaterialPageRoute(
-            //     builder: (context) => UserConfig(
-            //           acctok: widget.axxton,
-            //         )));
+                builder: (BuildContext context) => Products()));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -116,7 +80,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                     children: [
                       Center(
                         child: Text(
-                          "New User",
+                          "New Product",
                           style: TextStyle(
                               color: ColorTheme.m_blue,
                               fontWeight: FontWeight.bold,
@@ -127,9 +91,9 @@ class _RegisterUsersState extends State<RegisterUsers> {
                       mytextField(
                           contro: fname,
                           autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: Norman",
-                          hintLebel: "First Name",
-                          validateText: "Fill in your first name",
+                          hint: "Ex: Taa",
+                          hintLebel: "Name",
+                          validateText: "Fill in your product name",
                           finalvalidateText: "Invalid Name Format",
                           icodata: Icons.person,
                           inputFormatter: [
@@ -141,9 +105,9 @@ class _RegisterUsersState extends State<RegisterUsers> {
                       mytextField(
                           contro: lname,
                           autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: Mush",
-                          hintLebel: "Last Name",
-                          validateText: "Fill in your last name",
+                          hint: "Ex: 20,000/=",
+                          hintLebel: "Price",
+                          validateText: "Fill in your price",
                           finalvalidateText: "Invalid Name Format",
                           icodata: Icons.person,
                           inputFormatter: [
@@ -151,57 +115,48 @@ class _RegisterUsersState extends State<RegisterUsers> {
                                 new RegExp('[a-zA-Z]'))
                           ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownButton(
+                          dropdownColor: ColorTheme.m_white,
+                          style: TextStyle(color: ColorTheme.m_blue),
+                          hint: Text("Select"),
+                          underline: Container(
+                            height: 2,
+                            color: ColorTheme.m_blue,
+                          ),
+                          value: dropdownvalue,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: ColorTheme.m_blue,
+                          ),
+                          items: items.map((String items) {
+                            return DropdownMenuItem(
+                              value: items,
+                              child: Text(items),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownvalue = newValue!;
+                            });
+                          },
+                        ),
+                      ),
                       mytextField(
                           contro: uname,
                           autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: Bojo",
-                          hintLebel: "Phone",
-                          validateText: "Fill in your phone number",
-                          finalvalidateText: "Invalid phone no Format",
-                          icodata: Icons.phone,
+                          hint: "Ex: 20,000",
+                          hintLebel: "Price",
+                          validateText: "Fill in your price",
+                          finalvalidateText: "Invalid price Format",
+                          icodata: Icons.monetization_on,
                           inputFormatter: [
                             FilteringTextInputFormatter.deny(
                                 new RegExp(r"\s\b|\b\s"))
                           ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-
-                      // mytextField(
-                      //     contro: email,
-                      //     autoval: AutovalidateMode.onUserInteraction,
-                      //     hint: "Ex: example@example.com",
-                      //     hintLebel: "Email",
-                      //     validateText: "Fill in your email",
-                      //     finalvalidateText: "Invalid Email Format",
-                      //     icodata: Icons.email,
-                      //     inputFormatter: [
-                      //       FilteringTextInputFormatter.deny(
-                      //           new RegExp(r"\s\b|\b\s"))
-                      //     ],
-                      //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"
-                      //     // regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                      //     //     "\\@" +
-                      //     //     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                      //     //     "(" +
-                      //     //     "\\." +
-                      //     //     "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                      //     //     ")+"
-
-                      //     ),
-                      // mytextField(
-                      //     contro: pass,
-                      //     autoval: AutovalidateMode.onUserInteraction,
-                      //     hint: "Ex: *****",
-                      //     hintLebel: "Password",
-                      //     validateText: "Fill in your password number",
-                      //     finalvalidateText: "Invalid Password Format",
-                      //     icodata: Icons.password,
-                      //     inputFormatter: [
-                      //       FilteringTextInputFormatter.deny(
-                      //           new RegExp(r"\s\b|\b\s"))
-                      //     ],
-                      //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                      //         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
                       Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 60.0, vertical: 25.0),
@@ -228,7 +183,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                               if (formkey.currentState!.validate()) {
                                 formkey.currentState!.save();
 
-                                _useradd();
+                                // _useradd();
                               }
                             },
                           )),
