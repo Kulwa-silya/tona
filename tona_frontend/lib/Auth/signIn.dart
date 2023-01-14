@@ -310,6 +310,11 @@ class _SingInState extends State<SingIn> {
                               //     builder: (context) => Manager()));
                             },
                           )),
+
+                          ElevatedButton(onPressed: (){
+                             Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainView()));
+                          }, child: Text("ingia"))
                     ],
                   ),
                 ),
