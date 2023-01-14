@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:machafuapp/Admin/Controllers/provider.dart';
-import 'package:machafuapp/Admin/Models/sqlite/tokenModel.dart';
 import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../Controllers/userProvider.dart';
 import '../../Models/getUserList.dart';
 import '../../consts/colorTheme.dart';
 

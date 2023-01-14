@@ -4,7 +4,7 @@ import 'package:machafuapp/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../../Controllers/provider.dart';
+import '../../Controllers/userProvider.dart';
 import '../../Models/getUserList.dart';
 import '../../Models/transaction_model.dart';
 import '../../ui/shared/colors.dart';

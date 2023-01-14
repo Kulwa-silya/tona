@@ -3,8 +3,10 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
-
-import '../../consts/Widgets/myBackBattn.dart';
+import 'package:http/http.dart' as http;
+import '../../Controllers/productsProvider.dart';
+import '../../Controllers/userProvider.dart';
+import '../../Models/getProducts.dart';
 import '../../consts/colorTheme.dart';
 
 class Products extends StatefulWidget {
@@ -15,10 +17,34 @@ class Products extends StatefulWidget {
 }
 
 class _ProductsState extends State<Products> {
+  ProductProvider productProvider = ProductProvider();
+
+  List productList = [];
+
+  var isloading = false;
+
+  fetchProducts() async {
+    http.Response res = await productProvider.fetchProducts();
+
+    setState(() {
+      productList = productsFromJson(res.body);
+    });
+  }
+
+  void initState() {
+    setState(() {
+      isloading = true;
+      fetchProducts();
+      isloading = false;
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  AppBar(
+      appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
             // Navigator.pushReplacementNamed(context, '/dash');
@@ -49,19 +75,12 @@ class _ProductsState extends State<Products> {
           ),
         ),
         actions: [
-          // accesTok == null?
-          // CircularProgressIndicator()
-          // :
-          // Text(
-          //   accesTok!,
-          //   style: TextStyle(color: Colors.black),
-          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => Addproduct()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Addproduct()));
               },
               child: Center(
                 child: Text(
@@ -77,11 +96,24 @@ class _ProductsState extends State<Products> {
         backgroundColor: ColorTheme.m_white,
       ),
       body: Container(
-        color: ColorTheme.m_white,
-        child: Center(child: Text("products")),
-      ),
+          color: ColorTheme.m_white,
+          child: isloading == false
+              ? Column(
+                  children: [
+                    ...productList.map(
+                      (e) {
+                        return Column(
+                          children: [
+                            Text(e.title),
+                          ],
+                        );
+                      },
+                    )
+                  ],
+                )
+              : Center(
+                  child: CircularProgressIndicator(),
+                )),
     );
   }
 }
-
-

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
-import '../../Controllers/provider.dart';
+import '../../Controllers/userProvider.dart';
 import '../../Models/getUserList.dart';
-import '../../Models/transaction_model.dart';
 import '../shared/colors.dart';
 import '../shared/spacing.dart';
 import '../shared/text_styles.dart';
