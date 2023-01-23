@@ -26,40 +26,51 @@ class _ProductsState extends State<Products> {
 
   var isloading = false;
 
-  List productList = [];
+  // final productList;
 
-  Future fetchProducts() async {
+  fetchProducts() async {
     http.Response res = await productProvider.fetchProducts();
 
     setState(() {
       // productList = productsFromJson(res.body);
 
-      productList = productsFromJson(res.body);
+      products = productsFromJson(res.body);
 
       //  products =  productList?.map((dynamic item) => productsFromJson(item)).toList() ?? [];
+      // products.results![0]!.title;
+// extractedData.myChannels[0].name
+// extractedData.myChannels[0].imageUrl
 
+      // for (var ch in productList.results!) {
+      //   print(ch!.title);
+      // print(ch.name);
+      // print(ch.imageUrl);
+      // }
       // print(productList);
+      // return productList;
     });
+
+    print(products);
   }
 
-  Future fetchProducts1() async {
-    final response = await http.get(
-        Uri.parse(
-            'https://tona-production-8953.up.railway.app/store/products/'),
-        headers: {
-          HttpHeaders.authorizationHeader:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczOTc5NjE3LCJqdGkiOiJjZTFhZTBjYmQ1M2E0ZGVhODc3NGI1ZmYwN2UzMmZkZiIsInVzZXJfaWQiOjF9.KcJyRuZcGQKuaQCE86BRVtQyXxbSbPq1o6FMcCAwY-4",
-        });
+  // Future fetchProducts1() async {
+  //   final response = await http.get(
+  //       Uri.parse(
+  // 'https://tona-production-8953.up.railway.app/store/products/'),
+  //       headers: {
+  //         HttpHeaders.authorizationHeader:
+  //             "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczOTc5NjE3LCJqdGkiOiJjZTFhZTBjYmQ1M2E0ZGVhODc3NGI1ZmYwN2UzMmZkZiIsInVzZXJfaWQiOjF9.KcJyRuZcGQKuaQCE86BRVtQyXxbSbPq1o6FMcCAwY-4",
+  //       });
 
-    List dat = json.decode(response.body).values.toList();
-    return dat;
-  }
+  //   List dat = json.decode(response.body);
+  //   return dat;
+  // }
 
   void initState() {
     setState(() {
       isloading = true;
-      // fetchProducts();
-      fetchProducts1();
+      fetchProducts();
+      // fetchProducts1();
       isloading = false;
     });
 
@@ -121,27 +132,28 @@ class _ProductsState extends State<Products> {
           backgroundColor: ColorTheme.m_white,
         ),
         body: FutureBuilder(
-            future: fetchProducts1(),
+            // future: fetchProducts1(),
             builder: (ctx, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                return CircularProgressIndicator();
-              }
-              return ListView.builder(
-                  itemCount: 9,
-                  itemBuilder: (cnxt, index) {
-                    return Container(
-                      child: snapshot.data[3].map(
-                          (e) {
-                            return Column(
-                              children: [
-                                e.data
-                              ],
-                            );
-                          },
-                        ).toList(),
-                    );
-                  });
-            })
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (cnxt, index) {
+                return Container(
+                  child: Center(child: Text(snapshot.data[3].toString())),
+                  // child: snapshot.data[3].map(
+                  //     (e) {
+                  //       return Column(
+                  //         children: [
+                  //           Text(e)
+                  //         ],
+                  //       );
+                  //     },
+                  //   ),
+                );
+              });
+        })
         // Container(
         //     color: ColorTheme.m_white,
         //     child: isloading == false
