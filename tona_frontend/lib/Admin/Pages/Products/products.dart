@@ -33,22 +33,31 @@ class _ProductsState extends State<Products> {
 
     setState(() {
       final proddata = ProductsAll.fromJson(json.decode(res.body));
+      isloading = true;
+      productList = proddata.results;
 
-      print(proddata.results[0].title);
+      isloading = false;
 
       for (var ch in proddata.results) {
-        setState(() {
-          isloading = true;
-          titlee = ch.title;
-          ide = ch.id;
-          isloading = false;
-        });
+        // setState(() {
+        // isloading = true;
+        titlee = ch.title;
+        ide = ch.id;
+        // isloading = false;
+        // });
 
         print(ch.id);
         print(ch.title);
         print(ch.priceWithTax.toString());
       }
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    isloading = false;
+    super.dispose();
   }
 
   void initState() {
@@ -116,11 +125,57 @@ class _ProductsState extends State<Products> {
         backgroundColor: ColorTheme.m_white,
       ),
       body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           color: ColorTheme.m_white,
-          child: titlee != null
-              ? ListTile(
-                title: Text(titlee!),
-              )
+          child: isloading == false
+              ? SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      ...productList.map(
+                        (e) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                                child: ListTile(
+                                  title: Text(
+                                    e.title,
+                                    style: TextStyle(
+                                        color: ColorTheme.m_blue,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.edit,
+                                          color: ColorTheme.m_blue,
+                                        ),
+                                        Icon(
+                                          Icons.delete,
+                                          color: ColorTheme.m_red,
+                                        )
+                                      ]),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                      //  ClipRRect(
+                      //         borderRadius: BorderRadius.circular(30),
+                      //         child: Container(
+                      //           height: 50,
+                      //           width: 50,
+                      //           color: ColorTheme.m_blue,
+                      //         )),
+                    ],
+                  ),
+                )
               : Center(
                   child: CircularProgressIndicator(),
                 )),

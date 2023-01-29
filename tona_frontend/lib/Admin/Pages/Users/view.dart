@@ -198,8 +198,8 @@ class _UserConfigState extends State<UserConfig> {
         backgroundColor: ColorTheme.m_white,
       ),
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           color: ColorTheme.m_white,
           child:
 
@@ -207,25 +207,48 @@ class _UserConfigState extends State<UserConfig> {
               // String? uname = snap.data[index]['username'];
               // int? id = snap.data[index]['id'];
               isloading == false
-                  ? Column(
-                      children: [
-                        ...userList.map(
-                          (e) {
-                            return Column(
-                              children: [
-                                Text(e.first_name),
-                              ],
-                            );
-                          },
-                        )
-                        //  ClipRRect(
-                        //         borderRadius: BorderRadius.circular(30),
-                        //         child: Container(
-                        //           height: 50,
-                        //           width: 50,
-                        //           color: ColorTheme.m_blue,
-                        //         )),
-                      ],
+                  ? SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          ...userList.map(
+                            (e) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                                    child: ListTile(
+                                      title: Text(e.first_name),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.edit,
+                                            color: ColorTheme.m_blue,
+                                          ),
+                                          Icon(
+                                            Icons.delete,
+                                            color: ColorTheme.m_red,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                          //  ClipRRect(
+                          //         borderRadius: BorderRadius.circular(30),
+                          //         child: Container(
+                          //           height: 50,
+                          //           width: 50,
+                          //           color: ColorTheme.m_blue,
+                          //         )),
+                        ],
+                      ),
                     )
                   : Center(
                       child: CircularProgressIndicator(),
