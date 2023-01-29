@@ -52,7 +52,7 @@ class _SingInState extends State<SingIn> {
 
   void _login() async {
     final response = await http.post(
-        Uri.parse("https://tona-production-8953.up.railway.app/auth/jwt/create/"),
+        Uri.parse("https://tona-production-8ea1.up.railway.app/auth/jwt/create/"),
         body: {
           "phone_number": user.text,
           "password": pass.text,

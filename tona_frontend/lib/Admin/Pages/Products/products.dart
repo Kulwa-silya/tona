@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -22,12 +24,30 @@ class _ProductsState extends State<Products> {
   List productList = [];
 
   var isloading = false;
+  int? ide;
+
+  String? titlee;
 
   fetchProducts() async {
     http.Response res = await productProvider.fetchProducts();
 
     setState(() {
-      productList = productsFromJson(res.body);
+      final proddata = ProductsAll.fromJson(json.decode(res.body));
+
+      print(proddata.results[0].title);
+
+      for (var ch in proddata.results) {
+        setState(() {
+          isloading = true;
+          titlee = ch.title;
+          ide = ch.id;
+          isloading = false;
+        });
+
+        print(ch.id);
+        print(ch.title);
+        print(ch.priceWithTax.toString());
+      }
     });
   }
 
@@ -97,20 +117,10 @@ class _ProductsState extends State<Products> {
       ),
       body: Container(
           color: ColorTheme.m_white,
-          child: isloading == false
-              ? Column(
-                  children: [
-                    ...productList.map(
-                      (e) {
-                        return Column(
-                          children: [
-                            Text(e.title),
-                          ],
-                        );
-                      },
-                    )
-                  ],
-                )
+          child: titlee != null
+              ? ListTile(
+                title: Text(titlee!),
+              )
               : Center(
                   child: CircularProgressIndicator(),
                 )),

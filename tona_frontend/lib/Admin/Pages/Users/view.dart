@@ -198,6 +198,8 @@ class _UserConfigState extends State<UserConfig> {
         backgroundColor: ColorTheme.m_white,
       ),
       body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
           color: ColorTheme.m_white,
           child:
 

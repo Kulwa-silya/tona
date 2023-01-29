@@ -5,10 +5,10 @@ class ProductProvider {
 
   Future fetchProducts() async {
     final response = await http.get(
-        Uri.parse('https://tona-production-8953.up.railway.app/store/products/'),
+        Uri.parse('https://tona-production-8ea1.up.railway.app/store/products/'),
         headers: {
           HttpHeaders.authorizationHeader:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczMjcxODUxLCJqdGkiOiI0MDI5NDdhZjkyYTQ0NTEzODZmZWE0ZjczZmUyNmJjMyIsInVzZXJfaWQiOjF9.r-jbFm3mTIhuNMYfH0MWtK7Ca75TPSIC0oxcy3wx0V0",
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc1MjQ5ODcyLCJqdGkiOiIyMDk0YjI5NzM3YTY0ZGEwYmZhMjJhNDcwNTlhMjMzNCIsInVzZXJfaWQiOjF9.UjIRODdJ8ElUjoPjYBPjJ_gRIGKkDNwUQdNTRbQFofM",
         });
 
     return response;
