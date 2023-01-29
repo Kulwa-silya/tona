@@ -35,6 +35,7 @@ class _ProductsState extends State<Products> {
   String? titlee;
 
   TextEditingController pname = new TextEditingController();
+  
   fetchProducts() async {
     http.Response res = await productProvider.fetchProducts();
 
@@ -176,8 +177,67 @@ class _ProductsState extends State<Products> {
                                             showDialog(
                                                 context: context,
                                                 builder: (_) => AlertDialog(
-                                                      title: Text(
-                                                          "Product Editor"),
+                                                      title: Column(
+                                                        children: [
+                                                          Text(
+                                                              "Product Editor"),
+                                                          Form(
+                                                            key: formkey,
+                                                            child: Column(
+                                                              children: [
+                                                                mytextField(
+                                                                    contro:
+                                                                        pname,
+                                                                    autoval:
+                                                                        AutovalidateMode
+                                                                            .onUserInteraction,
+                                                                    hint:
+                                                                        "Ex: Taa",
+                                                                    hintLebel:
+                                                                        "Product Name",
+                                                                    validateText:
+                                                                        "Fill in your product name",
+                                                                    finalvalidateText:
+                                                                        "Invalid Name Format",
+                                                                    icodata: Icons
+                                                                        .person,
+                                                                    inputFormatter: [
+                                                                      FilteringTextInputFormatter
+                                                                          .allow(
+                                                                              new RegExp('[a-zA-Z]'))
+                                                                    ],
+                                                                    regExpn:
+                                                                        "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                                                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                                                                mytextField(
+                                                                    contro:
+                                                                        pname,
+                                                                    autoval:
+                                                                        AutovalidateMode
+                                                                            .onUserInteraction,
+                                                                    hint:
+                                                                        "Ex: Taa",
+                                                                    hintLebel:
+                                                                        "Product Desc",
+                                                                    validateText:
+                                                                        "Fill in your product name",
+                                                                    finalvalidateText:
+                                                                        "Invalid Name Format",
+                                                                    icodata: Icons
+                                                                        .person,
+                                                                    inputFormatter: [
+                                                                      FilteringTextInputFormatter
+                                                                          .allow(
+                                                                              new RegExp('[a-zA-Z]'))
+                                                                    ],
+                                                                    regExpn:
+                                                                        "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                                                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                       titleTextStyle: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -243,35 +303,6 @@ class _ProductsState extends State<Products> {
                                                           },
                                                         ),
                                                       ],
-                                                      content: Form(
-                                                        key: formkey,
-                                                        child: Column(
-                                                          children: [
-                                                            mytextField(
-                                                                contro: pname,
-                                                                autoval:
-                                                                    AutovalidateMode
-                                                                        .onUserInteraction,
-                                                                hint: "Ex: Taa",
-                                                                hintLebel:
-                                                                    "Product Name",
-                                                                validateText:
-                                                                    "Fill in your product name",
-                                                                finalvalidateText:
-                                                                    "Invalid Name Format",
-                                                                icodata: Icons
-                                                                    .person,
-                                                                inputFormatter: [
-                                                                  FilteringTextInputFormatter.allow(
-                                                                      new RegExp(
-                                                                          '[a-zA-Z]'))
-                                                                ],
-                                                                regExpn:
-                                                                    "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                                                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                                                          ],
-                                                        ),
-                                                      ),
                                                     ));
                                           },
                                           icon: Icon(
