@@ -34,22 +34,6 @@ class _UserConfigState extends State<UserConfig> {
     // print(accesTok);
   }
 
-  // fetchToks() {
-  //   dynamic res = DatabaseHelper.instance.getTokens();
-
-  //   print(res);
-  // }
-
-  // fetchTocken() async {
-  //   dynamic res = DatabaseHelper.instance.getTokens();
-
-  //   setState(() {
-  //     tokn = Tokening.fromMap(res.body);
-  //   });
-
-  //   // print(accesTok);
-  // }
-
   String? refreshTok;
 
   String? accesTok;
@@ -99,16 +83,6 @@ class _UserConfigState extends State<UserConfig> {
     return stringValue;
   }
 
-  // Future fetchInfo() async {
-  //   final response = await http.get(
-  //       Uri.parse('https://tona-production.up.railway.app/auth/users/'),
-  //       headers: {
-  //         HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
-  //       });
-  //   final jsonresponse = json.decode(response.body);
-
-  //   return jsonresponse;
-  // }
 
   void editdialog() {
     AlertDialog(
@@ -124,16 +98,7 @@ class _UserConfigState extends State<UserConfig> {
     );
   }
 
-  // getRefreshToken() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   //Return String
-  //   String? stringValue = prefs.getString('refreshtoken');
 
-  //   setState(() {
-  //     refreshTok = stringValue;
-  //   });
-  //   return stringValue;
-  // }
 
   @override
   Widget build(BuildContext context) {

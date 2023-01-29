@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import '../../Controllers/productsProvider.dart';
 import '../../Controllers/userProvider.dart';
 import '../../Models/getProducts.dart';
+import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
 
 class Products extends StatefulWidget {
@@ -24,10 +26,15 @@ class _ProductsState extends State<Products> {
   List productList = [];
 
   var isloading = false;
+
+  final formkey = GlobalKey<FormState>();
+
+  bool saveAttempt = false;
   int? ide;
 
   String? titlee;
 
+  TextEditingController pname = new TextEditingController();
   fetchProducts() async {
     http.Response res = await productProvider.fetchProducts();
 
@@ -104,6 +111,12 @@ class _ProductsState extends State<Products> {
           ),
         ),
         actions: [
+          IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.search,
+                color: ColorTheme.m_blue,
+              )),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
@@ -158,9 +171,113 @@ class _ProductsState extends State<Products> {
                                               fontSize: 12,
                                               fontWeight: FontWeight.w300),
                                         ),
-                                        Icon(
-                                          Icons.edit,
-                                          color: ColorTheme.m_blue,
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                      title: Text(
+                                                          "Product Editor"),
+                                                      titleTextStyle: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.black,
+                                                          fontSize: 20),
+                                                      actionsOverflowButtonSpacing:
+                                                          20,
+                                                      actions: [
+                                                        ElevatedButton(
+                                                          child: Text(
+                                                            'Close',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w200),
+                                                          ),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            primary: ColorTheme
+                                                                .m_red,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0)),
+                                                          ),
+                                                          onPressed: () async {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                        ElevatedButton(
+                                                          child: Text(
+                                                            'Edit',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w200),
+                                                          ),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            primary: ColorTheme
+                                                                .m_blue,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0)),
+                                                          ),
+                                                          onPressed: () async {
+                                                            setState(() {
+                                                              saveAttempt =
+                                                                  true;
+                                                            });
+
+                                                            if (formkey
+                                                                .currentState!
+                                                                .validate()) {
+                                                              formkey
+                                                                  .currentState!
+                                                                  .save();
+                                                            }
+                                                          },
+                                                        ),
+                                                      ],
+                                                      content: Form(
+                                                        key: formkey,
+                                                        child: Column(
+                                                          children: [
+                                                            mytextField(
+                                                                contro: pname,
+                                                                autoval:
+                                                                    AutovalidateMode
+                                                                        .onUserInteraction,
+                                                                hint: "Ex: Taa",
+                                                                hintLebel:
+                                                                    "Product Name",
+                                                                validateText:
+                                                                    "Fill in your product name",
+                                                                finalvalidateText:
+                                                                    "Invalid Name Format",
+                                                                icodata: Icons
+                                                                    .person,
+                                                                inputFormatter: [
+                                                                  FilteringTextInputFormatter.allow(
+                                                                      new RegExp(
+                                                                          '[a-zA-Z]'))
+                                                                ],
+                                                                regExpn:
+                                                                    "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                                                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ));
+                                          },
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color: ColorTheme.m_blue,
+                                          ),
                                         ),
                                         Icon(
                                           Icons.delete,
@@ -173,13 +290,6 @@ class _ProductsState extends State<Products> {
                           );
                         },
                       )
-                      //  ClipRRect(
-                      //         borderRadius: BorderRadius.circular(30),
-                      //         child: Container(
-                      //           height: 50,
-                      //           width: 50,
-                      //           color: ColorTheme.m_blue,
-                      //         )),
                     ],
                   ),
                 )
