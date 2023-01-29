@@ -11,7 +11,7 @@ TextStyle kHeading1TextStyle = GoogleFonts.poppins(
 );
 
 TextStyle kHeading2TextStyle = GoogleFonts.poppins(
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.bold,
   fontSize: 24,
   height: 1.5,
   color: kBlackColor,

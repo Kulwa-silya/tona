@@ -24,8 +24,6 @@ class DashBoardView extends StatefulWidget {
 }
 
 class _DashBoardViewState extends State<DashBoardView> {
-
-  
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -46,7 +44,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                   borderRadius: BorderRadius.circular(10),
                   color: kBlackColor,
                 ),
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
@@ -62,7 +60,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                         verticalSpaceSmall,
                         Text(
                           '500,000 TZS',
-                          style: kHeading1TextStyle.copyWith(
+                          style: kHeading2TextStyle.copyWith(
                             color: kWhiteColor,
                           ),
                         ),
@@ -96,7 +94,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                         mobile: TransactionsGridView(
                           crossAxisCount: _size.width < 650 ? 2 : 4,
                           childAspectRatio:
-                              _size.width < 650 && _size.width > 350 ? 1.3 : 1,
+                              _size.width < 650 && _size.width > 350 ? 1 : 1,
                         ),
                         tablet: const TransactionsGridView(),
                         desktop: TransactionsGridView(

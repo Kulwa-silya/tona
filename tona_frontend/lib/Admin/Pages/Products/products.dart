@@ -148,9 +148,16 @@ class _ProductsState extends State<Products> {
                                         color: ColorTheme.m_blue,
                                         fontWeight: FontWeight.bold),
                                   ),
+                                  subtitle: Text(e.description),
                                   trailing: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
+                                        Text(
+                                          e.unitPrice + " TZs ",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300),
+                                        ),
                                         Icon(
                                           Icons.edit,
                                           color: ColorTheme.m_blue,

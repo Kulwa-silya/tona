@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../consts/widget_constants.dart';
 import '../shared/edge_insect.dart';
