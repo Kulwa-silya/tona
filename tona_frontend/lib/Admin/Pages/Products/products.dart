@@ -83,7 +83,9 @@ class _ProductsState extends State<Products> {
 
     // Refresh the UI
     setState(() {
+      isloading = true;
       _foundUsers = results;
+      isloading = false;
     });
   }
 
@@ -109,10 +111,6 @@ class _ProductsState extends State<Products> {
               MaterialPageRoute(builder: (context) => MainView()),
               (Route<dynamic> route) => false,
             );
-            // Navigator.of(context)
-            //     .pushNamedAndRemoveUntil('/dash', (route) => false);
-            // Navigator.of(context)
-            //     .push(MaterialPageRoute(builder: (context) => DashBoard()));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -161,13 +159,43 @@ class _ProductsState extends State<Products> {
       ),
       body: Column(
         children: [
-          TextField(
-            onChanged: (value) => _runFilter(value),
-            decoration: const InputDecoration(
-                labelText: 'Search', suffixIcon: Icon(Icons.search)),
-          ),
-          const SizedBox(
-            height: 20,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(13),
+              child: Container(
+                height: 55,
+                color: ColorTheme.m_white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: (value) => _runFilter(value),
+                    decoration: InputDecoration(
+                      labelText: 'Search',
+                      labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                      suffixIcon: Icon(
+                        Icons.search,
+                        color: ColorTheme.m_blue,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        borderSide: BorderSide(
+                          color: ColorTheme.m_blue,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: ColorTheme.m_blue),
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
           Expanded(
             child: Container(
@@ -234,164 +262,6 @@ class _ProductsState extends State<Products> {
                                                             data3:
                                                                 e.description,
                                                           ),
-
-                                                          // builder: (_) => AlertDialog(
-                                                          //       title: Column(
-                                                          //         children: [
-                                                          //           Text(
-                                                          //               "Product Editor"),
-                                                          //           Form(
-                                                          //             key: formkey,
-                                                          //             child: Column(
-                                                          //               children: [
-                                                          //                 mytextField(
-                                                          //                     contro:
-                                                          //                         ptitle,
-                                                          //                     autoval:
-                                                          //                         AutovalidateMode
-                                                          //                             .onUserInteraction,
-                                                          //                     hint:
-                                                          //                         "Product Name",
-                                                          //                     hintLebel:
-                                                          //                         "${e.title}",
-                                                          //                     validateText:
-                                                          //                         "Fill in your product name",
-                                                          //                     finalvalidateText:
-                                                          //                         "Invalid Name Format",
-                                                          //                     icodata: Icons
-                                                          //                         .title,
-                                                          //                     inputFormatter: [
-                                                          //                       FilteringTextInputFormatter
-                                                          //                           .allow(
-                                                          //                               new RegExp('[a-zA-Z]'))
-                                                          //                     ],
-                                                          //                     regExpn:
-                                                          //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                                          //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                                                          //                 mytextField(
-                                                          //                     contro:
-                                                          //                         pDesc,
-                                                          //                     autoval:
-                                                          //                         AutovalidateMode
-                                                          //                             .onUserInteraction,
-                                                          //                     hint:
-                                                          //                         "Product Desc",
-                                                          //                     hintLebel:
-                                                          //                         "${e.description}",
-                                                          //                     validateText:
-                                                          //                         "Fill in your product name",
-                                                          //                     finalvalidateText:
-                                                          //                         "Invalid Name Format",
-                                                          //                     icodata: Icons
-                                                          //                         .description,
-                                                          //                     inputFormatter: [
-                                                          //                       FilteringTextInputFormatter
-                                                          //                           .allow(
-                                                          //                               new RegExp('[a-zA-Z]'))
-                                                          //                     ],
-                                                          //                     regExpn:
-                                                          //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                                          //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                                                          //                 mytextField(
-                                                          //                     contro:
-                                                          //                         ptitle,
-                                                          //                     autoval:
-                                                          //                         AutovalidateMode
-                                                          //                             .onUserInteraction,
-                                                          //                     hint:
-                                                          //                         "Product Unit Price",
-                                                          //                     hintLebel:
-                                                          //                         "${e.unitPrice}",
-                                                          //                     validateText:
-                                                          //                         "Fill in your product name",
-                                                          //                     finalvalidateText:
-                                                          //                         "Invalid Name Format",
-                                                          //                     icodata: Icons
-                                                          //                         .title,
-                                                          //                     inputFormatter: [
-                                                          //                       FilteringTextInputFormatter
-                                                          //                           .allow(
-                                                          //                               new RegExp('[a-zA-Z]'))
-                                                          //                     ],
-                                                          //                     regExpn:
-                                                          //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                                          //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                                                          //               ],
-                                                          //             ),
-                                                          //           ),
-                                                          //         ],
-                                                          //       ),
-                                                          //       titleTextStyle: TextStyle(
-                                                          //           fontWeight:
-                                                          //               FontWeight.bold,
-                                                          //           color: Colors.black,
-                                                          //           fontSize: 20),
-                                                          //       actionsOverflowButtonSpacing:
-                                                          //           20,
-                                                          //       actions: [
-                                                          //         ElevatedButton(
-                                                          //           child: Text(
-                                                          //             'Close',
-                                                          //             style: TextStyle(
-                                                          //                 fontWeight:
-                                                          //                     FontWeight
-                                                          //                         .w200),
-                                                          //           ),
-                                                          //           style: ElevatedButton
-                                                          //               .styleFrom(
-                                                          //             primary: ColorTheme
-                                                          //                 .m_red,
-                                                          //             shape: RoundedRectangleBorder(
-                                                          //                 borderRadius:
-                                                          //                     BorderRadius
-                                                          //                         .circular(
-                                                          //                             10.0)),
-                                                          //           ),
-                                                          //           onPressed: () async {
-                                                          //             Navigator.pop(
-                                                          //                 context);
-
-                                                          //             setState(() {
-                                                          //               ptitle.clear();
-                                                          //               pDesc.clear();
-                                                          //             });
-                                                          //           },
-                                                          //         ),
-                                                          //         ElevatedButton(
-                                                          //           child: Text(
-                                                          //             'Edit',
-                                                          //             style: TextStyle(
-                                                          //                 fontWeight:
-                                                          //                     FontWeight
-                                                          //                         .w200),
-                                                          //           ),
-                                                          //           style: ElevatedButton
-                                                          //               .styleFrom(
-                                                          //             primary: ColorTheme
-                                                          //                 .m_blue,
-                                                          //             shape: RoundedRectangleBorder(
-                                                          //                 borderRadius:
-                                                          //                     BorderRadius
-                                                          //                         .circular(
-                                                          //                             10.0)),
-                                                          //           ),
-                                                          //           onPressed: () async {
-                                                          //             setState(() {
-                                                          //               saveAttempt =
-                                                          //                   true;
-                                                          //             });
-
-                                                          //             if (formkey
-                                                          //                 .currentState!
-                                                          //                 .validate()) {
-                                                          //               formkey
-                                                          //                   .currentState!
-                                                          //                   .save();
-                                                          //             }
-                                                          //           },
-                                                          //         ),
-                                                          //       ],
-                                                          //     )
                                                         );
                                                       },
                                                       icon: Icon(
