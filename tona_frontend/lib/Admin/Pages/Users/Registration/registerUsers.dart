@@ -36,7 +36,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
 
   void _useradd() async {
     final response =
-        await http.post(Uri.parse("https://tona-production-8953.up.railway.app/auth/users/"),
+        await http.post(Uri.parse("https://tona-production-8ea1.up.railway.app/auth/users/"),
             headers: {
               // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
               'Content-Type': 'application/json; charset=UTF-8',

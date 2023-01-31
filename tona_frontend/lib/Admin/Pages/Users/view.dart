@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:http/http.dart' as http;
+import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
+import 'package:machafuapp/Admin/Shared/myEditorDialog.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -83,7 +85,6 @@ class _UserConfigState extends State<UserConfig> {
     return stringValue;
   }
 
-
   void editdialog() {
     AlertDialog(
       title: Text("Success"),
@@ -97,8 +98,6 @@ class _UserConfigState extends State<UserConfig> {
       content: Text("Saved successfully"),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -186,16 +185,38 @@ class _UserConfigState extends State<UserConfig> {
                                     color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                                     child: ListTile(
                                       title: Text(e.first_name),
+                                      subtitle: Text(e.last_name),
                                       trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(
-                                            Icons.edit,
-                                            color: ColorTheme.m_blue,
+                                          IconButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (_) =>
+                                                      myEditordialog(
+                                                        heading: "User Editor",
+                                                          data1: e.last_name,
+                                                          data2: e.first_name));
+                                            },
+                                            icon: Icon(
+                                              Icons.edit,
+                                              color: ColorTheme.m_blue,
+                                            ),
                                           ),
-                                          Icon(
-                                            Icons.delete,
-                                            color: ColorTheme.m_red,
+                                          IconButton(
+                                            onPressed: (() {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (_) =>
+                                                      myDeletedialog(
+                                                          email: e.last_name,
+                                                          uname: e.first_name));
+                                            }),
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: ColorTheme.m_red,
+                                            ),
                                           )
                                         ],
                                       ),

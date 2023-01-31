@@ -5,10 +5,14 @@ import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
 
 class myEditordialog extends StatefulWidget {
-  String email;
-  String uname;
+  String? data1;
+  String? data2;
+  String? data3;
+  String? data4;
+  String? heading;
 
-  myEditordialog({Key? key, required this.email, required this.uname})
+  myEditordialog(
+      {Key? key, this.data1, this.heading, this.data2, this.data3, this.data4})
       : super(key: key);
 
   @override
@@ -40,7 +44,7 @@ class _mydialogState extends State<myEditordialog> {
                       padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 8),
                       child: Center(
                         child: Text(
-                          "User Editor",
+                          "${widget.heading}",
                           style: TextStyle(
                               color: ColorTheme.m_blue,
                               fontWeight: FontWeight.bold,
@@ -48,72 +52,119 @@ class _mydialogState extends State<myEditordialog> {
                         ),
                       ),
                     ),
-                    mytextField(
-                        contro: name,
-                        autoval: AutovalidateMode.onUserInteraction,
-                        hint: "Fill the new Username",
-                        hintLebel: "${widget.uname}",
-                        validateText: "Fill in the Username",
-                        finalvalidateText: "Invalid UserName Format",
-                        icodata: Icons.person,
-                        inputFormatter: [
-                          FilteringTextInputFormatter.deny(
-                              new RegExp(r"\s\b|\b\s"))
-                        ],
-                        regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                            "\\@" +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                            "(" +
-                            "\\." +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                            ")+"),
-                    mytextField(
-                        contro: email,
-                        autoval: AutovalidateMode.onUserInteraction,
-                        hint: "fill the new email",
-                        hintLebel: "${widget.email}",
-                        validateText: "Fill in your email",
-                        finalvalidateText: "Invalid Email Format",
-                        icodata: Icons.email,
-                        inputFormatter: [
-                          FilteringTextInputFormatter.deny(
-                              new RegExp(r"\s\b|\b\s"))
-                        ],
-                        regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                            "\\@" +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                            "(" +
-                            "\\." +
-                            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                            ")+"),
-                    Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 60.0, vertical: 25.0),
-                        child: ElevatedButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Update',
-                                style: TextStyle(fontWeight: FontWeight.w200),
-                              )
+                    widget.data1 != null
+                        ? mytextField(
+                            contro: name,
+                            autoval: AutovalidateMode.onUserInteraction,
+                            hint: "Fill the new Username",
+                            hintLebel: "${widget.data1}",
+                            validateText: "Fill in the Username",
+                            finalvalidateText: "Invalid UserName Format",
+                            icodata: Icons.person,
+                            inputFormatter: [
+                              FilteringTextInputFormatter.deny(
+                                  new RegExp(r"\s\b|\b\s"))
                             ],
+                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                "\\@" +
+                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                "(" +
+                                "\\." +
+                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                ")+")
+                        : SizedBox.shrink(),
+                    widget.data2 != null
+                        ? mytextField(
+                            contro: email,
+                            autoval: AutovalidateMode.onUserInteraction,
+                            hint: "fill the new email",
+                            hintLebel: "${widget.data2}",
+                            validateText: "Fill in your email",
+                            finalvalidateText: "Invalid Email Format",
+                            icodata: Icons.email,
+                            inputFormatter: [
+                              FilteringTextInputFormatter.deny(
+                                  new RegExp(r"\s\b|\b\s"))
+                            ],
+                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                "\\@" +
+                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                "(" +
+                                "\\." +
+                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                ")+")
+                        : SizedBox.shrink(),
+                    widget.data3 != null
+                        ? mytextField(
+                            contro: email,
+                            autoval: AutovalidateMode.onUserInteraction,
+                            hint: "fill the new email",
+                            hintLebel: "${widget.data3}",
+                            validateText: "Fill in your email",
+                            finalvalidateText: "Invalid Email Format",
+                            icodata: Icons.email,
+                            inputFormatter: [
+                              FilteringTextInputFormatter.deny(
+                                  new RegExp(r"\s\b|\b\s"))
+                            ],
+                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                "\\@" +
+                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                "(" +
+                                "\\." +
+                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                ")+")
+                        : SizedBox.shrink(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            child: Text(
+                              'Close',
+                              style: TextStyle(fontWeight: FontWeight.w200),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: ColorTheme.m_red,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                            ),
+                            onPressed: () async {
+                              Navigator.pop(context);
+                            },
                           ),
-                          style: ElevatedButton.styleFrom(
-                            primary: ColorTheme.m_blue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              saveAttempt = true;
-                            });
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(8),
+                            child: ElevatedButton(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Update',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w200),
+                                  )
+                                ],
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: ColorTheme.m_blue,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0)),
+                              ),
+                              onPressed: () async {
+                                setState(() {
+                                  saveAttempt = true;
+                                });
 
-                            if (formkey.currentState!.validate()) {
-                              formkey.currentState!.save();
-                            }
-                          },
-                        )),
+                                if (formkey.currentState!.validate()) {
+                                  formkey.currentState!.save();
+                                }
+                              },
+                            )),
+                      ],
+                    ),
                   ],
                 ),
               ),

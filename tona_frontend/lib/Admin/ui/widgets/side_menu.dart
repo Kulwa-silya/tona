@@ -58,7 +58,7 @@ class SideMenu extends StatelessWidget {
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                  builder: (BuildContext context) => Products()));
+                  builder: (BuildContext context) => UserConfig(acctok: 'hdhdhd',)));
             },
           ),
           DrawerListTile(
