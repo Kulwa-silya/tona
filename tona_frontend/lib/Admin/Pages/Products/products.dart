@@ -181,236 +181,248 @@ class _ProductsState extends State<Products> {
                           children: [
                             ...productList.map(
                               (e) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      color:
-                                          ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                                      child: ListTile(
-                                        title: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              8, 8, 8, 2),
-                                          child: Text(
-                                            e.title,
-                                            style: TextStyle(
-                                                color: ColorTheme.m_blue,
-                                                fontWeight: FontWeight.bold),
+                                return _foundUsers.isNotEmpty
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Container(
+                                            color: ColorTheme
+                                                .m_blue_mpauko_zaidi_zaidi,
+                                            child: ListTile(
+                                              title: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8, 8, 8, 2),
+                                                child: Text(
+                                                  e.title,
+                                                  style: TextStyle(
+                                                      color: ColorTheme.m_blue,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              subtitle: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8, 1, 8, 8),
+                                                child: Text(e.description),
+                                              ),
+                                              trailing: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      e.unitPrice + " TZs ",
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w300),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (_) =>
+                                                              myEditordialog(
+                                                            heading:
+                                                                "Product Editor",
+                                                            data1:
+                                                                e.id.toString(),
+                                                            data2: e.title,
+                                                            data3:
+                                                                e.description,
+                                                          ),
+
+                                                          // builder: (_) => AlertDialog(
+                                                          //       title: Column(
+                                                          //         children: [
+                                                          //           Text(
+                                                          //               "Product Editor"),
+                                                          //           Form(
+                                                          //             key: formkey,
+                                                          //             child: Column(
+                                                          //               children: [
+                                                          //                 mytextField(
+                                                          //                     contro:
+                                                          //                         ptitle,
+                                                          //                     autoval:
+                                                          //                         AutovalidateMode
+                                                          //                             .onUserInteraction,
+                                                          //                     hint:
+                                                          //                         "Product Name",
+                                                          //                     hintLebel:
+                                                          //                         "${e.title}",
+                                                          //                     validateText:
+                                                          //                         "Fill in your product name",
+                                                          //                     finalvalidateText:
+                                                          //                         "Invalid Name Format",
+                                                          //                     icodata: Icons
+                                                          //                         .title,
+                                                          //                     inputFormatter: [
+                                                          //                       FilteringTextInputFormatter
+                                                          //                           .allow(
+                                                          //                               new RegExp('[a-zA-Z]'))
+                                                          //                     ],
+                                                          //                     regExpn:
+                                                          //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                                          //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                                                          //                 mytextField(
+                                                          //                     contro:
+                                                          //                         pDesc,
+                                                          //                     autoval:
+                                                          //                         AutovalidateMode
+                                                          //                             .onUserInteraction,
+                                                          //                     hint:
+                                                          //                         "Product Desc",
+                                                          //                     hintLebel:
+                                                          //                         "${e.description}",
+                                                          //                     validateText:
+                                                          //                         "Fill in your product name",
+                                                          //                     finalvalidateText:
+                                                          //                         "Invalid Name Format",
+                                                          //                     icodata: Icons
+                                                          //                         .description,
+                                                          //                     inputFormatter: [
+                                                          //                       FilteringTextInputFormatter
+                                                          //                           .allow(
+                                                          //                               new RegExp('[a-zA-Z]'))
+                                                          //                     ],
+                                                          //                     regExpn:
+                                                          //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                                          //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                                                          //                 mytextField(
+                                                          //                     contro:
+                                                          //                         ptitle,
+                                                          //                     autoval:
+                                                          //                         AutovalidateMode
+                                                          //                             .onUserInteraction,
+                                                          //                     hint:
+                                                          //                         "Product Unit Price",
+                                                          //                     hintLebel:
+                                                          //                         "${e.unitPrice}",
+                                                          //                     validateText:
+                                                          //                         "Fill in your product name",
+                                                          //                     finalvalidateText:
+                                                          //                         "Invalid Name Format",
+                                                          //                     icodata: Icons
+                                                          //                         .title,
+                                                          //                     inputFormatter: [
+                                                          //                       FilteringTextInputFormatter
+                                                          //                           .allow(
+                                                          //                               new RegExp('[a-zA-Z]'))
+                                                          //                     ],
+                                                          //                     regExpn:
+                                                          //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                                          //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                                                          //               ],
+                                                          //             ),
+                                                          //           ),
+                                                          //         ],
+                                                          //       ),
+                                                          //       titleTextStyle: TextStyle(
+                                                          //           fontWeight:
+                                                          //               FontWeight.bold,
+                                                          //           color: Colors.black,
+                                                          //           fontSize: 20),
+                                                          //       actionsOverflowButtonSpacing:
+                                                          //           20,
+                                                          //       actions: [
+                                                          //         ElevatedButton(
+                                                          //           child: Text(
+                                                          //             'Close',
+                                                          //             style: TextStyle(
+                                                          //                 fontWeight:
+                                                          //                     FontWeight
+                                                          //                         .w200),
+                                                          //           ),
+                                                          //           style: ElevatedButton
+                                                          //               .styleFrom(
+                                                          //             primary: ColorTheme
+                                                          //                 .m_red,
+                                                          //             shape: RoundedRectangleBorder(
+                                                          //                 borderRadius:
+                                                          //                     BorderRadius
+                                                          //                         .circular(
+                                                          //                             10.0)),
+                                                          //           ),
+                                                          //           onPressed: () async {
+                                                          //             Navigator.pop(
+                                                          //                 context);
+
+                                                          //             setState(() {
+                                                          //               ptitle.clear();
+                                                          //               pDesc.clear();
+                                                          //             });
+                                                          //           },
+                                                          //         ),
+                                                          //         ElevatedButton(
+                                                          //           child: Text(
+                                                          //             'Edit',
+                                                          //             style: TextStyle(
+                                                          //                 fontWeight:
+                                                          //                     FontWeight
+                                                          //                         .w200),
+                                                          //           ),
+                                                          //           style: ElevatedButton
+                                                          //               .styleFrom(
+                                                          //             primary: ColorTheme
+                                                          //                 .m_blue,
+                                                          //             shape: RoundedRectangleBorder(
+                                                          //                 borderRadius:
+                                                          //                     BorderRadius
+                                                          //                         .circular(
+                                                          //                             10.0)),
+                                                          //           ),
+                                                          //           onPressed: () async {
+                                                          //             setState(() {
+                                                          //               saveAttempt =
+                                                          //                   true;
+                                                          //             });
+
+                                                          //             if (formkey
+                                                          //                 .currentState!
+                                                          //                 .validate()) {
+                                                          //               formkey
+                                                          //                   .currentState!
+                                                          //                   .save();
+                                                          //             }
+                                                          //           },
+                                                          //         ),
+                                                          //       ],
+                                                          //     )
+                                                        );
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.edit,
+                                                        color:
+                                                            ColorTheme.m_blue,
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (_) =>
+                                                                myDeletedialog(
+                                                                  email: e.id
+                                                                      .toString(),
+                                                                  uname:
+                                                                      e.title,
+                                                                ));
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.delete,
+                                                        color: ColorTheme.m_red,
+                                                      ),
+                                                    )
+                                                  ]),
+                                            ),
                                           ),
                                         ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              8, 1, 8, 8),
-                                          child: Text(e.description),
-                                        ),
-                                        trailing: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Text(
-                                                e.unitPrice + " TZs ",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w300),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (_) =>
-                                                        myEditordialog(
-                                                      heading: "Product Editor",
-                                                      data1: e.id.toString(),
-                                                      data2: e.title,
-                                                      data3: e.description,
-                                                    ),
-
-                                                    // builder: (_) => AlertDialog(
-                                                    //       title: Column(
-                                                    //         children: [
-                                                    //           Text(
-                                                    //               "Product Editor"),
-                                                    //           Form(
-                                                    //             key: formkey,
-                                                    //             child: Column(
-                                                    //               children: [
-                                                    //                 mytextField(
-                                                    //                     contro:
-                                                    //                         ptitle,
-                                                    //                     autoval:
-                                                    //                         AutovalidateMode
-                                                    //                             .onUserInteraction,
-                                                    //                     hint:
-                                                    //                         "Product Name",
-                                                    //                     hintLebel:
-                                                    //                         "${e.title}",
-                                                    //                     validateText:
-                                                    //                         "Fill in your product name",
-                                                    //                     finalvalidateText:
-                                                    //                         "Invalid Name Format",
-                                                    //                     icodata: Icons
-                                                    //                         .title,
-                                                    //                     inputFormatter: [
-                                                    //                       FilteringTextInputFormatter
-                                                    //                           .allow(
-                                                    //                               new RegExp('[a-zA-Z]'))
-                                                    //                     ],
-                                                    //                     regExpn:
-                                                    //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                                    //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                                                    //                 mytextField(
-                                                    //                     contro:
-                                                    //                         pDesc,
-                                                    //                     autoval:
-                                                    //                         AutovalidateMode
-                                                    //                             .onUserInteraction,
-                                                    //                     hint:
-                                                    //                         "Product Desc",
-                                                    //                     hintLebel:
-                                                    //                         "${e.description}",
-                                                    //                     validateText:
-                                                    //                         "Fill in your product name",
-                                                    //                     finalvalidateText:
-                                                    //                         "Invalid Name Format",
-                                                    //                     icodata: Icons
-                                                    //                         .description,
-                                                    //                     inputFormatter: [
-                                                    //                       FilteringTextInputFormatter
-                                                    //                           .allow(
-                                                    //                               new RegExp('[a-zA-Z]'))
-                                                    //                     ],
-                                                    //                     regExpn:
-                                                    //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                                    //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                                                    //                 mytextField(
-                                                    //                     contro:
-                                                    //                         ptitle,
-                                                    //                     autoval:
-                                                    //                         AutovalidateMode
-                                                    //                             .onUserInteraction,
-                                                    //                     hint:
-                                                    //                         "Product Unit Price",
-                                                    //                     hintLebel:
-                                                    //                         "${e.unitPrice}",
-                                                    //                     validateText:
-                                                    //                         "Fill in your product name",
-                                                    //                     finalvalidateText:
-                                                    //                         "Invalid Name Format",
-                                                    //                     icodata: Icons
-                                                    //                         .title,
-                                                    //                     inputFormatter: [
-                                                    //                       FilteringTextInputFormatter
-                                                    //                           .allow(
-                                                    //                               new RegExp('[a-zA-Z]'))
-                                                    //                     ],
-                                                    //                     regExpn:
-                                                    //                         "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                                    //                             "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
-                                                    //               ],
-                                                    //             ),
-                                                    //           ),
-                                                    //         ],
-                                                    //       ),
-                                                    //       titleTextStyle: TextStyle(
-                                                    //           fontWeight:
-                                                    //               FontWeight.bold,
-                                                    //           color: Colors.black,
-                                                    //           fontSize: 20),
-                                                    //       actionsOverflowButtonSpacing:
-                                                    //           20,
-                                                    //       actions: [
-                                                    //         ElevatedButton(
-                                                    //           child: Text(
-                                                    //             'Close',
-                                                    //             style: TextStyle(
-                                                    //                 fontWeight:
-                                                    //                     FontWeight
-                                                    //                         .w200),
-                                                    //           ),
-                                                    //           style: ElevatedButton
-                                                    //               .styleFrom(
-                                                    //             primary: ColorTheme
-                                                    //                 .m_red,
-                                                    //             shape: RoundedRectangleBorder(
-                                                    //                 borderRadius:
-                                                    //                     BorderRadius
-                                                    //                         .circular(
-                                                    //                             10.0)),
-                                                    //           ),
-                                                    //           onPressed: () async {
-                                                    //             Navigator.pop(
-                                                    //                 context);
-
-                                                    //             setState(() {
-                                                    //               ptitle.clear();
-                                                    //               pDesc.clear();
-                                                    //             });
-                                                    //           },
-                                                    //         ),
-                                                    //         ElevatedButton(
-                                                    //           child: Text(
-                                                    //             'Edit',
-                                                    //             style: TextStyle(
-                                                    //                 fontWeight:
-                                                    //                     FontWeight
-                                                    //                         .w200),
-                                                    //           ),
-                                                    //           style: ElevatedButton
-                                                    //               .styleFrom(
-                                                    //             primary: ColorTheme
-                                                    //                 .m_blue,
-                                                    //             shape: RoundedRectangleBorder(
-                                                    //                 borderRadius:
-                                                    //                     BorderRadius
-                                                    //                         .circular(
-                                                    //                             10.0)),
-                                                    //           ),
-                                                    //           onPressed: () async {
-                                                    //             setState(() {
-                                                    //               saveAttempt =
-                                                    //                   true;
-                                                    //             });
-
-                                                    //             if (formkey
-                                                    //                 .currentState!
-                                                    //                 .validate()) {
-                                                    //               formkey
-                                                    //                   .currentState!
-                                                    //                   .save();
-                                                    //             }
-                                                    //           },
-                                                    //         ),
-                                                    //       ],
-                                                    //     )
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.edit,
-                                                  color: ColorTheme.m_blue,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (_) =>
-                                                          myDeletedialog(
-                                                            email:
-                                                                e.id.toString(),
-                                                            uname: e.title,
-                                                          ));
-                                                },
-                                                icon: Icon(
-                                                  Icons.delete,
-                                                  color: ColorTheme.m_red,
-                                                ),
-                                              )
-                                            ]),
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                      )
+                                    : Text("no data");
                               },
                             )
                           ],
