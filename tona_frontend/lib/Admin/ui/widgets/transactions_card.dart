@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../Controllers/userProvider.dart';
 import '../../Models/getUserList.dart';
+import '../../views/main/main_view.dart';
 import '../shared/colors.dart';
 import '../shared/spacing.dart';
 import '../shared/text_styles.dart';
@@ -16,6 +17,8 @@ class TransactionsCard extends StatefulWidget {
 
 class _TransactionsCardState extends State<TransactionsCard> {
   UserProvider userProvider = UserProvider();
+
+    MainView accsstheTok = MainView();
 
   List userList = [];
 

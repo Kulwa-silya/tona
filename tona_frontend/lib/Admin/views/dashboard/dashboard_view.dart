@@ -1,5 +1,6 @@
 import 'package:machafuapp/Admin/ui/shared/edge_insect.dart';
 import 'package:machafuapp/Admin/ui/shared/spacing.dart';
+import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:machafuapp/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +25,7 @@ class DashBoardView extends StatefulWidget {
 }
 
 class _DashBoardViewState extends State<DashBoardView> {
+  MainView mainView = MainView();
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;

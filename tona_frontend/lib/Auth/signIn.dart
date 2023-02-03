@@ -52,7 +52,8 @@ class _SingInState extends State<SingIn> {
 
   void _login() async {
     final response = await http.post(
-        Uri.parse("https://tona-production-8ea1.up.railway.app/auth/jwt/create/"),
+        Uri.parse(
+            "https://tona-production-8ea1.up.railway.app/auth/jwt/create/"),
         body: {
           "phone_number": user.text,
           "password": pass.text,
@@ -85,7 +86,7 @@ class _SingInState extends State<SingIn> {
       // }
       setState(() {});
     } else {
-     await addAccessToken(res['access']);
+      await addAccessToken(res['access']);
       await addRefreshToken(res['refresh']);
 
       // setState(() {
@@ -96,11 +97,8 @@ class _SingInState extends State<SingIn> {
       //                                                                       });
     }
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainView()));
-
-     
-    
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MainView()));
   }
 
   @override

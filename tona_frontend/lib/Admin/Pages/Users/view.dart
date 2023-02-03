@@ -26,6 +26,8 @@ class _UserConfigState extends State<UserConfig> {
 
   bool isloading = false;
 
+  List _foundUsers = [];
+
   fetchUserinfo() async {
     http.Response res = await userProvider.fetchInfoe();
 
@@ -73,6 +75,28 @@ class _UserConfigState extends State<UserConfig> {
     // fetchInfo();
     // getUsers();
     super.initState();
+  }
+
+  void _runFilter(String enteredKeyword) {
+    List results = [];
+    if (enteredKeyword.isEmpty) {
+      // if the search field is empty or only contains white-space, we'll display all users
+      results = userList;
+    } else {
+      results = userList
+          .where((user) => user.first_name
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+      // we use the toLowerCase() method to make it case-insensitive
+    }
+
+    // Refresh the UI
+    setState(() {
+      isloading = true;
+      _foundUsers = results;
+      isloading = false;
+    });
   }
 
   getAccessToken() async {
@@ -175,6 +199,46 @@ class _UserConfigState extends State<UserConfig> {
                       physics: BouncingScrollPhysics(),
                       child: Column(
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(13),
+                              child: Container(
+                                height: 55,
+                                color: ColorTheme.m_white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextField(
+                                    onChanged: (value) => _runFilter(value),
+                                    decoration: InputDecoration(
+                                      labelText: 'Search',
+                                      labelStyle: TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                      suffixIcon: Icon(
+                                        Icons.search,
+                                        color: ColorTheme.m_blue,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: ColorTheme.m_blue,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: ColorTheme.m_blue),
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           ...userList.map(
                             (e) {
                               return Padding(
@@ -195,7 +259,8 @@ class _UserConfigState extends State<UserConfig> {
                                                   context: context,
                                                   builder: (_) =>
                                                       myEditordialog(
-                                                        heading: "User Editor",
+                                                          heading:
+                                                              "User Editor",
                                                           data1: e.last_name,
                                                           data2: e.first_name));
                                             },

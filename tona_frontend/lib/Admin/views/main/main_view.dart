@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:machafuapp/Shared/gettingTokens.dart';
+import 'package:machafuapp/Admin/Controllers/userProvider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:io';
 import '../../../responsive.dart';
 import '../../ui/shared/spacing.dart';
 import '../../ui/widgets/side_menu.dart';
@@ -17,7 +18,7 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  String? accesTok;
+  late String accesTok;
 
   // GettingToken gettingToken = GettingToken();
 
@@ -44,11 +45,22 @@ class _MainViewState extends State<MainView> {
     //Return String
     String? stringValue = prefs.getString('accesstoken');
     setState(() {
-      accesTok = stringValue;
+      accesTok = stringValue!;
     });
 
-    print(accesTok);
+    print(" tokeni $accesTok");
     return stringValue;
+  }
+
+  Future fetchProducts() async {
+    final response = await http.get(
+        Uri.parse(
+            'https://tona-production-8ea1.up.railway.app/store/products/'),
+        headers: {
+          HttpHeaders.authorizationHeader: "JWT $accesTok",
+        });
+
+    return response;
   }
 
   @override

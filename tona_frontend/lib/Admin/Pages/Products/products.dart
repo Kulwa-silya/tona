@@ -34,7 +34,7 @@ class _ProductsState extends State<Products> {
   TextEditingController ptitle = new TextEditingController();
   TextEditingController pDesc = new TextEditingController();
 
-  List _foundUsers = [];
+  List _foundProducts = [];
 
   fetchProducts() async {
     http.Response res = await productProvider.fetchProducts();
@@ -75,8 +75,8 @@ class _ProductsState extends State<Products> {
       results = productList;
     } else {
       results = productList
-          .where((user) =>
-              user.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .where((prod) =>
+              prod.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
           .toList();
       // we use the toLowerCase() method to make it case-insensitive
     }
@@ -84,7 +84,7 @@ class _ProductsState extends State<Products> {
     // Refresh the UI
     setState(() {
       isloading = true;
-      _foundUsers = results;
+      _foundProducts = results;
       isloading = false;
     });
   }
@@ -93,6 +93,7 @@ class _ProductsState extends State<Products> {
     setState(() {
       isloading = true;
       fetchProducts();
+      
       isloading = false;
     });
 
@@ -209,7 +210,7 @@ class _ProductsState extends State<Products> {
                           children: [
                             ...productList.map(
                               (e) {
-                                return _foundUsers.isNotEmpty
+                                return _foundProducts.isNotEmpty
                                     ? Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: ClipRRect(
