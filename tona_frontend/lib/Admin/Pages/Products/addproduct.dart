@@ -41,8 +41,7 @@ class _AddproductState extends State<Addproduct> {
 
   void _productadd() async {
     final response = await http.post(
-        Uri.parse(
-            "https://tona-production-8ea1.up.railway.app/store/products/"),
+        Uri.parse("https://tona-production-8ea1.up.railway.app/store/producs/"),
         headers: {
           // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
           'Content-Type': 'application/json; charset=UTF-8',
@@ -251,6 +250,7 @@ class _AddproductState extends State<Addproduct> {
 
                               if (formkey.currentState!.validate()) {
                                 formkey.currentState!.save();
+
                                 _productadd();
                                 // _useradd();
                               }

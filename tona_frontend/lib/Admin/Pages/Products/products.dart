@@ -6,6 +6,7 @@ import 'package:machafuapp/Admin/Shared/myEditorDialog.dart';
 import 'package:machafuapp/Admin/Shared/searcher.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Controllers/productsProvider.dart';
 import '../../Models/getProducts.dart';
 import '../../consts/colorTheme.dart';
@@ -35,6 +36,16 @@ class _ProductsState extends State<Products> {
   TextEditingController pDesc = new TextEditingController();
 
   List _foundProducts = [];
+
+  getProducts() async {
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    String accTok = pre.getString("accesstoken") ?? "";
+
+// int age = pre.getInt("age") ?? 0;
+// bool married = pre.getBool("married") ?? false;
+// double price = pre.getDouble("price") ?? 0.00;
+// List<String> tags = pre.getStringList("tags") ?? [];
+  }
 
   fetchProducts() async {
     http.Response res = await productProvider.fetchProducts();
@@ -93,7 +104,7 @@ class _ProductsState extends State<Products> {
     setState(() {
       isloading = true;
       fetchProducts();
-      
+
       isloading = false;
     });
 
