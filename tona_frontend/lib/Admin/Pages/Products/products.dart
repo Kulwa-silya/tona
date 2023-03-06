@@ -58,13 +58,8 @@ class _ProductsState extends State<Products> {
       isloading = false;
 
       for (var ch in proddata.results) {
-        // setState(() {
-        // isloading = true;
         titlee = ch.title;
         ide = ch.id;
-        // isloading = false;
-        // });
-
         print(ch.id);
         print(ch.title);
         print(ch.priceWithTax.toString());
@@ -221,90 +216,82 @@ class _ProductsState extends State<Products> {
                           children: [
                             ...productList.map(
                               (e) {
-                                return _foundProducts.isNotEmpty
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: Container(
-                                            color: ColorTheme
-                                                .m_blue_mpauko_zaidi_zaidi,
-                                            child: ListTile(
-                                              title: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        8, 8, 8, 2),
-                                                child: Text(
-                                                  e.title,
-                                                  style: TextStyle(
-                                                      color: ColorTheme.m_blue,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              subtitle: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        8, 1, 8, 8),
-                                                child: Text(e.description),
-                                              ),
-                                              trailing: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      e.unitPrice + " TZs ",
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w300),
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (_) =>
-                                                              myEditordialog(
-                                                            heading:
-                                                                "Product Editor",
-                                                            data1:
-                                                                e.id.toString(),
-                                                            data2: e.title,
-                                                            data3:
-                                                                e.description,
-                                                          ),
-                                                        );
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.edit,
-                                                        color:
-                                                            ColorTheme.m_blue,
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        showDialog(
-                                                            context: context,
-                                                            builder: (_) =>
-                                                                myDeletedialog(
-                                                                  email: e.id
-                                                                      .toString(),
-                                                                  uname:
-                                                                      e.title,
-                                                                ));
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.delete,
-                                                        color: ColorTheme.m_red,
-                                                      ),
-                                                    )
-                                                  ]),
-                                            ),
+                                return
+                                    // _foundProducts.isNotEmpty
+                                    //     ?
+                                    Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                      color:
+                                          ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                                      child: ListTile(
+                                        title: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 8, 8, 2),
+                                          child: Text(
+                                            e.title,
+                                            style: TextStyle(
+                                                color: ColorTheme.m_blue,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                      )
-                                    : Text("no data");
+                                        subtitle: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 1, 8, 8),
+                                          child: Text(e.description),
+                                        ),
+                                        trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                e.unitPrice + " TZs ",
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (_) =>
+                                                        myEditordialog(
+                                                      heading: "Product Editor",
+                                                      data1: e.id.toString(),
+                                                      data2: e.title,
+                                                      data3: e.description,
+                                                    ),
+                                                  );
+                                                },
+                                                icon: Icon(
+                                                  Icons.edit,
+                                                  color: ColorTheme.m_blue,
+                                                ),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (_) =>
+                                                          myDeletedialog(
+                                                            email:
+                                                                e.id.toString(),
+                                                            uname: e.title,
+                                                          ));
+                                                },
+                                                icon: Icon(
+                                                  Icons.delete,
+                                                  color: ColorTheme.m_red,
+                                                ),
+                                              )
+                                            ]),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                                // : Text("no data");
                               },
                             )
                           ],
