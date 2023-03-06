@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../Controllers/userProvider.dart';
 import '../../Models/getUserList.dart';
+import '../../views/main/main_view.dart';
 import '../shared/colors.dart';
 import '../shared/spacing.dart';
 import '../shared/text_styles.dart';
@@ -16,6 +17,8 @@ class TransactionsCard extends StatefulWidget {
 
 class _TransactionsCardState extends State<TransactionsCard> {
   UserProvider userProvider = UserProvider();
+
+    MainView accsstheTok = MainView();
 
   List userList = [];
 
@@ -43,7 +46,8 @@ class _TransactionsCardState extends State<TransactionsCard> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
+      // crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         horizontalSpaceRegular,
         isloading == false
@@ -52,25 +56,29 @@ class _TransactionsCardState extends State<TransactionsCard> {
                   ...userList.map(
                     (e) {
                       return Row(
-                        // mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            height: 60,
-                            width: 60,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              // image: DecorationImage(
-                              //   image: AssetImage(
-                              //     widget.transaction.image,
-                              //   ),
-                              // ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 60,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                // image: DecorationImage(
+                                //   image: AssetImage(
+                                //     widget.transaction.image,
+                                //   ),
+                                // ),
 
-                              color: kBlackColor,
+                                color: kBlackColor,
+                              ),
                             ),
                           ),
-                          SizedBox(
-                            width: 20,
-                          ),
+                          // SizedBox(
+                          //   width: 20,
+                          // ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:http/http.dart' as http;
+import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
+import 'package:machafuapp/Admin/Shared/myEditorDialog.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +26,8 @@ class _UserConfigState extends State<UserConfig> {
 
   bool isloading = false;
 
+  List _foundUsers = [];
+
   fetchUserinfo() async {
     http.Response res = await userProvider.fetchInfoe();
 
@@ -33,22 +37,6 @@ class _UserConfigState extends State<UserConfig> {
 
     // print(accesTok);
   }
-
-  // fetchToks() {
-  //   dynamic res = DatabaseHelper.instance.getTokens();
-
-  //   print(res);
-  // }
-
-  // fetchTocken() async {
-  //   dynamic res = DatabaseHelper.instance.getTokens();
-
-  //   setState(() {
-  //     tokn = Tokening.fromMap(res.body);
-  //   });
-
-  //   // print(accesTok);
-  // }
 
   String? refreshTok;
 
@@ -89,6 +77,28 @@ class _UserConfigState extends State<UserConfig> {
     super.initState();
   }
 
+  void _runFilter(String enteredKeyword) {
+    List results = [];
+    if (enteredKeyword.isEmpty) {
+      // if the search field is empty or only contains white-space, we'll display all users
+      results = userList;
+    } else {
+      results = userList
+          .where((user) => user.first_name
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+      // we use the toLowerCase() method to make it case-insensitive
+    }
+
+    // Refresh the UI
+    setState(() {
+      isloading = true;
+      _foundUsers = results;
+      isloading = false;
+    });
+  }
+
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
@@ -98,17 +108,6 @@ class _UserConfigState extends State<UserConfig> {
     });
     return stringValue;
   }
-
-  // Future fetchInfo() async {
-  //   final response = await http.get(
-  //       Uri.parse('https://tona-production.up.railway.app/auth/users/'),
-  //       headers: {
-  //         HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
-  //       });
-  //   final jsonresponse = json.decode(response.body);
-
-  //   return jsonresponse;
-  // }
 
   void editdialog() {
     AlertDialog(
@@ -123,17 +122,6 @@ class _UserConfigState extends State<UserConfig> {
       content: Text("Saved successfully"),
     );
   }
-
-  // getRefreshToken() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   //Return String
-  //   String? stringValue = prefs.getString('refreshtoken');
-
-  //   setState(() {
-  //     refreshTok = stringValue;
-  //   });
-  //   return stringValue;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +186,8 @@ class _UserConfigState extends State<UserConfig> {
         backgroundColor: ColorTheme.m_white,
       ),
       body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           color: ColorTheme.m_white,
           child:
 
@@ -205,25 +195,111 @@ class _UserConfigState extends State<UserConfig> {
               // String? uname = snap.data[index]['username'];
               // int? id = snap.data[index]['id'];
               isloading == false
-                  ? Column(
-                      children: [
-                        ...userList.map(
-                          (e) {
-                            return Column(
-                              children: [
-                                Text(e.first_name),
-                              ],
-                            );
-                          },
-                        )
-                        //  ClipRRect(
-                        //         borderRadius: BorderRadius.circular(30),
-                        //         child: Container(
-                        //           height: 50,
-                        //           width: 50,
-                        //           color: ColorTheme.m_blue,
-                        //         )),
-                      ],
+                  ? SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(13),
+                              child: Container(
+                                height: 55,
+                                color: ColorTheme.m_white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextField(
+                                    onChanged: (value) => _runFilter(value),
+                                    decoration: InputDecoration(
+                                      labelText: 'Search',
+                                      labelStyle: TextStyle(
+                                          fontWeight: FontWeight.w300),
+                                      suffixIcon: Icon(
+                                        Icons.search,
+                                        color: ColorTheme.m_blue,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: ColorTheme.m_blue,
+                                        ),
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: ColorTheme.m_blue),
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          ...userList.map(
+                            (e) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                    color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                                    child: ListTile(
+                                      title: Text(e.first_name),
+                                      subtitle: Text(e.last_name),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (_) =>
+                                                      myEditordialog(
+                                                          heading:
+                                                              "User Editor",
+                                                          data1: e.last_name,
+                                                          data2: e.first_name));
+                                            },
+                                            icon: Icon(
+                                              Icons.edit,
+                                              color: ColorTheme.m_blue,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: (() {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (_) =>
+                                                      myDeletedialog(
+                                                          email: e.last_name,
+                                                          uname: e.first_name));
+                                            }),
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: ColorTheme.m_red,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                          //  ClipRRect(
+                          //         borderRadius: BorderRadius.circular(30),
+                          //         child: Container(
+                          //           height: 50,
+                          //           width: 50,
+                          //           color: ColorTheme.m_blue,
+                          //         )),
+                        ],
+                      ),
                     )
                   : Center(
                       child: CircularProgressIndicator(),

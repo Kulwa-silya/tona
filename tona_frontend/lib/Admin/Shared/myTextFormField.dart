@@ -25,7 +25,7 @@ class mytextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      padding: EdgeInsets.all(6),
       child: TextFormField(
         autovalidateMode: autoval,
         validator: (emailValue) {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
@@ -13,11 +15,13 @@ class Addproduct extends StatefulWidget {
 }
 
 class _AddproductState extends State<Addproduct> {
-  TextEditingController uname = new TextEditingController();
-  TextEditingController email = new TextEditingController();
-  TextEditingController pass = new TextEditingController();
-  TextEditingController fname = new TextEditingController();
-  TextEditingController lname = new TextEditingController();
+  TextEditingController titleC = new TextEditingController();
+  TextEditingController descC = new TextEditingController();
+  TextEditingController inveC = new TextEditingController();
+  TextEditingController unitPC = new TextEditingController();
+  TextEditingController PricTC = new TextEditingController();
+  TextEditingController CollectionC = new TextEditingController();
+
   final formkey = GlobalKey<FormState>();
 
   bool loading = false;
@@ -33,6 +37,29 @@ class _AddproductState extends State<Addproduct> {
     'Cat 4',
     'Cat 5',
   ];
+
+  void _productadd() async {
+    final response = await http.post(
+        Uri.parse("https://tona-production-8ea1.up.railway.app/store/producs/"),
+        headers: {
+          // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode({
+          "title": titleC.text,
+          "description": descC.text,
+          "inventory": int.parse(inveC.text),
+          "unit_price": unitPC.text,
+          "price_with_tax": int.parse(PricTC.text),
+          "collection": int.parse(CollectionC.text),
+          "image": null
+        }));
+    var res = json.decode(response.body);
+
+    print(res);
+
+    print(response.body);
+  }
 
   bool saveAttempt = false;
   @override
@@ -87,13 +114,13 @@ class _AddproductState extends State<Addproduct> {
                       ),
                       SizedBox(height: 20),
                       mytextField(
-                          contro: fname,
+                          contro: titleC,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Taa",
-                          hintLebel: "Name",
+                          hintLebel: "Product Name",
                           validateText: "Fill in your product name",
                           finalvalidateText: "Invalid Name Format",
-                          icodata: Icons.person,
+                          icodata: Icons.adobe_sharp,
                           inputFormatter: [
                             FilteringTextInputFormatter.allow(
                                 new RegExp('[a-zA-Z]'))
@@ -101,13 +128,13 @@ class _AddproductState extends State<Addproduct> {
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
                       mytextField(
-                          contro: lname,
+                          contro: descC,
                           autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: 20,000/=",
-                          hintLebel: "Price",
-                          validateText: "Fill in your price",
-                          finalvalidateText: "Invalid Name Format",
-                          icodata: Icons.person,
+                          hint: "Ex: Maelezo juu ya bidhaa",
+                          hintLebel: "Description",
+                          validateText: "Fill in your Description",
+                          finalvalidateText: "Invalid Description Format",
+                          icodata: Icons.description,
                           inputFormatter: [
                             FilteringTextInputFormatter.allow(
                                 new RegExp('[a-zA-Z]'))
@@ -142,19 +169,61 @@ class _AddproductState extends State<Addproduct> {
                         ),
                       ),
                       mytextField(
-                          contro: uname,
+                          contro: inveC,
                           autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: 20,000",
-                          hintLebel: "Price",
-                          validateText: "Fill in your price",
-                          finalvalidateText: "Invalid price Format",
-                          icodata: Icons.monetization_on,
+                          hint: "Ex: 2",
+                          hintLebel: "Inventory",
+                          validateText: "Fill in your Inventory Number",
+                          finalvalidateText: "Invalid Inventory Format",
+                          icodata: Icons.inventory,
                           inputFormatter: [
+                            FilteringTextInputFormatter.digitsOnly,
                             FilteringTextInputFormatter.deny(
                                 new RegExp(r"\s\b|\b\s"))
                           ],
-                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                              "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
+                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
+                      mytextField(
+                          contro: unitPC,
+                          autoval: AutovalidateMode.onUserInteraction,
+                          hint: "Ex: 500",
+                          hintLebel: "Unit Price",
+                          validateText: "Fill in your Unit Price",
+                          finalvalidateText: "Invalid unit price Format",
+                          icodata: Icons.monetization_on,
+                          inputFormatter: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            FilteringTextInputFormatter.deny(
+                                new RegExp(r"\s\b|\b\s"))
+                          ],
+                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
+                      mytextField(
+                          contro: PricTC,
+                          autoval: AutovalidateMode.onUserInteraction,
+                          hint: "Ex: 535",
+                          hintLebel: "Price with Tax",
+                          validateText: "Fill in your Price with Tax",
+                          finalvalidateText: "Invalid Price with Tax Format",
+                          icodata: Icons.monetization_on_outlined,
+                          inputFormatter: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            FilteringTextInputFormatter.deny(
+                                new RegExp(r"\s\b|\b\s"))
+                          ],
+                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
+                      mytextField(
+                          contro: CollectionC,
+                          autoval: AutovalidateMode.onUserInteraction,
+                          hint: "Ex: 1",
+                          hintLebel: "Collections",
+                          validateText: "Fill in your Collection",
+                          finalvalidateText: "Invalid Collection Format",
+                          icodata: Icons.collections_bookmark,
+                          inputFormatter: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            FilteringTextInputFormatter.deny(
+                                new RegExp(r"\s\b|\b\s"))
+                          ],
+                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
                       Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 60.0, vertical: 25.0),
@@ -181,6 +250,7 @@ class _AddproductState extends State<Addproduct> {
                               if (formkey.currentState!.validate()) {
                                 formkey.currentState!.save();
 
+                                _productadd();
                                 // _useradd();
                               }
                             },

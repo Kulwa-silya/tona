@@ -19,7 +19,7 @@ class AllExpensesCard extends ViewModelWidget<MainViewModel> {
 
     return Container(
       padding: kEdgeInsetsHorizontalTiny,
-      height: height * 0.60,
+      height: height * 0.70,
       decoration: BoxDecoration(
         border: Border.all(color: kSecondaryColor5),
         borderRadius: BorderRadius.circular(20),

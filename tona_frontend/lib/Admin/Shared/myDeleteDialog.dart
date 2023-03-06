@@ -44,14 +44,22 @@ class _mydialogState extends State<myDeletedialog> {
                   ),
                 ),
               ),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Are you sure you want to delete "),
-                  Text(
-                    "${widget.uname} ?",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: ColorTheme.m_grey),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Are you sure you want to delete,"),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "${widget.uname} ?",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: ColorTheme.m_grey),
+                    ),
                   )
                 ],
               ),

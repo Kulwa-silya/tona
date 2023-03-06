@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
+import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
+import 'package:machafuapp/Admin/Shared/myEditorDialog.dart';
+import 'package:machafuapp/Admin/Shared/searcher.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Controllers/productsProvider.dart';
-import '../../Controllers/userProvider.dart';
 import '../../Models/getProducts.dart';
 import '../../consts/colorTheme.dart';
 

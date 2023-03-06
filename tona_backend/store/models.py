@@ -142,3 +142,44 @@ class Review(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     date = models.DateField(auto_now_add=True)
+
+class Supplier(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    address = models.CharField(max_length=255)
+
+
+
+class PurchasedProduct(models.Model):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='productPurchased')
+    date = models.DateField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    supplier = models.ForeignKey(Supplier, related_name='supplier', on_delete=models.CASCADE)
+
+
+class Purchase(models.Model):
+    date = models.DateField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    purchased_products = models.ManyToManyField(PurchasedProduct, related_name='purchasedproduct')
+
+
+class SoldProduct(models.Model):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='productSold')
+    quantity = models.IntegerField()
+    date = models.DateField()
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    customer = models.ForeignKey(Customer, related_name='customer', on_delete=models.CASCADE)
+
+
+class Sale(models.Model):
+    date = models.DateField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    sold_products = models.ManyToManyField(SoldProduct, related_name='soldproduct')
+
+
+class AssociatedCost(models.Model):
+    name = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE, related_name='purchase')
