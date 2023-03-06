@@ -1,9 +1,9 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
-
 import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
 
@@ -42,17 +42,18 @@ class _AddproductState extends State<Addproduct> {
     final response = await http.post(
         Uri.parse("https://tona-production-8ea1.up.railway.app/store/producs/"),
         headers: {
-          // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
+          HttpHeaders.authorizationHeader:
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4Mzc0MzM0LCJqdGkiOiJhNDBhZjgwZGZhZmY0NmI5YWNmMDFlY2Q0ZTNmODUxYyIsInVzZXJfaWQiOjF9.vxtAsg9pOxqDD12LpoehBk_KlB54C3Qrrwwn-VZwPK4",
+          "Accept": "application/json",
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: json.encode({
-          "title": titleC.text,
-          "description": descC.text,
-          "inventory": int.parse(inveC.text),
-          "unit_price": unitPC.text,
-          "price_with_tax": int.parse(PricTC.text),
-          "collection": int.parse(CollectionC.text),
-          "image": null
+          "title": "testing 3",
+          "description": "testing 23",
+          "inventory": 2,
+          "unit_price": "3000",
+          "collection": 1,
+          "images": null
         }));
     var res = json.decode(response.body);
 
@@ -65,6 +66,7 @@ class _AddproductState extends State<Addproduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
@@ -196,34 +198,34 @@ class _AddproductState extends State<Addproduct> {
                                 new RegExp(r"\s\b|\b\s"))
                           ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
-                      mytextField(
-                          contro: PricTC,
-                          autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: 535",
-                          hintLebel: "Price with Tax",
-                          validateText: "Fill in your Price with Tax",
-                          finalvalidateText: "Invalid Price with Tax Format",
-                          icodata: Icons.monetization_on_outlined,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            FilteringTextInputFormatter.deny(
-                                new RegExp(r"\s\b|\b\s"))
-                          ],
-                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
-                      mytextField(
-                          contro: CollectionC,
-                          autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: 1",
-                          hintLebel: "Collections",
-                          validateText: "Fill in your Collection",
-                          finalvalidateText: "Invalid Collection Format",
-                          icodata: Icons.collections_bookmark,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            FilteringTextInputFormatter.deny(
-                                new RegExp(r"\s\b|\b\s"))
-                          ],
-                          regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
+                      // mytextField(
+                      //     contro: PricTC,
+                      //     autoval: AutovalidateMode.onUserInteraction,
+                      //     hint: "Ex: 535",
+                      //     hintLebel: "Price with Tax",
+                      //     validateText: "Fill in your Price with Tax",
+                      //     finalvalidateText: "Invalid Price with Tax Format",
+                      //     icodata: Icons.monetization_on_outlined,
+                      //     inputFormatter: [
+                      //       FilteringTextInputFormatter.digitsOnly,
+                      //       FilteringTextInputFormatter.deny(
+                      //           new RegExp(r"\s\b|\b\s"))
+                      //     ],
+                      //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
+                      // mytextField(
+                      //     contro: CollectionC,
+                      //     autoval: AutovalidateMode.onUserInteraction,
+                      //     hint: "Ex: 1",
+                      //     hintLebel: "Collections",
+                      //     validateText: "Fill in your Collection",
+                      //     finalvalidateText: "Invalid Collection Format",
+                      //     icodata: Icons.collections_bookmark,
+                      //     inputFormatter: [
+                      //       FilteringTextInputFormatter.digitsOnly,
+                      //       FilteringTextInputFormatter.deny(
+                      //           new RegExp(r"\s\b|\b\s"))
+                      //     ],
+                      //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
                       Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 60.0, vertical: 25.0),
@@ -255,6 +257,11 @@ class _AddproductState extends State<Addproduct> {
                               }
                             },
                           )),
+                      ElevatedButton(
+                          onPressed: () {
+                            _productadd();
+                          },
+                          child: Text("data"))
                     ],
                   ),
                 ),

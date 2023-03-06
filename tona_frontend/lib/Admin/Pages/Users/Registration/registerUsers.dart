@@ -43,7 +43,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
           "first_name": fname.text,
           "last_name": lname.text,
           "phone_number": "+255${uname.text}",
-          "password": lname.text.toUpperCase(),
+          "password": "lname.text.toUpperCase()",
           "user_type": 2,
         }));
     var res = json.decode(response.body);

@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
@@ -23,55 +21,90 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> {
   ProductProvider productProvider = ProductProvider();
 
-  List products = [];
+  List productList = [];
 
   var isloading = false;
 
-  // final productList;
+  final formkey = GlobalKey<FormState>();
+
+  bool saveAttempt = false;
+  int? ide;
+
+  String? titlee;
+
+  TextEditingController ptitle = new TextEditingController();
+  TextEditingController pDesc = new TextEditingController();
+
+  List _foundProducts = [];
+
+  getProducts() async {
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    String accTok = pre.getString("accesstoken") ?? "";
+
+// int age = pre.getInt("age") ?? 0;
+// bool married = pre.getBool("married") ?? false;
+// double price = pre.getDouble("price") ?? 0.00;
+// List<String> tags = pre.getStringList("tags") ?? [];
+  }
 
   fetchProducts() async {
     http.Response res = await productProvider.fetchProducts();
 
     setState(() {
-      // productList = productsFromJson(res.body);
+      final proddata = ProductsAll.fromJson(json.decode(res.body));
+      isloading = true;
+      productList = proddata.results;
 
-      products = productsFromJson(res.body);
+      isloading = false;
 
-      //  products =  productList?.map((dynamic item) => productsFromJson(item)).toList() ?? [];
-      // products.results![0]!.title;
-// extractedData.myChannels[0].name
-// extractedData.myChannels[0].imageUrl
+      for (var ch in proddata.results) {
+        // setState(() {
+        // isloading = true;
+        titlee = ch.title;
+        ide = ch.id;
+        // isloading = false;
+        // });
 
-      // for (var ch in productList.results!) {
-      //   print(ch!.title);
-      // print(ch.name);
-      // print(ch.imageUrl);
-      // }
-      // print(productList);
-      // return productList;
+        print(ch.id);
+        print(ch.title);
+        print(ch.priceWithTax.toString());
+      }
     });
-
-    print(products);
   }
 
-  // Future fetchProducts1() async {
-  //   final response = await http.get(
-  //       Uri.parse(
-  // 'https://tona-production-8953.up.railway.app/store/products/'),
-  //       headers: {
-  //         HttpHeaders.authorizationHeader:
-  //             "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjczOTc5NjE3LCJqdGkiOiJjZTFhZTBjYmQ1M2E0ZGVhODc3NGI1ZmYwN2UzMmZkZiIsInVzZXJfaWQiOjF9.KcJyRuZcGQKuaQCE86BRVtQyXxbSbPq1o6FMcCAwY-4",
-  //       });
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    isloading = false;
+    super.dispose();
+  }
 
-  //   List dat = json.decode(response.body);
-  //   return dat;
-  // }
+  void _runFilter(String enteredKeyword) {
+    List results = [];
+    if (enteredKeyword.isEmpty) {
+      // if the search field is empty or only contains white-space, we'll display all users
+      results = productList;
+    } else {
+      results = productList
+          .where((prod) =>
+              prod.title.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .toList();
+      // we use the toLowerCase() method to make it case-insensitive
+    }
+
+    // Refresh the UI
+    setState(() {
+      isloading = true;
+      _foundProducts = results;
+      isloading = false;
+    });
+  }
 
   void initState() {
     setState(() {
       isloading = true;
       fetchProducts();
-      // fetchProducts1();
+
       isloading = false;
     });
 
@@ -81,99 +114,208 @@ class _ProductsState extends State<Products> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: GestureDetector(
-            onTap: () {
-              // Navigator.pushReplacementNamed(context, '/dash');
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => MainView()),
-                (Route<dynamic> route) => false,
-              );
-              // Navigator.of(context)
-              //     .pushNamedAndRemoveUntil('/dash', (route) => false);
-              // Navigator.of(context)
-              //     .push(MaterialPageRoute(builder: (context) => DashBoard()));
-            },
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                      color: ColorTheme.m_blue,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                        child: Icon(
-                          Icons.arrow_back_ios,
-                          size: 10,
-                          color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                        ),
-                      ))),
-            ),
+      appBar: AppBar(
+        leading: GestureDetector(
+          onTap: () {
+            // Navigator.pushReplacementNamed(context, '/dash');
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainView()),
+              (Route<dynamic> route) => false,
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                    color: ColorTheme.m_blue,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+                      child: Icon(
+                        Icons.arrow_back_ios,
+                        size: 10,
+                        color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                      ),
+                    ))),
           ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Addproduct()));
-                },
-                child: Center(
-                  child: Text(
-                    "New Product",
-                    style: TextStyle(
-                        color: ColorTheme.m_blue, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: TheSearcher());
+              },
+              icon: Icon(
+                Icons.search,
+                color: ColorTheme.m_blue,
+              )),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => Addproduct()));
+              },
+              child: Center(
+                child: Text(
+                  "New Product",
+                  style: TextStyle(
+                      color: ColorTheme.m_blue, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          )
+        ],
+        elevation: 0,
+        backgroundColor: ColorTheme.m_white,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(13),
+              child: Container(
+                height: 55,
+                color: ColorTheme.m_white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: (value) => _runFilter(value),
+                    decoration: InputDecoration(
+                      labelText: 'Search',
+                      labelStyle: TextStyle(fontWeight: FontWeight.w300),
+                      suffixIcon: Icon(
+                        Icons.search,
+                        color: ColorTheme.m_blue,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        borderSide: BorderSide(
+                          color: ColorTheme.m_blue,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: ColorTheme.m_blue),
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            )
-          ],
-          elevation: 0,
-          backgroundColor: ColorTheme.m_white,
-        ),
-        body: FutureBuilder(
-            // future: fetchProducts1(),
-            builder: (ctx, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator();
-          }
-          return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (cnxt, index) {
-                return Container(
-                  child: Center(child: Text(snapshot.data[3].toString())),
-                  // child: snapshot.data[3].map(
-                  //     (e) {
-                  //       return Column(
-                  //         children: [
-                  //           Text(e)
-                  //         ],
-                  //       );
-                  //     },
-                  //   ),
-                );
-              });
-        })
-        // Container(
-        //     color: ColorTheme.m_white,
-        //     child: isloading == false
-        //         ? Column(
-        //             children: [
-        //               ...productList.map(
-        //                 (e) {
-        //                   return Column(
-        //                     children: [
-        //                       Text(e.results.title),
-        //                     ],
-        //                   );
-        //                 },
-        //               )
-        //             ],
-        //           )
-        //         : Center(
-        //             child: CircularProgressIndicator(),
-        //           )),
-        );
+            ),
+          ),
+          Expanded(
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: ColorTheme.m_white,
+                child: isloading == false
+                    ? SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            ...productList.map(
+                              (e) {
+                                return _foundProducts.isNotEmpty
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Container(
+                                            color: ColorTheme
+                                                .m_blue_mpauko_zaidi_zaidi,
+                                            child: ListTile(
+                                              title: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8, 8, 8, 2),
+                                                child: Text(
+                                                  e.title,
+                                                  style: TextStyle(
+                                                      color: ColorTheme.m_blue,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              subtitle: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8, 1, 8, 8),
+                                                child: Text(e.description),
+                                              ),
+                                              trailing: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      e.unitPrice + " TZs ",
+                                                      style: TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w300),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (_) =>
+                                                              myEditordialog(
+                                                            heading:
+                                                                "Product Editor",
+                                                            data1:
+                                                                e.id.toString(),
+                                                            data2: e.title,
+                                                            data3:
+                                                                e.description,
+                                                          ),
+                                                        );
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.edit,
+                                                        color:
+                                                            ColorTheme.m_blue,
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (_) =>
+                                                                myDeletedialog(
+                                                                  email: e.id
+                                                                      .toString(),
+                                                                  uname:
+                                                                      e.title,
+                                                                ));
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.delete,
+                                                        color: ColorTheme.m_red,
+                                                      ),
+                                                    )
+                                                  ]),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Text("no data");
+                              },
+                            )
+                          ],
+                        ),
+                      )
+                    : Center(
+                        child: CircularProgressIndicator(),
+                      )),
+          ),
+        ],
+      ),
+    );
   }
 }
