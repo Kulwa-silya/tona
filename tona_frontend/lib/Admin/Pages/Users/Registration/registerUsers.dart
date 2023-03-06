@@ -33,29 +33,25 @@ class _RegisterUsersState extends State<RegisterUsers> {
   }
 
   void _useradd() async {
-    final response =
-        await http.post(Uri.parse("https://tona-production-8ea1.up.railway.app/auth/users/"),
-            headers: {
-              // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: json.encode({
-              "first_name": fname.text,
-              "last_name": lname.text,
-              "phone_number": "+255${uname.text}",
-              "password": lname.text.toUpperCase(),
-              "user_type": 2,
-            }));
+    final response = await http.post(
+        Uri.parse("https://tona-production-8ea1.up.railway.app/auth/users/"),
+        headers: {
+          // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode({
+          "first_name": fname.text,
+          "last_name": lname.text,
+          "phone_number": "+255${uname.text}",
+          "password": lname.text.toUpperCase(),
+          "user_type": 2,
+        }));
     var res = json.decode(response.body);
 
     print(res);
 
     print(response.body);
-
-    
   }
-
-
 
   @override
   Widget build(BuildContext context) {

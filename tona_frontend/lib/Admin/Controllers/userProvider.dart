@@ -9,7 +9,7 @@ class UserProvider {
         Uri.parse('https://tona-production-8ea1.up.railway.app/auth/users/'),
         headers: {
           HttpHeaders.authorizationHeader:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc1NjgwODU2LCJqdGkiOiI1YWFmYjhjMjY4MTg0NGVkYmNhZjU4MTBmNWE5NWZlNiIsInVzZXJfaWQiOjF9.dQCKIj0y5QscYvbzBZG8TZVfJ1dL_rGOIzprcbNtwi4",
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc2MDIzMTk5LCJqdGkiOiIyNjU4YzY0YmM0YjE0MmM4OWNkOGU2N2RkZjNjMzM1YyIsInVzZXJfaWQiOjF9.RpxfnWVB6jdXgR4M1AFEsDDs_9k6kgB6g-fa7vYAnI0",
         });
 
     return response;
