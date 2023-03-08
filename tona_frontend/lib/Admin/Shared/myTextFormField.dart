@@ -4,20 +4,22 @@ import 'package:flutter/services.dart';
 import '../consts/colorTheme.dart';
 
 class mytextField extends StatelessWidget {
-  mytextField(
-      {Key? key,
-      required this.hint,
-      required this.regExpn,
-      required this.contro,
-      required this.hintLebel,
-      required this.validateText,
-      required this.finalvalidateText,
-      required this.icodata,
-      required this.autoval,
-      required this.inputFormatter})
-      : super(key: key);
+  mytextField({
+    Key? key,
+    required this.hint,
+    required this.regExpn,
+    required this.contro,
+    required this.hintLebel,
+    required this.validateText,
+    required this.finalvalidateText,
+    required this.icodata,
+    required this.autoval,
+    required this.kybType
+    // required this.inputFormatter
+  }) : super(key: key);
   String validateText, finalvalidateText, hint, hintLebel, regExpn;
   IconData icodata;
+  TextInputType kybType;
   List<TextInputFormatter>? inputFormatter;
   TextEditingController contro;
   AutovalidateMode autoval;
@@ -27,6 +29,7 @@ class mytextField extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(6),
       child: TextFormField(
+        keyboardType: kybType,
         autovalidateMode: autoval,
         validator: (emailValue) {
           if (emailValue!.isEmpty) {
@@ -39,7 +42,7 @@ class mytextField extends StatelessWidget {
           return finalvalidateText;
         },
         controller: contro,
-        inputFormatters: inputFormatter,
+        // inputFormatters: inputFormatter,
         decoration: InputDecoration(
           prefixIcon: Icon(icodata),
           labelText: hintLebel,

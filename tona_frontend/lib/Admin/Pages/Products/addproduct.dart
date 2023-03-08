@@ -8,7 +8,9 @@ import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
 
 class Addproduct extends StatefulWidget {
-  const Addproduct({Key? key}) : super(key: key);
+  int? pid;
+  String? titl;
+  Addproduct({this.pid, this.titl, Key? key}) : super(key: key);
 
   @override
   State<Addproduct> createState() => _AddproductState();
@@ -38,28 +40,49 @@ class _AddproductState extends State<Addproduct> {
     'Cat 5',
   ];
 
+  bool success = false;
+
+  bool successErr = false;
+
   void _productadd() async {
-    final response = await http.post(
-        Uri.parse("https://tona-production-8ea1.up.railway.app/store/producs/"),
-        headers: {
-          HttpHeaders.authorizationHeader:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4Mzc0MzM0LCJqdGkiOiJhNDBhZjgwZGZhZmY0NmI5YWNmMDFlY2Q0ZTNmODUxYyIsInVzZXJfaWQiOjF9.vxtAsg9pOxqDD12LpoehBk_KlB54C3Qrrwwn-VZwPK4",
-          "Accept": "application/json",
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode({
-          "title": "testing 3",
-          "description": "testing 23",
-          "inventory": 2,
-          "unit_price": "3000",
-          "collection": 1,
-          "images": null
-        }));
-    var res = json.decode(response.body);
+    try {
+      final response = await http
+          .post(
+              Uri.parse(
+                  "https://tona-production-8ea1.up.railway.app/store/products/"),
+              headers: {
+                HttpHeaders.authorizationHeader:
+                    "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4Mzc0MzM0LCJqdGkiOiJhNDBhZjgwZGZhZmY0NmI5YWNmMDFlY2Q0ZTNmODUxYyIsInVzZXJfaWQiOjF9.vxtAsg9pOxqDD12LpoehBk_KlB54C3Qrrwwn-VZwPK4",
+                "Accept": "application/json",
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: json.encode({
+                "title": titleC.text,
+                "description": descC.text,
+                "inventory": int.parse(inveC.text),
+                "unit_price": unitPC.text,
+                "collection": widget.pid,
+                "images": null
+              }))
+          .then((value) => {
+                setState(() {
+                  success = false;
+                }),
+                print("success")
+              });
+      // var res = json.decode(response.body);
 
-    print(res);
+      // print(res);
 
-    print(response.body);
+      // print(response.body);
+    } catch (e) {
+      setState(() {
+        success = false;
+        successErr = true;
+      });
+    }
+
+    print(success);
   }
 
   bool saveAttempt = false;
@@ -72,7 +95,10 @@ class _AddproductState extends State<Addproduct> {
           onTap: () {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                builder: (BuildContext context) => Products()));
+                builder: (BuildContext context) => Products(
+                      id: widget.pid,
+                      title: widget.titl,
+                    )));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -115,88 +141,93 @@ class _AddproductState extends State<Addproduct> {
                         ),
                       ),
                       SizedBox(height: 20),
+
                       mytextField(
                           contro: titleC,
+                          kybType: TextInputType.text,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Taa",
                           hintLebel: "Product Name",
-                          validateText: "Fill in your product name",
-                          finalvalidateText: "Invalid Name Format",
+                          validateText: "Fill in product name",
+                          finalvalidateText: "Invalid Product Name Format",
                           icodata: Icons.adobe_sharp,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.allow(
-                                new RegExp('[a-zA-Z]'))
-                          ],
+                          // inputFormatter: [
+                          //   FilteringTextInputFormatter.allow(
+                          //       new RegExp('[a-zA-Z]'))
+                          // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
                       mytextField(
                           contro: descC,
+                          kybType: TextInputType.text,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Maelezo juu ya bidhaa",
                           hintLebel: "Description",
-                          validateText: "Fill in your Description",
+                          validateText: "Fill in product Description",
                           finalvalidateText: "Invalid Description Format",
                           icodata: Icons.description,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.allow(
-                                new RegExp('[a-zA-Z]'))
-                          ],
+                          // inputFormatter: [
+                          //   FilteringTextInputFormatter.allow(
+                          //       new RegExp('[a-zA-Z]'))
+                          // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: DropdownButton(
-                          dropdownColor: ColorTheme.m_white,
-                          style: TextStyle(color: ColorTheme.m_blue),
-                          hint: Text("Select"),
-                          underline: Container(
-                            height: 2,
-                            color: ColorTheme.m_blue,
-                          ),
-                          value: dropdownvalue,
-                          icon: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: ColorTheme.m_blue,
-                          ),
-                          items: items.map((String items) {
-                            return DropdownMenuItem(
-                              value: items,
-                              child: Text(items),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              dropdownvalue = newValue!;
-                            });
-                          },
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: DropdownButton(
+                      //     dropdownColor: ColorTheme.m_white,
+                      //     style: TextStyle(color: ColorTheme.m_blue),
+                      //     hint: Text("Select"),
+                      //     underline: Container(
+                      //       height: 2,
+                      //       color: ColorTheme.m_blue,
+                      //     ),
+                      //     value: dropdownvalue,
+                      //     icon: Icon(
+                      //       Icons.keyboard_arrow_down,
+                      //       color: ColorTheme.m_blue,
+                      //     ),
+                      //     items: items.map((String items) {
+                      //       return DropdownMenuItem(
+                      //         value: items,
+                      //         child: Text(items),
+                      //       );
+                      //     }).toList(),
+                      //     onChanged: (String? newValue) {
+                      //       setState(() {
+                      //         dropdownvalue = newValue!;
+                      //       });
+                      //     },
+                      //   ),
+                      // ),
                       mytextField(
                           contro: inveC,
+                          kybType: TextInputType.number,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: 2",
                           hintLebel: "Inventory",
-                          validateText: "Fill in your Inventory Number",
+                          validateText: "Fill Inventory Number",
                           finalvalidateText: "Invalid Inventory Format",
                           icodata: Icons.inventory,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            FilteringTextInputFormatter.deny(
-                                new RegExp(r"\s\b|\b\s"))
-                          ],
+                          // inputFormatter: [
+                          //   FilteringTextInputFormatter.digitsOnly,
+                          //   FilteringTextInputFormatter.deny(
+                          //       new RegExp(r"\s\b|\b\s"))
+                          // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
                       mytextField(
+                          kybType: TextInputType.number,
                           contro: unitPC,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: 500",
                           hintLebel: "Unit Price",
-                          validateText: "Fill in your Unit Price",
+                          validateText: "Fill Unit Price",
                           finalvalidateText: "Invalid unit price Format",
                           icodata: Icons.monetization_on,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            FilteringTextInputFormatter.deny(
-                                new RegExp(r"\s\b|\b\s"))
-                          ],
+                          // inputFormatter: [
+                          //   FilteringTextInputFormatter.digitsOnly,
+                          //   FilteringTextInputFormatter.deny(
+                          //       new RegExp(r"\s\b|\b\s"))
+                          // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
                       // mytextField(
                       //     contro: PricTC,
@@ -226,42 +257,145 @@ class _AddproductState extends State<Addproduct> {
                       //           new RegExp(r"\s\b|\b\s"))
                       //     ],
                       //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
-                      Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 60.0, vertical: 25.0),
-                          child: ElevatedButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Add',
-                                  style: TextStyle(fontWeight: FontWeight.w200),
-                                )
-                              ],
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: ColorTheme.m_blue,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0)),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                saveAttempt = true;
-                              });
 
-                              if (formkey.currentState!.validate()) {
-                                formkey.currentState!.save();
+                      success == true
+                          ? CircularProgressIndicator()
+                          : Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 60.0, vertical: 25.0),
+                              child: ElevatedButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Add',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w200),
+                                    )
+                                  ],
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorTheme.m_blue,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                ),
+                                onPressed: () async {
+                                  setState(() {
+                                    saveAttempt = true;
+                                  });
 
-                                _productadd();
-                                // _useradd();
-                              }
-                            },
-                          )),
-                      ElevatedButton(
-                          onPressed: () {
-                            _productadd();
-                          },
-                          child: Text("data"))
+                                  if (formkey.currentState!.validate()) {
+                                    formkey.currentState!.save();
+
+                                    _productadd();
+                                    setState(() {
+                                      success = true;
+                                      // successErr = true;
+                                    });
+                                    if (success == true)
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Product added (${titleC.text})",
+                                            style: TextStyle(
+                                                color: ColorTheme.m_blue,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        backgroundColor:
+                                            ColorTheme.m_blue_mpauko_zaidi,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
+                                        elevation: 30,
+                                        duration: Duration(milliseconds: 2000),
+                                        padding: EdgeInsets.all(3),
+                                        action: SnackBarAction(
+                                          label: 'Dismiss',
+                                          disabledTextColor: Colors.white,
+                                          textColor: ColorTheme.m_blue,
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context)
+                                                .hideCurrentSnackBar();
+                                            //Do whatever you want
+                                          },
+                                        ),
+                                      ));
+
+                                    if (successErr == true) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Opps!, parhaps check your internet connection",
+                                            style: TextStyle(
+                                                color: ColorTheme.m_white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        backgroundColor:
+                                            Color.fromARGB(255, 103, 13, 7),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
+                                        elevation: 30,
+                                        duration: Duration(milliseconds: 2000),
+                                        padding: EdgeInsets.all(3),
+                                        action: SnackBarAction(
+                                          label: 'Dismiss',
+                                          disabledTextColor: Colors.white,
+                                          textColor: ColorTheme.m_white,
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context)
+                                                .hideCurrentSnackBar();
+                                            //Do whatever you want
+                                          },
+                                        ),
+                                      ));
+                                    }
+                                    // _useradd();
+                                  } else {
+                                    if (successErr == true) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Opps!, parhaps check your internet connection",
+                                            style: TextStyle(
+                                                color: ColorTheme.m_white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        backgroundColor:
+                                            Color.fromARGB(255, 103, 13, 7),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0)),
+                                        elevation: 30,
+                                        duration: Duration(milliseconds: 2000),
+                                        padding: EdgeInsets.all(3),
+                                        action: SnackBarAction(
+                                          label: 'Dismiss',
+                                          disabledTextColor: Colors.white,
+                                          textColor: ColorTheme.m_white,
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context)
+                                                .hideCurrentSnackBar();
+                                            //Do whatever you want
+                                          },
+                                        ),
+                                      ));
+                                    }
+                                  }
+                                },
+                              )),
+
+                      // success ==false ?
                     ],
                   ),
                 ),

@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:http/http.dart' as http;
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
 
 class myDeletedialog extends StatefulWidget {
-  String email;
-  String uname;
+  int pid;
 
-  myDeletedialog({Key? key, required this.email, required this.uname})
+  String tit, email;
+
+  myDeletedialog(
+      {Key? key, required this.pid, required this.email, required this.tit})
       : super(key: key);
 
   @override
@@ -22,6 +26,21 @@ class _mydialogState extends State<myDeletedialog> {
   final formkey = GlobalKey<FormState>();
 
   bool saveAttempt = false;
+
+  deleteProducts() async {
+    final response = await http.delete(
+      Uri.parse(
+          "https://tona-production-8ea1.up.railway.app/store/products/${widget.pid}/"),
+      headers: {
+        HttpHeaders.authorizationHeader:
+            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4Mzc0MzM0LCJqdGkiOiJhNDBhZjgwZGZhZmY0NmI5YWNmMDFlY2Q0ZTNmODUxYyIsInVzZXJfaWQiOjF9.vxtAsg9pOxqDD12LpoehBk_KlB54C3Qrrwwn-VZwPK4",
+        "Accept": "application/json",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).then((value) => {print("success")});
+
+    print(response);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +74,7 @@ class _mydialogState extends State<myDeletedialog> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "${widget.uname} ?",
+                      "${widget.pid} ?",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: ColorTheme.m_grey),
@@ -109,6 +128,7 @@ class _mydialogState extends State<myDeletedialog> {
                         setState(() {
                           saveAttempt = true;
                         });
+                        deleteProducts();
                       },
                     ),
                   ),

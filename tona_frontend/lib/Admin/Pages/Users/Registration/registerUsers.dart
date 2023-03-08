@@ -119,6 +119,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                       ),
                       SizedBox(height: 20),
                       mytextField(
+                          kybType: TextInputType.text,
                           contro: fname,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Norman",
@@ -126,13 +127,14 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           validateText: "Fill in your first name",
                           finalvalidateText: "Invalid Name Format",
                           icodata: Icons.person,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.allow(
-                                new RegExp('[a-zA-Z]'))
-                          ],
+                          // inputFormatter: [
+                          //   FilteringTextInputFormatter.allow(
+                          //       new RegExp('[a-zA-Z]'))
+                          // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
                       mytextField(
+                          kybType: TextInputType.text,
                           contro: lname,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Mush",
@@ -140,12 +142,13 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           validateText: "Fill in your last name",
                           finalvalidateText: "Invalid Name Format",
                           icodata: Icons.person,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.allow(
-                                new RegExp('[a-zA-Z]'))
-                          ],
+                          // inputFormatter: [
+                          //   FilteringTextInputFormatter.allow(
+                          //       new RegExp('[a-zA-Z]'))
+                          // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
                       mytextField(
+                          kybType: TextInputType.phone,
                           contro: uname,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Bojo",
@@ -153,10 +156,10 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           validateText: "Fill in your phone number",
                           finalvalidateText: "Invalid phone no Format",
                           icodata: Icons.phone,
-                          inputFormatter: [
-                            FilteringTextInputFormatter.deny(
-                                new RegExp(r"\s\b|\b\s"))
-                          ],
+                          // inputFormatter: [
+                          //   FilteringTextInputFormatter.deny(
+                          //       new RegExp(r"\s\b|\b\s"))
+                          // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
 

@@ -1,18 +1,22 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
+import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
 import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
 import 'package:machafuapp/Admin/Shared/myEditorDialog.dart';
 import 'package:machafuapp/Admin/Shared/searcher.dart';
-import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Controllers/productsProvider.dart';
 import '../../Models/getProducts.dart';
+import '../../Shared/backarrow.dart';
 import '../../consts/colorTheme.dart';
 
 class Products extends StatefulWidget {
-  const Products({Key? key}) : super(key: key);
+  int? id;
+  String? title;
+  Products({this.id, this.title, Key? key}) : super(key: key);
 
   @override
   State<Products> createState() => _ProductsState();
@@ -47,8 +51,10 @@ class _ProductsState extends State<Products> {
 // List<String> tags = pre.getStringList("tags") ?? [];
   }
 
+
+
   fetchProducts() async {
-    http.Response res = await productProvider.fetchProducts();
+    http.Response res = await productProvider.fetchProducts(widget.id!);
 
     setState(() {
       final proddata = ProductsAll.fromJson(json.decode(res.body));
@@ -110,30 +116,10 @@ class _ProductsState extends State<Products> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            // Navigator.pushReplacementNamed(context, '/dash');
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MainView()),
-              (Route<dynamic> route) => false,
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                    color: ColorTheme.m_blue,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        size: 10,
-                        color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                      ),
-                    ))),
-          ),
+        leading: backArrow(towhere: ProductCat()),
+        title: Text(
+          widget.title.toString(),
+          style: TextStyle(color: ColorTheme.m_blue),
         ),
         actions: [
           IconButton(
@@ -148,8 +134,9 @@ class _ProductsState extends State<Products> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Addproduct()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        Addproduct(pid: widget.id, titl: widget.title)));
               },
               child: Center(
                 child: Text(
@@ -220,7 +207,8 @@ class _ProductsState extends State<Products> {
                                     // _foundProducts.isNotEmpty
                                     //     ?
                                     Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: Container(
@@ -230,11 +218,23 @@ class _ProductsState extends State<Products> {
                                         title: Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               8, 8, 8, 2),
-                                          child: Text(
-                                            e.title,
-                                            style: TextStyle(
-                                                color: ColorTheme.m_blue,
-                                                fontWeight: FontWeight.bold),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                e.title,
+                                                style: TextStyle(
+                                                    color: ColorTheme.m_blue,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              Text(
+                                                "(${e.inventory})",
+                                                style: TextStyle(
+                                                    color: ColorTheme.m_blue,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                         subtitle: Padding(
@@ -245,12 +245,23 @@ class _ProductsState extends State<Products> {
                                         trailing: Row(
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
-                                              Text(
-                                                e.unitPrice + " TZs ",
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w300),
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    e.unitPrice + " TZs ",
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w300),
+                                                  ),
+                                                  Text(
+                                                    e.priceWithTax.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w300),
+                                                  ),
+                                                ],
                                               ),
                                               IconButton(
                                                 onPressed: () {
@@ -276,9 +287,10 @@ class _ProductsState extends State<Products> {
                                                       context: context,
                                                       builder: (_) =>
                                                           myDeletedialog(
-                                                            email:
-                                                                e.id.toString(),
-                                                            uname: e.title,
+                                                            pid:
+                                                                e.id,
+                                                                email: "null",
+                                                            tit: e.title,
                                                           ));
                                                 },
                                                 icon: Icon(

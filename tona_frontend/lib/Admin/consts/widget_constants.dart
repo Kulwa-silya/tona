@@ -1,13 +1,14 @@
 import 'package:machafuapp/Admin/Pages/Expenditure_and_Expenses/ExpenditureExpenses.dart';
 import 'package:machafuapp/Admin/Pages/Income/Income.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
 import 'package:machafuapp/Admin/Pages/Purchases/purchases.dart';
 import 'package:machafuapp/Admin/ui/widgets/wallet_card.dart';
 import 'package:flutter/material.dart';
 
 const List<Widget> demoTransactions = [
   WalletCard(
-    onBTap: Products(),
+    onBTap: ProductCat(),
     icon: Icons.money,
     text: 'Products',
     desc: 'Idadi ya bidhaa zilizopo',

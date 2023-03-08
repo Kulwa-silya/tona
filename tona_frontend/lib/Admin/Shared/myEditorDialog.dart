@@ -54,6 +54,7 @@ class _mydialogState extends State<myEditordialog> {
                     ),
                     widget.data1 != null
                         ? mytextField(
+                          kybType: TextInputType.emailAddress,
                             contro: name,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "Fill the new Username",
@@ -61,10 +62,10 @@ class _mydialogState extends State<myEditordialog> {
                             validateText: "Fill in the Username",
                             finalvalidateText: "Invalid UserName Format",
                             icodata: Icons.person,
-                            inputFormatter: [
-                              FilteringTextInputFormatter.deny(
-                                  new RegExp(r"\s\b|\b\s"))
-                            ],
+                            // inputFormatter: [
+                            //   FilteringTextInputFormatter.deny(
+                            //       new RegExp(r"\s\b|\b\s"))
+                            // ],
                             regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                                 "\\@" +
                                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
@@ -75,6 +76,7 @@ class _mydialogState extends State<myEditordialog> {
                         : SizedBox.shrink(),
                     widget.data2 != null
                         ? mytextField(
+                          kybType: TextInputType.emailAddress,
                             contro: email,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "fill the new email",
@@ -82,10 +84,10 @@ class _mydialogState extends State<myEditordialog> {
                             validateText: "Fill in your email",
                             finalvalidateText: "Invalid Email Format",
                             icodata: Icons.email,
-                            inputFormatter: [
-                              FilteringTextInputFormatter.deny(
-                                  new RegExp(r"\s\b|\b\s"))
-                            ],
+                            // inputFormatter: [
+                            //   FilteringTextInputFormatter.deny(
+                            //       new RegExp(r"\s\b|\b\s"))
+                            // ],
                             regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                                 "\\@" +
                                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
@@ -96,17 +98,18 @@ class _mydialogState extends State<myEditordialog> {
                         : SizedBox.shrink(),
                     widget.data3 != null
                         ? mytextField(
-                            contro: email,
+                          kybType: TextInputType.emailAddress,
+                            contro: phone,
                             autoval: AutovalidateMode.onUserInteraction,
-                            hint: "fill the new email",
+                            hint: "fill the new phone",
                             hintLebel: "${widget.data3}",
-                            validateText: "Fill in your email",
-                            finalvalidateText: "Invalid Email Format",
+                            validateText: "Fill in your phone",
+                            finalvalidateText: "Invalid Phone Format",
                             icodata: Icons.email,
-                            inputFormatter: [
-                              FilteringTextInputFormatter.deny(
-                                  new RegExp(r"\s\b|\b\s"))
-                            ],
+                            // inputFormatter: [
+                            //   FilteringTextInputFormatter.deny(
+                            //       new RegExp(r"\s\b|\b\s"))
+                            // ],
                             regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                                 "\\@" +
                                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
