@@ -141,7 +141,7 @@ STATICFILES_DIRS =  [
 MEDIA_URL='/images/'
 
 
-MEDIA_ROOT=os.path.join(BASE_DIR,'static/images')
+MEDIA_ROOT=os.path.join(BASE_DIR,'')
 
 
 AUTH_USER_MODEL = "tona_users.UserAccount"
