@@ -14,7 +14,7 @@ class TheSearcher extends SearchDelegate {
   
 
   fetchProducts() async {
-    http.Response res = await productProvider.fetchProducts();
+    http.Response res = await productProvider.fetchProducts(1);
 
     final proddata = ProductsAll.fromJson(json.decode(res.body));
     // isloading = true;
