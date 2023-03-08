@@ -20,7 +20,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
             if validated_data["user_type"] == 2:
                 user.groups.set([2])
                 user.save()
-            else:
+            if validated_data["user_type"] == "":
                 user.save()
             return user
 
