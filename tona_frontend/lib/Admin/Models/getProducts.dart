@@ -1,64 +1,4 @@
-// import 'dart:convert';
-
-// List<Products> productsFromJson(String str) =>
-//     List<Products>.from(json.decode(str).map((x) => Products.fromJson(x)));
-
-// String productsToJson(List<Products> data) =>
-//     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-// class Products {
-//   Products({
-//     required this.inventory,
-//     required this.id,
-//     required this.price_with_tax,
-//     required this.collection,
-//     required this.title,
-//     required this.description,
-//     required this.unit_price,
-//   });
-
-//   int id;
-//   int? inventory ,price_with_tax , collection;
-//   String title, description, unit_price;
-
-//   factory Products.fromJson(Map<String, dynamic> json) => Products(
-//       inventory: json["inventory"],
-//       price_with_tax: json["price_with_tax"],
-//       id: json["id"],
-//       collection: json["collection"],
-//       title: json["title"],
-//       description: json["description"],
-//       unit_price: json["unit_price"]
-//       );
-
-//   Map<String, dynamic> toJson() => {
-//         "inventory": inventory,
-//         "id": id,
-//         "price_with_tax": price_with_tax,
-//         "collection": collection,
-//         "title": title,
-//         "description": description,
-//         "unit_price":unit_price
-//       };
-// }
-
-
-
-// To parse this JSON data, do
-//
-//     final productsAll = productsAllFromJson(jsonString);
-
 import 'dart:convert';
-
-// ProductsAll productsAllFromJson(String str) => ProductsAll.fromJson(json.decode(str));
-
-// String productsAllToJson(ProductsAll data) => json.encode(data.toJson());
-
-// List<ProductsAll> productsAllFromJson(String str) =>
-//     List<ProductsAll>.from(json.decode(str).map((x) => ProductsAll.fromJson(x)));
-
-// String productsAllToJson(List<ProductsAll> data) =>
-//     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ProductsAll {
     ProductsAll({
@@ -107,7 +47,7 @@ class Result {
     String unitPrice;
     double priceWithTax;
     int collection;
-    List<Image> images;
+    List<Imagez> images;
 
     factory Result.fromJson(Map<String, dynamic> json) => Result(
         id: json["id"],
@@ -117,7 +57,7 @@ class Result {
         unitPrice: json["unit_price"],
         priceWithTax: json["price_with_tax"]?.toDouble(),
         collection: json["collection"],
-        images: List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
+        images: List<Imagez>.from(json["images"].map((x) => Imagez.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -132,8 +72,8 @@ class Result {
     };
 }
 
-class Image {
-    Image({
+class Imagez {
+    Imagez({
         required this.id,
         required this.image,
     });
@@ -141,7 +81,7 @@ class Image {
     int id;
     String image;
 
-    factory Image.fromJson(Map<String, dynamic> json) => Image(
+    factory Imagez.fromJson(Map<String, dynamic> json) => Imagez(
         id: json["id"],
         image: json["image"],
     );

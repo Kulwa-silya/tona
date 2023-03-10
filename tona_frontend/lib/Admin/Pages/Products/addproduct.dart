@@ -144,6 +144,7 @@ class _AddproductState extends State<Addproduct> {
 
                       mytextField(
                           contro: titleC,
+
                           kybType: TextInputType.text,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Taa",

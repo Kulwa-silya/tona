@@ -1,18 +1,31 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:http/http.dart' as http;
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
 
 class myEditordialog extends StatefulWidget {
   String? data1;
+  int? id;
   String? data2;
   String? data3;
-  String? data4;
+  String? data4, data5;
   String? heading;
+  String? widget;
 
   myEditordialog(
-      {Key? key, this.data1, this.heading, this.data2, this.data3, this.data4})
+      {Key? key,
+      this.data1,
+      this.id,
+      this.heading,
+      this.data2,
+      required this.widget,
+      this.data3,
+      this.data4,
+      this.data5})
       : super(key: key);
 
   @override
@@ -23,7 +36,48 @@ class _mydialogState extends State<myEditordialog> {
   TextEditingController name = new TextEditingController();
   TextEditingController email = new TextEditingController();
   TextEditingController phone = new TextEditingController();
+  TextEditingController title = new TextEditingController();
+  TextEditingController desc = new TextEditingController();
+  TextEditingController inventory = new TextEditingController();
+  TextEditingController unitprice = new TextEditingController();
+  var collectionn;
+
   final formkey = GlobalKey<FormState>();
+
+  updateProducts() async {
+    final response = await http
+        .patch(
+            Uri.parse(
+                "https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/"),
+            headers: {
+              HttpHeaders.authorizationHeader:
+                  "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4NzA5MzMxLCJqdGkiOiI3ZGNiMGFiZDJmN2Q0ODYxYTMyMzc0ZjA0MTM0M2E0YiIsInVzZXJfaWQiOjF9.19w55yQrBozrTpz0KArkkTg7xcW2eY_Y6BuW2RCI5Jc",
+              "Accept": "application/json",
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: json.encode({
+              "title": title.text,
+              "description": desc.text,
+              "inventory": int.parse(inventory.text),
+              "unit_price": unitprice.text,
+              "collection": 1,
+              "images": null
+
+              // "title": "heyyy",
+              // "description": "desc.text",
+            }))
+        .then((value) => {print("success")});
+
+    print(response);
+  }
+
+  @override
+  void initState() {
+    title = new TextEditingController(text: widget.data1);
+    desc = new TextEditingController(text: widget.data2);
+    inventory = new TextEditingController(text: widget.data3);
+    unitprice = new TextEditingController(text: widget.data4);
+  }
 
   bool saveAttempt = false;
 
@@ -52,13 +106,16 @@ class _mydialogState extends State<myEditordialog> {
                         ),
                       ),
                     ),
-                    widget.data1 != null
+
+                    // //userdialogtextfields
+                    widget.widget == "adduser"
                         ? mytextField(
-                          kybType: TextInputType.emailAddress,
+                            kybType: TextInputType.emailAddress,
                             contro: name,
+                            // value: widget.data1,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "Fill the new Username",
-                            hintLebel: "${widget.data1}",
+                            hintLebel: "${widget.data1.toString()}",
                             validateText: "Fill in the Username",
                             finalvalidateText: "Invalid UserName Format",
                             icodata: Icons.person,
@@ -74,10 +131,11 @@ class _mydialogState extends State<myEditordialog> {
                                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                                 ")+")
                         : SizedBox.shrink(),
-                    widget.data2 != null
+                    widget.widget == "adduser"
                         ? mytextField(
-                          kybType: TextInputType.emailAddress,
+                            kybType: TextInputType.emailAddress,
                             contro: email,
+                            // value: widget.data2,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "fill the new email",
                             hintLebel: "${widget.data2}",
@@ -96,10 +154,11 @@ class _mydialogState extends State<myEditordialog> {
                                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                                 ")+")
                         : SizedBox.shrink(),
-                    widget.data3 != null
+                    widget.widget == "adduser"
                         ? mytextField(
-                          kybType: TextInputType.emailAddress,
+                            kybType: TextInputType.emailAddress,
                             contro: phone,
+                            // value: widget.data3,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "fill the new phone",
                             hintLebel: "${widget.data3}",
@@ -118,6 +177,99 @@ class _mydialogState extends State<myEditordialog> {
                                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                                 ")+")
                         : SizedBox.shrink(),
+
+                    //products dialogs fields
+                    widget.widget == "addproduct"
+                        ? mytextField(
+                            kybType: TextInputType.text,
+                            contro: title,
+                            // value: widget.data1,
+                            autoval: AutovalidateMode.onUserInteraction,
+                            hint: "Fill the new title",
+                            hintLebel: "Product Name",
+                            validateText: "Fill in the title",
+                            finalvalidateText: "Invalid title format",
+                            icodata: Icons.person,
+                            // inputFormatter: [
+                            //   FilteringTextInputFormatter.deny(
+                            //       new RegExp(r"\s\b|\b\s"))
+                            // ],
+                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]")
+                        : SizedBox.shrink(),
+                    widget.widget == "addproduct"
+                        ? mytextField(
+                            kybType: TextInputType.text,
+                            contro: desc,
+                            // value: widget.data2,
+                            autoval: AutovalidateMode.onUserInteraction,
+                            hint: "Fill the new description",
+                            hintLebel: "Description",
+                            validateText: "Fill in the description",
+                            finalvalidateText: "Invalid description format",
+                            icodata: Icons.person,
+                            // inputFormatter: [
+                            //   FilteringTextInputFormatter.deny(
+                            //       new RegExp(r"\s\b|\b\s"))
+                            // ],
+                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]")
+                        : SizedBox.shrink(),
+                    widget.widget == "addproduct"
+                        ? mytextField(
+                            kybType: TextInputType.number,
+                            contro: unitprice,
+                            // value: widget.data3,
+                            autoval: AutovalidateMode.onUserInteraction,
+                            hint: "Fill the new unitprice",
+                            hintLebel: "Unit Price",
+                            validateText: "Fill in the unitprice",
+                            finalvalidateText: "Invalid unitprice format",
+                            icodata: Icons.person,
+                            // inputFormatter: [
+                            //   FilteringTextInputFormatter.deny(
+                            //       new RegExp(r"\s\b|\b\s"))
+                            // ],
+                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]")
+                        : SizedBox.shrink(),
+                    widget.widget == "addproduct"
+                        ? mytextField(
+                            kybType: TextInputType.number,
+                            contro: inventory,
+                            // value: widget.data4,
+                            autoval: AutovalidateMode.onUserInteraction,
+                            hint: "Fill the new inventory number",
+                            hintLebel: "Product Count",
+                            validateText: "Fill in the inventory number",
+                            finalvalidateText: "Invalid inventory format",
+                            icodata: Icons.person,
+                            // inputFormatter: [
+                            //   FilteringTextInputFormatter.deny(
+                            //       new RegExp(r"\s\b|\b\s"))
+                            // ],
+                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]")
+                        : SizedBox.shrink(),
+                    // widget.widget == "addproduct"
+                    // ? mytextField(
+                    //     kybType: TextInputType.text,
+                    //     contro: desc,
+                    //     value: widget.data1,
+                    //     autoval: AutovalidateMode.onUserInteraction,
+                    //     hint: "Fill the new description",
+                    //     hintLebel: "${widget.data1.toString()}",
+                    //     validateText: "Fill in the description",
+                    //     finalvalidateText: "Invalid description format",
+                    //     icodata: Icons.person,
+                    //     // inputFormatter: [
+                    //     //   FilteringTextInputFormatter.deny(
+                    //     //       new RegExp(r"\s\b|\b\s"))
+                    //     // ],
+                    //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                    //         "\\@" +
+                    //         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    //         "(" +
+                    //         "\\." +
+                    //         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                    //         ")+")
+                    // : SizedBox.shrink(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -163,7 +315,10 @@ class _mydialogState extends State<myEditordialog> {
 
                                 if (formkey.currentState!.validate()) {
                                   formkey.currentState!.save();
+updateProducts();
                                 }
+
+                                
                               },
                             )),
                       ],

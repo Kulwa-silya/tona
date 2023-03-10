@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
@@ -26,6 +25,7 @@ class _ProductsState extends State<Products> {
   ProductProvider productProvider = ProductProvider();
 
   List productList = [];
+  List? productImage = [];
 
   var isloading = false;
 
@@ -51,8 +51,6 @@ class _ProductsState extends State<Products> {
 // List<String> tags = pre.getStringList("tags") ?? [];
   }
 
-
-
   fetchProducts() async {
     http.Response res = await productProvider.fetchProducts(widget.id!);
 
@@ -61,15 +59,19 @@ class _ProductsState extends State<Products> {
       isloading = true;
       productList = proddata.results;
 
+      // final picha = Result.fromJson(json.decode(res.body));
+      // productImage = picha.images;
       isloading = false;
 
-      for (var ch in proddata.results) {
-        titlee = ch.title;
-        ide = ch.id;
-        print(ch.id);
-        print(ch.title);
-        print(ch.priceWithTax.toString());
-      }
+      // print(picha.);
+
+      // for (var ch in proddata.results) {
+      //   titlee = ch.title;
+      //   ide = ch.id;
+      //   print(ch.id);
+      //   print(ch.title);
+      //   print(ch.priceWithTax.toString());
+      // }
     });
   }
 
@@ -134,9 +136,9 @@ class _ProductsState extends State<Products> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        Addproduct(pid: widget.id, titl: widget.title)));
+                // Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (context) =>
+                //         Addproduct(pid: widget.id, titl: widget.title)));
               },
               child: Center(
                 child: Text(
@@ -215,6 +217,12 @@ class _ProductsState extends State<Products> {
                                       color:
                                           ColorTheme.m_blue_mpauko_zaidi_zaidi,
                                       child: ListTile(
+                                        leading: Container(
+                                            height: 50,
+                                            width: 50,
+                                            child: Image.network(
+                                                e.images[0].image),
+                                            color: ColorTheme.m_blue),
                                         title: Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               8, 8, 8, 2),
@@ -254,13 +262,13 @@ class _ProductsState extends State<Products> {
                                                         fontWeight:
                                                             FontWeight.w300),
                                                   ),
-                                                  Text(
-                                                    e.priceWithTax.toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w300),
-                                                  ),
+                                                  // Text(
+                                                  //   e.priceWithTax.toString(),
+                                                  //   style: TextStyle(
+                                                  //       fontSize: 12,
+                                                  //       fontWeight:
+                                                  //           FontWeight.w300),
+                                                  // ),
                                                 ],
                                               ),
                                               IconButton(
@@ -269,10 +277,16 @@ class _ProductsState extends State<Products> {
                                                     context: context,
                                                     builder: (_) =>
                                                         myEditordialog(
+                                                      widget: "addproduct",
                                                       heading: "Product Editor",
-                                                      data1: e.id.toString(),
-                                                      data2: e.title,
-                                                      data3: e.description,
+                                                      data1: e.title,
+                                                      data2: e.description,
+                                                      data3: e.inventory
+                                                          .toString(),
+                                                      data4: e.unitPrice,
+                                                      data5: e.collection
+                                                          .toString(),
+                                                      id: e.id,
                                                     ),
                                                   );
                                                 },
@@ -287,9 +301,8 @@ class _ProductsState extends State<Products> {
                                                       context: context,
                                                       builder: (_) =>
                                                           myDeletedialog(
-                                                            pid:
-                                                                e.id,
-                                                                email: "null",
+                                                            pid: e.id,
+                                                            email: "null",
                                                             tit: e.title,
                                                           ));
                                                 },

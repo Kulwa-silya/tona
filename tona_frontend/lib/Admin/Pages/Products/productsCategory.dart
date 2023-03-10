@@ -24,7 +24,7 @@ class _ProductCatState extends State<ProductCat> {
             'https://tona-production-8ea1.up.railway.app/store/collections/'),
         headers: {
           HttpHeaders.authorizationHeader:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4MzY5ODQ0LCJqdGkiOiI3MzlmODE0ZDViNTQ0NzNkOTk4ZjVlMjczMDg3ZmM4ZCIsInVzZXJfaWQiOjF9.B6LcScIH-pFoIVfg56jHJsanWOjgMnWNAH85PtCNoyQ",
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4NzA5MzMxLCJqdGkiOiI3ZGNiMGFiZDJmN2Q0ODYxYTMyMzc0ZjA0MTM0M2E0YiIsInVzZXJfaWQiOjF9.19w55yQrBozrTpz0KArkkTg7xcW2eY_Y6BuW2RCI5Jc",
         });
     jsondat = jsonDecode(response.body);
     print(jsondat);
@@ -50,8 +50,8 @@ class _ProductCatState extends State<ProductCat> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => Addproduct()));
+                // Navigator.of(context).push(
+                //     MaterialPageRoute(builder: (context) => Addproduct()));
               },
               child: Center(
                 child: Text(

@@ -7,8 +7,14 @@ import 'package:http/http.dart' as http;
 import '../../../consts/colorTheme.dart';
 
 class RegisterUsers extends StatefulWidget {
-  String axxton;
-  RegisterUsers({Key? key, required this.axxton}) : super(key: key);
+  String axxton, fname, lname, phone;
+  RegisterUsers(
+      {Key? key,
+      required this.axxton,
+      required this.fname,
+      required this.lname,
+      required this.phone})
+      : super(key: key);
 
   @override
   State<RegisterUsers> createState() => _RegisterUsersState();
@@ -121,6 +127,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                       mytextField(
                           kybType: TextInputType.text,
                           contro: fname,
+                          // value: widget.fname,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Norman",
                           hintLebel: "First Name",
@@ -134,6 +141,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
                       mytextField(
+                        // value: widget.lname,
                           kybType: TextInputType.text,
                           contro: lname,
                           autoval: AutovalidateMode.onUserInteraction,
@@ -148,6 +156,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
                       mytextField(
+                        // value: widget.phone,
                           kybType: TextInputType.phone,
                           contro: uname,
                           autoval: AutovalidateMode.onUserInteraction,

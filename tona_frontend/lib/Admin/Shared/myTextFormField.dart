@@ -4,8 +4,11 @@ import 'package:flutter/services.dart';
 import '../consts/colorTheme.dart';
 
 class mytextField extends StatelessWidget {
+  // dynamic value;
+
   mytextField({
     Key? key,
+    // this.value,
     required this.hint,
     required this.regExpn,
     required this.contro,
@@ -42,11 +45,13 @@ class mytextField extends StatelessWidget {
           return finalvalidateText;
         },
         controller: contro,
+        // initialValue: value,
         // inputFormatters: inputFormatter,
         decoration: InputDecoration(
           prefixIcon: Icon(icodata),
           labelText: hintLebel,
           hintText: hint,
+          
           enabledBorder: OutlineInputBorder(
             borderRadius: const BorderRadius.all(
               const Radius.circular(10.0),

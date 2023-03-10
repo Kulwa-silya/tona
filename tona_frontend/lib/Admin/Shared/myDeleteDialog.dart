@@ -33,7 +33,7 @@ class _mydialogState extends State<myDeletedialog> {
           "https://tona-production-8ea1.up.railway.app/store/products/${widget.pid}/"),
       headers: {
         HttpHeaders.authorizationHeader:
-            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4Mzc0MzM0LCJqdGkiOiJhNDBhZjgwZGZhZmY0NmI5YWNmMDFlY2Q0ZTNmODUxYyIsInVzZXJfaWQiOjF9.vxtAsg9pOxqDD12LpoehBk_KlB54C3Qrrwwn-VZwPK4",
+            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4NzA5MzMxLCJqdGkiOiI3ZGNiMGFiZDJmN2Q0ODYxYTMyMzc0ZjA0MTM0M2E0YiIsInVzZXJfaWQiOjF9.19w55yQrBozrTpz0KArkkTg7xcW2eY_Y6BuW2RCI5Jc",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },

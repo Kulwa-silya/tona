@@ -28,6 +28,8 @@ class _UserConfigState extends State<UserConfig> {
 
   List _foundUsers = [];
 
+  var fname, lname, phone;
+
   fetchUserinfo() async {
     http.Response res = await userProvider.fetchInfoe();
 
@@ -169,8 +171,12 @@ class _UserConfigState extends State<UserConfig> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        RegisterUsers(axxton: widget.acctok)));
+                    builder: (context) => RegisterUsers(
+                      fname: fname,
+                      lname: lname,
+                      phone: phone,
+                          axxton: widget.acctok,
+                        )));
               },
               child: Center(
                 child: Text(
@@ -241,6 +247,11 @@ class _UserConfigState extends State<UserConfig> {
                           ),
                           ...userList.map(
                             (e) {
+                              setState(() {
+                                fname = e.first_name;
+                                lname = e.last_name;
+                                phone = e.phone_number;
+                              });
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: ClipRRect(
@@ -259,6 +270,7 @@ class _UserConfigState extends State<UserConfig> {
                                                   context: context,
                                                   builder: (_) =>
                                                       myEditordialog(
+                                                          widget: "adduser",
                                                           heading:
                                                               "User Editor",
                                                           data1: e.last_name,
@@ -275,7 +287,7 @@ class _UserConfigState extends State<UserConfig> {
                                                   context: context,
                                                   builder: (_) =>
                                                       myDeletedialog(
-                                                        pid: 0,
+                                                          pid: 0,
                                                           email: e.last_name,
                                                           tit: e.first_name));
                                             }),
