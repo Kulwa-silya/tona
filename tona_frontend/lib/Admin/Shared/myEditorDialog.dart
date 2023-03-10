@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
 
@@ -315,10 +316,15 @@ class _mydialogState extends State<myEditordialog> {
 
                                 if (formkey.currentState!.validate()) {
                                   formkey.currentState!.save();
-updateProducts();
+                                  await updateProducts();
+                                  Navigator.pop(context);
+// await   Navigator.pushAndRemoveUntil(
+//               context,
+//               MaterialPageRoute(builder: (context) => Products(id: widget.id,)),
+//               (Route<dynamic> route) => false,
+//             );
+//                                 }
                                 }
-
-                                
                               },
                             )),
                       ],

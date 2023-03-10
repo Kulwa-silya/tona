@@ -136,9 +136,9 @@ class _ProductsState extends State<Products> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) =>
-                //         Addproduct(pid: widget.id, titl: widget.title)));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        Addproduct(pid: widget.id, titl: widget.title)));
               },
               child: Center(
                 child: Text(
@@ -220,8 +220,19 @@ class _ProductsState extends State<Products> {
                                         leading: Container(
                                             height: 50,
                                             width: 50,
-                                            child: Image.network(
-                                                e.images[0].image),
+                                            child: Builder(builder: (context) {
+                                              try {
+                                                return Image.network(
+                                                  e.images[0].image,
+                                                );
+                                              } catch (e) {
+                                                return Image.asset(
+                                                    'assets/images/image_1.png');
+                                              }
+                                            }),
+
+                                            // FadeInImage(
+                                            //    image:  placeholder: null,),
                                             color: ColorTheme.m_blue),
                                         title: Padding(
                                           padding: const EdgeInsets.fromLTRB(

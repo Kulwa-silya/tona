@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
 
@@ -129,6 +130,15 @@ class _mydialogState extends State<myDeletedialog> {
                           saveAttempt = true;
                         });
                         deleteProducts();
+                        Navigator.pop(context);
+                        // await Navigator.pushAndRemoveUntil(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => Products(
+                        //             id: widget.pid,
+                        //           )),
+                        //   (Route<dynamic> route) => false,
+                        // );
                       },
                     ),
                   ),
