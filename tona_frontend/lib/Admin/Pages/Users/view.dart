@@ -56,17 +56,7 @@ class _UserConfigState extends State<UserConfig> {
 
   String? toooken;
 
-  // getmyToken() async {
-  //   String tken = await token.getAccessToken();
-  //   setState(() {
-  //     tken = toooken!;
-  //   });
-  // }
-
-  @override
-  void initState() {
-
-    getAccessToken() async {
+  Future getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
     String? stringValue = prefs.getString('accesstoken');
@@ -78,11 +68,15 @@ class _UserConfigState extends State<UserConfig> {
     return stringValue;
   }
 
-    setState(() {
-      isloading = true;
-      fetchUserinfo();
-      // fetchToks();
-      isloading = false;
+  @override
+  void initState() {
+    getAccessToken().then((value) {
+      setState(() {
+        isloading = true;
+        fetchUserinfo();
+        // fetchToks();
+        isloading = false;
+      });
     });
 
     // getmyToken();
@@ -112,16 +106,6 @@ class _UserConfigState extends State<UserConfig> {
       _foundUsers = results;
       isloading = false;
     });
-  }
-
-  getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue;
-    });
-    return stringValue;
   }
 
   void editdialog() {
@@ -185,9 +169,9 @@ class _UserConfigState extends State<UserConfig> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => RegisterUsers(
-                      fname: fname,
-                      lname: lname,
-                      phone: phone,
+                          fname: fname,
+                          lname: lname,
+                          phone: phone,
                           axxton: widget.acctok,
                         )));
               },
@@ -283,11 +267,10 @@ class _UserConfigState extends State<UserConfig> {
                                                   context: context,
                                                   builder: (_) =>
                                                       myEditordialog(
-                                                        
                                                           widget: "adduser",
                                                           heading:
                                                               "User Editor",
-                                                              islod: isloading,
+                                                          islod: isloading,
                                                           data1: e.last_name,
                                                           data2: e.first_name));
                                             },

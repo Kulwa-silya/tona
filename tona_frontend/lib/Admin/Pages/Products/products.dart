@@ -222,10 +222,13 @@ class _ProductsState extends State<Products> {
                             ...productList.map(
                               (e) {
                                 String img;
+                                int imgId;
                                 try {
                                   img = e.images[0].image;
+                                  imgId= e.images[0].id;
                                 } catch (e) {
                                   img = "assets/images/image_1.png";
+                                  imgId = 0;
                                 }
 
                                 return
@@ -324,7 +327,7 @@ class _ProductsState extends State<Products> {
                                                           .toString(),
                                                       accesstok: accesTok,
                                                       image: img,
-                                                      imageId: e.images[0].id,
+                                                      imageId: imgId,
                                                       id: e.id,
                                                     ),
                                                   );

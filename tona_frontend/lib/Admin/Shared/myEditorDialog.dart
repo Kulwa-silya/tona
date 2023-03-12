@@ -99,18 +99,18 @@ class _mydialogState extends State<myEditordialog> {
             }))
         .then((value) async {
       print(widget.id);
-      print(widget.imageId);
+
       print(widget.accesstok);
       if (pickedFile != null) {
         var request = http.MultipartRequest(
-            'PUT',
+            'PATCH',
             Uri.parse(
-                'https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/images/${widget.imageId}'));
+                'https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/images/${widget.imageId}/'));
         request.headers['Authorization'] = 'JWT ${widget.accesstok}';
         request.files
             .add(await http.MultipartFile.fromPath('image', pickedFile!.path));
         var response = await request.send();
-        if (response.statusCode == 201) {
+        if (response.statusCode == 200) {
           print("cool");
         } else {
           print("not cool");
@@ -123,6 +123,7 @@ class _mydialogState extends State<myEditordialog> {
 
   @override
   void initState() {
+    print(widget.imageId);
     title = new TextEditingController(text: widget.data1);
     desc = new TextEditingController(text: widget.data2);
     inventory = new TextEditingController(text: widget.data3);
@@ -407,9 +408,9 @@ class _mydialogState extends State<myEditordialog> {
                                 if (formkey.currentState!.validate()) {
                                   formkey.currentState!.save();
                                   await updateProducts();
-                                  setState(() {
-                                    widget.islod = true;
-                                  });
+                                  // setState(() {
+                                  //   widget.islod = true;
+                                  // });
                                   Navigator.pop(context);
 // await   Navigator.pushAndRemoveUntil(
 //               context,

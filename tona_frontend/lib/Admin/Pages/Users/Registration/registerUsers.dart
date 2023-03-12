@@ -141,7 +141,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
                       mytextField(
-                        // value: widget.lname,
+                          // value: widget.lname,
                           kybType: TextInputType.text,
                           contro: lname,
                           autoval: AutovalidateMode.onUserInteraction,
@@ -156,7 +156,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           // ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
                       mytextField(
-                        // value: widget.phone,
+                          // value: widget.phone,
                           kybType: TextInputType.phone,
                           contro: uname,
                           autoval: AutovalidateMode.onUserInteraction,
