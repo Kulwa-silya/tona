@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
@@ -12,10 +13,13 @@ class myEditordialog extends StatefulWidget {
   String? data1;
   int? id;
   String? data2;
+  bool? islod;
   String? data3;
   String? data4, data5;
+  int? imageId;
   String? heading;
-  String? widget;
+  String? widget, image;
+  String? accesstok;
 
   myEditordialog(
       {Key? key,
@@ -23,6 +27,10 @@ class myEditordialog extends StatefulWidget {
       this.id,
       this.heading,
       this.data2,
+      this.image,
+      this.imageId,
+      this.accesstok,
+      required this.islod,
       required this.widget,
       this.data3,
       this.data4,
@@ -44,6 +52,28 @@ class _mydialogState extends State<myEditordialog> {
   var collectionn;
 
   final formkey = GlobalKey<FormState>();
+
+  XFile? pickedFile;
+
+  File? _imageFile;
+
+  bool _isImageSelected = false;
+
+  String? imgName;
+
+  final picker = ImagePicker();
+
+  Future<void> uploadImage() async {
+    pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile!.path);
+        imgName = pickedFile!.name;
+        _isImageSelected = true;
+      });
+    }
+  }
 
   updateProducts() async {
     final response = await http
@@ -67,7 +97,26 @@ class _mydialogState extends State<myEditordialog> {
               // "title": "heyyy",
               // "description": "desc.text",
             }))
-        .then((value) => {print("success")});
+        .then((value) async {
+      print(widget.id);
+      print(widget.imageId);
+      print(widget.accesstok);
+      if (pickedFile != null) {
+        var request = http.MultipartRequest(
+            'PATCH',
+            Uri.parse(
+                'https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/images/${widget.imageId}'));
+        request.headers['Authorization'] = 'JWT ${widget.accesstok}';
+        request.files
+            .add(await http.MultipartFile.fromPath('image', pickedFile!.path));
+        var response = await request.send();
+        if (response.statusCode == 201) {
+          print("cool");
+        } else {
+          print("not cool");
+        }
+      }
+    });
 
     print(response);
   }
@@ -180,6 +229,46 @@ class _mydialogState extends State<myEditordialog> {
                         : SizedBox.shrink(),
 
                     //products dialogs fields
+
+                    widget.image != null
+                        ? GestureDetector(
+                            onTap: () {
+                              uploadImage();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 200,
+                                child: _isImageSelected == true
+                                    ? Image.file(_imageFile!)
+                                    : FadeInImage.assetNetwork(
+                                        image: widget.image!,
+                                        fit: BoxFit.cover,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 200,
+                                        placeholder:
+                                            'assets/images/image_1.png',
+                                        imageErrorBuilder:
+                                            (BuildContext? context,
+                                                    Object? error,
+                                                    StackTrace? stackTrace) =>
+                                                Image.asset(
+                                          'assets/images/image_1.png',
+                                          height: 30,
+                                          width: 30,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ExtendedImage.asset(
+                                fit: BoxFit.cover, "assets/images/image_1.png"),
+                          ),
                     widget.widget == "addproduct"
                         ? mytextField(
                             kybType: TextInputType.text,
@@ -197,6 +286,7 @@ class _mydialogState extends State<myEditordialog> {
                             // ],
                             regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]")
                         : SizedBox.shrink(),
+
                     widget.widget == "addproduct"
                         ? mytextField(
                             kybType: TextInputType.text,
@@ -317,6 +407,9 @@ class _mydialogState extends State<myEditordialog> {
                                 if (formkey.currentState!.validate()) {
                                   formkey.currentState!.save();
                                   await updateProducts();
+                                  setState(() {
+                                    widget.islod = true;
+                                  });
                                   Navigator.pop(context);
 // await   Navigator.pushAndRemoveUntil(
 //               context,

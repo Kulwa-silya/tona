@@ -40,6 +40,8 @@ dependencies:
   path_provider: ^2.0.11
   sqflite:
   wc_form_validators:
+  image_picker: ^0.8.4+3
+  extended_image: 
 
     # State Management
   stacked: ^2.2.8

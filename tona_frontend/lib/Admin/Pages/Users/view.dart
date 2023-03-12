@@ -31,7 +31,7 @@ class _UserConfigState extends State<UserConfig> {
   var fname, lname, phone;
 
   fetchUserinfo() async {
-    http.Response res = await userProvider.fetchInfoe();
+    http.Response res = await userProvider.fetchInfoe(accesTok!);
 
     setState(() {
       userList = welcomeFromJson(res.body);
@@ -65,6 +65,19 @@ class _UserConfigState extends State<UserConfig> {
 
   @override
   void initState() {
+
+    getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+
+    print(" tokeni $accesTok");
+    return stringValue;
+  }
+
     setState(() {
       isloading = true;
       fetchUserinfo();
@@ -270,9 +283,11 @@ class _UserConfigState extends State<UserConfig> {
                                                   context: context,
                                                   builder: (_) =>
                                                       myEditordialog(
+                                                        
                                                           widget: "adduser",
                                                           heading:
                                                               "User Editor",
+                                                              islod: isloading,
                                                           data1: e.last_name,
                                                           data2: e.first_name));
                                             },

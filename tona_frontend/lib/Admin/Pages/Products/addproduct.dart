@@ -1,9 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
 
@@ -44,15 +48,69 @@ class _AddproductState extends State<Addproduct> {
 
   bool successErr = false;
 
+  String? accesTok;
+
+  String? imgPath;
+  String imgName = "Image not sesected";
+
+  dynamic base64Image;
+
+  Uint8List? bytes;
+
+  var jsonre;
+
+  var id;
+
+  XFile? pickedFile;
+
+  File? _imageFile;
+
+  bool _isImageSelected = false;
+
+  getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+
+    print(" tokeni $accesTok");
+    return stringValue;
+  }
+
+  @override
+  void initState() {
+    getAccessToken();
+    super.initState();
+  }
+
+  final picker = ImagePicker();
+
+  // Future<void> uploadImage() async {
+  //   pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  // }
+
+  Future<void> uploadImage() async {
+    pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile!.path);
+        imgName = pickedFile!.name;
+        _isImageSelected = true;
+      });
+    }
+  }
+
   void _productadd() async {
     try {
-      final response = await http
+      final res = await http
           .post(
               Uri.parse(
                   "https://tona-production-8ea1.up.railway.app/store/products/"),
               headers: {
-                HttpHeaders.authorizationHeader:
-                    "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4NzA5MzMxLCJqdGkiOiI3ZGNiMGFiZDJmN2Q0ODYxYTMyMzc0ZjA0MTM0M2E0YiIsInVzZXJfaWQiOjF9.19w55yQrBozrTpz0KArkkTg7xcW2eY_Y6BuW2RCI5Jc",
+                HttpHeaders.authorizationHeader: "JWT $accesTok",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -64,17 +122,35 @@ class _AddproductState extends State<Addproduct> {
                 "collection": widget.pid,
                 "images": null
               }))
-          .then((value) => {
-                setState(() {
-                  success = false;
-                }),
-                print("success")
-              });
-      // var res = json.decode(response.body);
+          .then((value) async {
+        jsonre = jsonDecode(value.body);
+        setState(() {
+          id = jsonre['id'];
+          print("id ni: $id");
+          success = false;
+        });
+        print(pickedFile!.path);
 
-      // print(res);
+        if (pickedFile != null) {
+          var request = http.MultipartRequest(
+              'POST',
+              Uri.parse(
+                  'https://tona-production-8ea1.up.railway.app/store/products/$id/images/'));
+          request.headers['Authorization'] = 'JWT $accesTok';
+          request.files.add(
+              await http.MultipartFile.fromPath('image', pickedFile!.path));
+          var response = await request.send();
+          if (response.statusCode == 201) {
+            print("cool");
+          } else {
+            print("insert image");
+          }
+        }
 
-      // print(response.body);
+        print("responsi ni: $jsonre");
+
+        print("success");
+      });
     } catch (e) {
       setState(() {
         success = false;
@@ -142,9 +218,31 @@ class _AddproductState extends State<Addproduct> {
                       ),
                       SizedBox(height: 20),
 
+                      ElevatedButton(
+                          onPressed: () {
+                            uploadImage();
+                          },
+                          child: Text("Pick image")),
+                      _isImageSelected == false
+                          ? SizedBox.shrink()
+                          : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                  width: 600,
+                                  height: 350,
+                                  child: ExtendedImage.file(_imageFile!)),
+                            ),
+
+//                           if (_isImageSelected) {
+//   return Image.file(_imageFile!);
+// } else {
+//   return Text('No image selected');
+// }
+
+                      Text(imgName),
+
                       mytextField(
                           contro: titleC,
-
                           kybType: TextInputType.text,
                           autoval: AutovalidateMode.onUserInteraction,
                           hint: "Ex: Taa",

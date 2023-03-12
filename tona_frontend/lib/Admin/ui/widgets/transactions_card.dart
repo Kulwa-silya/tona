@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Controllers/userProvider.dart';
 import '../../Models/getUserList.dart';
 import '../../views/main/main_view.dart';
@@ -18,14 +19,16 @@ class TransactionsCard extends StatefulWidget {
 class _TransactionsCardState extends State<TransactionsCard> {
   UserProvider userProvider = UserProvider();
 
-    MainView accsstheTok = MainView();
+  MainView accsstheTok = MainView();
 
   List userList = [];
 
   bool isloading = false;
 
+  String? accesTok;
+
   fetchUserinfo() async {
-    http.Response res = await userProvider.fetchInfoe();
+    http.Response res = await userProvider.fetchInfoe(accesTok!);
 
     setState(() {
       userList = welcomeFromJson(res.body);
@@ -35,11 +38,26 @@ class _TransactionsCardState extends State<TransactionsCard> {
     // print(accesTok);
   }
 
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+
+    print(" tokeni $accesTok");
+    return stringValue;
+  }
+
   @override
   void initState() {
-    isloading = true;
-    fetchUserinfo();
-    isloading = false;
+    getAccessToken().then((value) {
+      isloading = true;
+      fetchUserinfo();
+      isloading = false;
+    });
+
     super.initState();
   }
 

@@ -41,6 +41,8 @@ class _ProductsState extends State<Products> {
 
   List _foundProducts = [];
 
+  String? accesTok;
+
   getProducts() async {
     SharedPreferences pre = await SharedPreferences.getInstance();
     String accTok = pre.getString("accesstoken") ?? "";
@@ -52,7 +54,8 @@ class _ProductsState extends State<Products> {
   }
 
   fetchProducts() async {
-    http.Response res = await productProvider.fetchProducts(widget.id!);
+    http.Response res =
+        await productProvider.fetchProducts(widget.id!, accesTok!);
 
     setState(() {
       final proddata = ProductsAll.fromJson(json.decode(res.body));
@@ -103,12 +106,25 @@ class _ProductsState extends State<Products> {
     });
   }
 
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+
+    print(" tokeni $accesTok");
+    return stringValue;
+  }
+
   void initState() {
     setState(() {
-      isloading = true;
-      fetchProducts();
-
-      isloading = false;
+      getAccessToken().then((value) {
+        isloading = true;
+        fetchProducts();
+        isloading = false;
+      });
     });
 
     super.initState();
@@ -205,9 +221,17 @@ class _ProductsState extends State<Products> {
                           children: [
                             ...productList.map(
                               (e) {
+                                String img;
+                                try {
+                                  img = e.images[0].image;
+                                } catch (e) {
+                                  img = "assets/images/image_1.png";
+                                }
+
                                 return
                                     // _foundProducts.isNotEmpty
                                     //     ?
+
                                     Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
@@ -288,6 +312,7 @@ class _ProductsState extends State<Products> {
                                                     context: context,
                                                     builder: (_) =>
                                                         myEditordialog(
+                                                      islod: isloading,
                                                       widget: "addproduct",
                                                       heading: "Product Editor",
                                                       data1: e.title,
@@ -297,6 +322,9 @@ class _ProductsState extends State<Products> {
                                                       data4: e.unitPrice,
                                                       data5: e.collection
                                                           .toString(),
+                                                      accesstok: accesTok,
+                                                      image: img,
+                                                      imageId: e.images[0].id,
                                                       id: e.id,
                                                     ),
                                                   );
