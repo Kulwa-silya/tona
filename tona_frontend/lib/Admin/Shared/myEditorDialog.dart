@@ -103,7 +103,7 @@ class _mydialogState extends State<myEditordialog> {
       print(widget.accesstok);
       if (pickedFile != null) {
         var request = http.MultipartRequest(
-            'PATCH',
+            'PUT',
             Uri.parse(
                 'https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/images/${widget.imageId}'));
         request.headers['Authorization'] = 'JWT ${widget.accesstok}';
