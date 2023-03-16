@@ -346,6 +346,7 @@ class _ProductsState extends State<Products> {
                                                             pid: e.id,
                                                             email: "null",
                                                             tit: e.title,
+                                                            isloading: isloading,
                                                           ));
                                                 },
                                                 icon: Icon(

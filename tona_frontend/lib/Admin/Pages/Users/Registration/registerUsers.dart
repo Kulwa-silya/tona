@@ -32,31 +32,178 @@ class _RegisterUsersState extends State<RegisterUsers> {
 
   bool saveAttempt = false;
 
+  var jsonre;
+
+  var errormsg;
+
+  String? acctExisterrormsg;
+
+  String infosms = "..";
+
   @override
   void initState() {
-    // print(widget.axxton);
+    uname.addListener(() {
+      final text = uname.text;
+      if (text.isNotEmpty && text.startsWith('0')) {
+        uname.text = text.substring(1);
+        uname.selection = TextSelection.fromPosition(
+          TextPosition(offset: uname.text.length),
+        );
+      }
+    });
     super.initState();
   }
 
-  void _useradd() async {
-    final response = await http.post(
-        Uri.parse("https://tona-production-8ea1.up.railway.app/auth/users/"),
-        headers: {
-          // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode({
-          "first_name": fname.text,
-          "last_name": lname.text,
-          "phone_number": "+255${uname.text}",
-          "password": "lname.text.toUpperCase()",
-          "user_type": 2,
-        }));
-    var res = json.decode(response.body);
+  String? password;
+  Future _useradd() async {
+    password = lname.text.toUpperCase() +
+        uname.text.trim().substring(uname.text.length - 4);
+    final response = await http
+        .post(
+            Uri.parse(
+                "https://tona-production-8ea1.up.railway.app/auth/users/"),
+            headers: {
+              // HttpHeaders.authorizationHeader: "JWT ${widget.axxton}",
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: json.encode({
+              "first_name": fname.text,
+              "last_name": lname.text,
+              "phone_number": "+255${uname.text}",
+              "password": password,
+              "user_type": 2,
+            }))
+        .then((value) async {
+      print(password);
+      print(value);
 
-    print(res);
+      print(value.body);
+      jsonre = jsonDecode(value.body);
 
-    print(response.body);
+      acctExisterrormsg = jsonre["phone_number"][0];
+
+      if (acctExisterrormsg ==
+          "user account with this phone number already exists.") {
+        infosms = "User Already Exists";
+      } else {
+        infosms = "Added";
+      }
+
+      if (infosms == "Added") {
+        fname.clear();
+        lname.clear();
+        uname.clear();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "User Added",
+              style: TextStyle(
+                  color: ColorTheme.m_blue, fontWeight: FontWeight.bold),
+            ),
+          ),
+          backgroundColor: ColorTheme.m_blue_mpauko_zaidi,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          elevation: 30,
+          duration: Duration(milliseconds: 2000),
+          padding: EdgeInsets.all(3),
+          action: SnackBarAction(
+            label: 'Dismiss',
+            disabledTextColor: Colors.white,
+            textColor: ColorTheme.m_blue,
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              //Do whatever you want
+            },
+          ),
+        ));
+      } else {
+        await showDialog(
+            context: context,
+            builder: (_) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(12.0)), //this right here
+                child: Container(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 8),
+                          child: Center(
+                            child: Text(
+                              "Info!",
+                              style: TextStyle(
+                                  color: ColorTheme.m_blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("$infosms"),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Ok',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w200),
+                                    )
+                                  ],
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorTheme.m_blue,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                ),
+                                onPressed: () async {
+                                  setState(() {
+                                    saveAttempt = true;
+                                  });
+
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            });
+      }
+
+      // setState(()  {
+      //   acctExisterrormsg = jsonre['phone_number'];
+      //   print("acctex ni: $acctExisterrormsg");
+
+      // });
+    }).catchError((errsms) {
+      print(errsms);
+    });
+    // var res = json.decode(response.body);
+
+    // print(res);
   }
 
   @override
@@ -159,16 +306,26 @@ class _RegisterUsersState extends State<RegisterUsers> {
                           // value: widget.phone,
                           kybType: TextInputType.phone,
                           contro: uname,
+                          prex: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                                color: ColorTheme.m_blue_mpauko_zaidi,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Text("+255 "),
+                                )),
+                          ),
+                          maxlength: 9,
                           autoval: AutovalidateMode.onUserInteraction,
-                          hint: "Ex: Bojo",
+                          hint: "Ex: 7645...",
                           hintLebel: "Phone",
-                          validateText: "Fill in your phone number",
+                          numbererrotxt: "Invalid Length",
+                          validateText: "Fill in your valid phone number",
                           finalvalidateText: "Invalid phone no Format",
                           icodata: Icons.phone,
-                          // inputFormatter: [
-                          //   FilteringTextInputFormatter.deny(
-                          //       new RegExp(r"\s\b|\b\s"))
-                          // ],
+                          inputFormatter: [
+                            FilteringTextInputFormatter.deny(RegExp(r"\s"))
+                          ],
                           regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                               "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}"),
 

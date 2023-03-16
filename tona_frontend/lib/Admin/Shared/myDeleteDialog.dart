@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
 
@@ -12,8 +13,10 @@ class myDeletedialog extends StatefulWidget {
 
   String tit, email;
 
+   bool? isloading;
+
   myDeletedialog(
-      {Key? key, required this.pid, required this.email, required this.tit})
+      {Key? key, required this.pid, this.isloading, required this.email, required this.tit})
       : super(key: key);
 
   @override
@@ -28,19 +31,54 @@ class _mydialogState extends State<myDeletedialog> {
 
   bool saveAttempt = false;
 
+  String? accesTok;
+  
+ 
+
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+
+    print(" tokeni $accesTok");
+    return stringValue;
+  }
+
   deleteProducts() async {
     final response = await http.delete(
       Uri.parse(
           "https://tona-production-8ea1.up.railway.app/store/products/${widget.pid}/"),
       headers: {
-        HttpHeaders.authorizationHeader:
-            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4NzA5MzMxLCJqdGkiOiI3ZGNiMGFiZDJmN2Q0ODYxYTMyMzc0ZjA0MTM0M2E0YiIsInVzZXJfaWQiOjF9.19w55yQrBozrTpz0KArkkTg7xcW2eY_Y6BuW2RCI5Jc",
+        HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
     ).then((value) => {print("success")});
 
     print(response);
+  }
+
+  deleteUser() async {
+    final response = await http.delete(
+      Uri.parse(
+          "http://tona-production-8ea1.up.railway.app/tona_users/users/${widget.pid}/"),
+      headers: {
+        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        "Accept": "application/json",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).then((value) => {print("success")});
+
+    print(response);
+  }
+
+  @override
+  void initState() {
+    getAccessToken();
+    super.initState();
   }
 
   @override
@@ -128,8 +166,10 @@ class _mydialogState extends State<myDeletedialog> {
                       onPressed: () async {
                         setState(() {
                           saveAttempt = true;
+                          widget.isloading = false;
                         });
-                        deleteProducts();
+                        // deleteProducts();
+                        deleteUser();
                         Navigator.pop(context);
                         // await Navigator.pushAndRemoveUntil(
                         //   context,

@@ -4,24 +4,30 @@ import 'package:flutter/services.dart';
 import '../consts/colorTheme.dart';
 
 class mytextField extends StatelessWidget {
+  int? maxlength;
+
   // dynamic value;
 
-  mytextField({
-    Key? key,
-    // this.value,
-    required this.hint,
-    required this.regExpn,
-    required this.contro,
-    required this.hintLebel,
-    required this.validateText,
-    required this.finalvalidateText,
-    required this.icodata,
-    required this.autoval,
-    required this.kybType
-    // required this.inputFormatter
-  }) : super(key: key);
-  String validateText, finalvalidateText, hint, hintLebel, regExpn;
+  mytextField(
+      {Key? key,
+      // this.value,
+      required this.hint,
+      required this.regExpn,
+      required this.contro,
+      required this.hintLebel,
+      this.maxlength,
+      required this.validateText,
+      this.prex,
+      required this.finalvalidateText,
+      required this.icodata,
+      required this.autoval,
+      this.numbererrotxt,
+      required this.kybType,
+      this.inputFormatter})
+      : super(key: key);
+  String? validateText, finalvalidateText, hint, hintLebel, regExpn,numbererrotxt;
   IconData icodata;
+  Widget? prex;
   TextInputType kybType;
   List<TextInputFormatter>? inputFormatter;
   TextEditingController contro;
@@ -37,8 +43,10 @@ class mytextField extends StatelessWidget {
         validator: (emailValue) {
           if (emailValue!.isEmpty) {
             return validateText;
+          } else if (emailValue.length < 9) {
+            return numbererrotxt;
           }
-          RegExp regExp = new RegExp(regExpn);
+          RegExp regExp = new RegExp(regExpn!);
           if (regExp.hasMatch(emailValue)) {
             return null;
           }
@@ -46,12 +54,13 @@ class mytextField extends StatelessWidget {
         },
         controller: contro,
         // initialValue: value,
-        // inputFormatters: inputFormatter,
+        maxLength: maxlength,
+        inputFormatters: inputFormatter,
         decoration: InputDecoration(
           prefixIcon: Icon(icodata),
           labelText: hintLebel,
           hintText: hint,
-          
+          prefix: prex,
           enabledBorder: OutlineInputBorder(
             borderRadius: const BorderRadius.all(
               const Radius.circular(10.0),

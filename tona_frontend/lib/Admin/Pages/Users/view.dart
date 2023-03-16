@@ -285,7 +285,7 @@ class _UserConfigState extends State<UserConfig> {
                                                   context: context,
                                                   builder: (_) =>
                                                       myDeletedialog(
-                                                          pid: 0,
+                                                          pid: e.id,
                                                           email: e.last_name,
                                                           tit: e.first_name));
                                             }),

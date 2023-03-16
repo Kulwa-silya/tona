@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:machafuapp/Admin/Pages/Products/Addcollection.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Shared/backarrow.dart';
@@ -8,6 +9,8 @@ import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductCat extends StatefulWidget {
   const ProductCat({Key? key}) : super(key: key);
@@ -18,14 +21,26 @@ class ProductCat extends StatefulWidget {
 
 class _ProductCatState extends State<ProductCat> {
   List<dynamic> jsondat = [];
+
+  String? accesTok;
+
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+
+    print(" tokeni $accesTok");
+    return stringValue;
+  }
+
   fetchProductsCategory() async {
     final response = await http.get(
-        Uri.parse(
-            'https://tona-production-8ea1.up.railway.app/store/collections/'),
-        headers: {
-          HttpHeaders.authorizationHeader:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4NzA5MzMxLCJqdGkiOiI3ZGNiMGFiZDJmN2Q0ODYxYTMyMzc0ZjA0MTM0M2E0YiIsInVzZXJfaWQiOjF9.19w55yQrBozrTpz0KArkkTg7xcW2eY_Y6BuW2RCI5Jc",
-        });
+      Uri.parse(
+          'https://tona-production-8ea1.up.railway.app/store/collections/'),
+    );
     jsondat = jsonDecode(response.body);
     print(jsondat);
     return jsondat;
@@ -33,7 +48,10 @@ class _ProductCatState extends State<ProductCat> {
 
   @override
   void initState() {
-    fetchProductsCategory();
+    getAccessToken().then((value) {
+      fetchProductsCategory();
+    });
+    // fetchProductsCategory();
     super.initState();
   }
 
@@ -50,8 +68,8 @@ class _ProductCatState extends State<ProductCat> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                // Navigator.of(context).push(
-                //     MaterialPageRoute(builder: (context) => Addproduct()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AddCollection()));
               },
               child: Center(
                 child: Text(
