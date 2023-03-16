@@ -130,7 +130,7 @@ class _DashBoardState extends State<DashBoard> {
 
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UserConfig(
-                                acctok: accesTok!,
+                            
                               )));
                     },
                     child: dashboardContainer(

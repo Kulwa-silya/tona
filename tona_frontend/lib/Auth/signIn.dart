@@ -39,6 +39,8 @@ class _SingInState extends State<SingIn> {
   final formkey = GlobalKey<FormState>();
 
   String? accesTok;
+
+  bool success = false;
   void clearText() {
     user.clear();
     pass.clear();
@@ -67,38 +69,86 @@ class _SingInState extends State<SingIn> {
     //  print(res['access']);
 
     if (res['detail'] == "No active account found with the given credentials") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Income()));
+      await showDialog(
+          context: context,
+          builder: (_) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0)), //this right here
+              child: Container(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 8),
+                        child: Center(
+                          child: Text(
+                            "Info!",
+                            style: TextStyle(
+                                color: ColorTheme.m_blue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
+                        ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Sorry! ,Invalid credentials"),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Try Again',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w200),
+                                  )
+                                ],
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: ColorTheme.m_blue,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0)),
+                              ),
+                              onPressed: () async {
+                                setState(() {
+                                  saveAttempt = true;
+                                  success = false;
+                                });
 
-      // if (res[0]['role'] == 'admin') {
-      //   setState(() => loading = true);
-      //   // print(datauser);
-      //   Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //           builder: (context) => DashBoard(
-
-      //               )));
-      // } else if (res[0]['role'] == 'sales') {
-      //   Navigator.pushReplacementNamed(context, '/Driver');
-      // } else if (datauser2[0]['role'] == 'delivery') {
-      //   Navigator.pushReplacementNamed(context, '/Officer');
-      // }
-      setState(() {});
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
     } else {
+      setState(() {
+        success = false;
+      });
       await addAccessToken(res['access']);
       await addRefreshToken(res['refresh']);
-
-      // setState(() {
-      //    DatabaseHelper.instance.add(Tokening(
-      //                                                                           accesstok: res['access'],
-      //                                                                           refreshtok: res['refresh'])
-      //                                                                         );
-      //                                                                       });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => MainView()));
     }
-
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MainView()));
   }
 
   @override
@@ -176,11 +226,12 @@ class _SingInState extends State<SingIn> {
                           //     email = textVal;
                           //   });
                           // },
-                          // autovalidateMode: AutovalidateMode.onUserInteraction,
-                          // validator: (emailValue) {
-                          //   if (emailValue!.isEmpty) {
-                          //     return "Fill in your email";
-                          //   }
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (emailValue) {
+                            if (emailValue!.isEmpty) {
+                              return "Phone required!";
+                            }
+                          },
 
                           //   String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
                           //       "\\@" +
@@ -205,8 +256,8 @@ class _SingInState extends State<SingIn> {
                           ],
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.person),
-                            labelText: 'Email',
-                            hintText: 'Ex: example@example.com',
+                            labelText: 'Phone',
+                            hintText: 'Ex: +255...',
                             enabledBorder: OutlineInputBorder(
                               borderRadius: const BorderRadius.all(
                                 const Radius.circular(10.0),
@@ -243,6 +294,18 @@ class _SingInState extends State<SingIn> {
                             helperText: "Usiruhusu mtu kuona taarifa hizi.",
                             prefixIcon: Icon(Icons.security_rounded),
                             labelText: 'Password',
+                            suffix: GestureDetector(
+                              onTap: (() => _toggle()),
+                              child: _obscureText
+                                  ? Icon(
+                                      Icons.visibility,
+                                      color: ColorTheme.m_blue,
+                                    )
+                                  : Icon(
+                                      Icons.visibility_off,
+                                      color: ColorTheme.m_blue,
+                                    ),
+                            ),
                             hintText: 'Enter Password',
                             enabledBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(
@@ -260,59 +323,70 @@ class _SingInState extends State<SingIn> {
                           ),
                         ),
                       ),
-                      new TextButton(
-                          onPressed: _toggle,
-                          child: new Text(
-                            _obscureText ? "Show Password" : "Hide Password",
-                            style: TextStyle(color: Colors.black),
-                          )),
-                      Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 60.0, vertical: 25.0),
-                          child: ElevatedButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Login',
-                                  style: TextStyle(fontWeight: FontWeight.w200),
-                                )
-                              ],
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: ColorTheme.m_blue,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0)),
-                            ),
-                            onPressed: () async {
-                              setState(() {
-                                saveAttempt = true;
-                              });
+                      // new TextButton(
+                      //     onPressed: _toggle,
+                      //     child: new Text(
+                      //       _obscureText ? "Show Password" : "Hide Password",
+                      //       style: TextStyle(color: Colors.black),
+                      //     )),
+                      success == true
+                          ? CircularProgressIndicator(
+                              strokeWidth: 1,
+                              color: ColorTheme.m_blue,
+                            )
+                          : Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 60.0, vertical: 25.0),
+                              child: ElevatedButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Login',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w200),
+                                    )
+                                  ],
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  primary: ColorTheme.m_blue,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                ),
+                                onPressed: () async {
+                                  setState(() {
+                                    saveAttempt = true;
+                                  });
 
-                              if (formkey.currentState!.validate()) {
-                                formkey.currentState!.save();
+                                  if (formkey.currentState!.validate()) {
+                                    formkey.currentState!.save();
 
-                                setState(() => loading = true);
-                                // displayDialog();
-                                setState(() => loading = false);
+                                    _login();
+                                    setState(() {
+                                      success = true;
+                                      // successErr = true;
+                                    });
+                                  }
 
-                                _login();
-                              }
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (context) => MainView()));
 
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (context) => MainView()));
+                                  // _saveDeviceToken();
 
-                              // _saveDeviceToken();
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (context) => Manager()));
+                                },
+                              )),
 
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (context) => Manager()));
-                            },
-                          )),
-
-                          ElevatedButton(onPressed: (){
-                             Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainView()));
-                          }, child: Text("ingia"))
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MainView()));
+                          },
+                          child: Text("ingia"))
                     ],
                   ),
                 ),

@@ -7,10 +7,10 @@ import 'package:http/http.dart' as http;
 import '../../../consts/colorTheme.dart';
 
 class RegisterUsers extends StatefulWidget {
-  String axxton, fname, lname, phone;
+  String  fname, lname, phone;
   RegisterUsers(
       {Key? key,
-      required this.axxton,
+
       required this.fname,
       required this.lname,
       required this.phone})
@@ -224,7 +224,7 @@ class _RegisterUsersState extends State<RegisterUsers> {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
                 builder: (BuildContext context) =>
-                    UserConfig(acctok: widget.axxton)));
+                    UserConfig()));
             // Navigator.of(context).push(MaterialPageRoute(
             //     builder: (context) => UserConfig(
             //           acctok: widget.axxton,

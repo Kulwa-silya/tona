@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:flutter/services.dart';
 import 'package:machafuapp/Auth/signIn.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -28,15 +32,22 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key,}) : super(key: key);
-
-
+  const MyHomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +58,5 @@ class _MyHomePageState extends State<MyHomePage> {
       duration: 500,
       splashIconSize: 500,
     );
-
-    
   }
 }

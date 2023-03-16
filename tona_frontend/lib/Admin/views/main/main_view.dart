@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Controllers/userProvider.dart';
+import 'package:machafuapp/Auth/signIn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import 'package:http/http.dart' as http;
@@ -63,8 +66,40 @@ class _MainViewState extends State<MainView> {
     return response;
   }
 
+  bool _inactive = false;
+
+  Future<void> deletePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('accesstoken');
+    prefs.remove('refreshtoken');
+  }
+
+//check and logout
+  void _resetTimer() {
+    Timer _timer = Timer(Duration(minutes: 1), _logOut);
+
+    if (_inactive) {
+      setState(() {
+        _inactive = false;
+        deletePreference();
+      });
+    }
+    // _timer.cancel();
+    _timer = Timer(Duration(minutes: 1), _logOut);
+  }
+
+  void _logOut() {
+    setState(() {
+      _inactive = true;
+    });
+    // Perform the logout action here
+  }
+
+// cheks and log out ends
+
   @override
   void initState() {
+    _resetTimer();
     getAccessToken();
     super.initState();
   }
@@ -73,24 +108,44 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<MainViewModel>.reactive(
       builder: (context, model, child) {
-        return Scaffold(
-          key: model.scaffoldKey,
-          drawer: const SideMenu(),
-          body: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (Responsive.isDesktop(context))
-                const Expanded(
-                  child: SideMenu(),
+        return GestureDetector(
+          // onTap: () => Navigator.pushAndRemoveUntil(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => SingIn()),
+          //   (Route<dynamic> route) => false,
+          // ),
+          onTapDown: (_) => accesTok != null ? _resetTimer() : null,
+          onPanDown: (_) => accesTok != null ? _resetTimer() : null,
+          onScaleStart: (_) => accesTok != null ? _resetTimer() : null,
+          child: _inactive == true
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => SingIn()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                  child: Scaffold(body: Center(child: Text("your logged out"))))
+              : Scaffold(
+                  key: model.scaffoldKey,
+                  drawer: const SideMenu(),
+                  body: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (Responsive.isDesktop(context))
+                        const Expanded(
+                          child: SideMenu(),
+                        ),
+                      horizontalSpaceRegular,
+                      const Expanded(
+                        flex: 5,
+                        child: DashBoardView(),
+                      ),
+                      horizontalSpaceSmall,
+                    ],
+                  ),
                 ),
-              horizontalSpaceRegular,
-              const Expanded(
-                flex: 5,
-                child: DashBoardView(),
-              ),
-              horizontalSpaceSmall,
-            ],
-          ),
         );
       },
       viewModelBuilder: () => MainViewModel(),

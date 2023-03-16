@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
+import 'package:machafuapp/Admin/Pages/Products/productViewer.dart';
 import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
 import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
 import 'package:machafuapp/Admin/Shared/myEditorDialog.dart';
@@ -11,6 +12,7 @@ import '../../Controllers/productsProvider.dart';
 import '../../Models/getProducts.dart';
 import '../../Shared/backarrow.dart';
 import '../../consts/colorTheme.dart';
+import '../../ui/shared/loading.dart';
 
 class Products extends StatefulWidget {
   int? id;
@@ -59,12 +61,12 @@ class _ProductsState extends State<Products> {
 
     setState(() {
       final proddata = ProductsAll.fromJson(json.decode(res.body));
-      isloading = true;
+      isloading = false;
       productList = proddata.results;
 
       // final picha = Result.fromJson(json.decode(res.body));
       // productImage = picha.images;
-      isloading = false;
+      isloading = true;
 
       // print(picha.);
 
@@ -81,7 +83,7 @@ class _ProductsState extends State<Products> {
   @override
   void dispose() {
     // TODO: implement dispose
-    isloading = false;
+    // isloading = false;
     super.dispose();
   }
 
@@ -214,7 +216,7 @@ class _ProductsState extends State<Products> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 color: ColorTheme.m_white,
-                child: isloading == false
+                child: isloading == true
                     ? SingleChildScrollView(
                         physics: BouncingScrollPhysics(),
                         child: Column(
@@ -225,7 +227,7 @@ class _ProductsState extends State<Products> {
                                 int imgId;
                                 try {
                                   img = e.images[0].image;
-                                  imgId= e.images[0].id;
+                                  imgId = e.images[0].id;
                                 } catch (e) {
                                   img = "assets/images/image_1.png";
                                   imgId = 0;
@@ -240,121 +242,144 @@ class _ProductsState extends State<Products> {
                                       const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                      color:
-                                          ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                                      child: ListTile(
-                                        leading: Container(
-                                            height: 50,
-                                            width: 50,
-                                            child: Builder(builder: (context) {
-                                              try {
-                                                return Image.network(
-                                                  e.images[0].image,
-                                                );
-                                              } catch (e) {
-                                                return Image.asset(
-                                                    'assets/images/image_1.png');
-                                              }
-                                            }),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) => Viewer(
+                                                    image: img,
+                                                    title: e.title,
+                                                    collId: widget.id,
+                                                    tit: widget.title,
+                                                    inventory: e.inventory,
+                                                    desc: e.description,
+                                                    uprice: e.unitPrice)));
+                                      },
+                                      child: Container(
+                                        color: ColorTheme
+                                            .m_blue_mpauko_zaidi_zaidi,
+                                        child: ListTile(
+                                          leading: Container(
+                                              height: 50,
+                                              width: 50,
+                                              child:
+                                                  Builder(builder: (context) {
+                                                try {
+                                                  return Image.network(
+                                                    e.images[0].image,
+                                                  );
+                                                } catch (e) {
+                                                  return Image.asset(
+                                                      'assets/images/image_1.png');
+                                                }
+                                              }),
 
-                                            // FadeInImage(
-                                            //    image:  placeholder: null,),
-                                            color: ColorTheme.m_blue),
-                                        title: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              8, 8, 8, 2),
-                                          child: Row(
+                                              // FadeInImage(
+                                              //    image:  placeholder: null,),
+                                              color: ColorTheme.m_blue),
+                                          title: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 8, 8, 2),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  e.title,
+                                                  style: TextStyle(
+                                                      color: ColorTheme.m_blue,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "(${e.inventory})",
+                                                  style: TextStyle(
+                                                      color: ColorTheme.m_blue,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                e.title,
-                                                style: TextStyle(
-                                                    color: ColorTheme.m_blue,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8, 1, 8, 8),
+                                                child: Text(
+                                                  e.description,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
                                               Text(
-                                                "(${e.inventory})",
+                                                e.unitPrice + " TZs ",
                                                 style: TextStyle(
-                                                    color: ColorTheme.m_blue,
+                                                    fontSize: 12,
                                                     fontWeight:
-                                                        FontWeight.bold),
+                                                        FontWeight.w300),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              8, 1, 8, 8),
-                                          child: Text(e.description),
-                                        ),
-                                        trailing: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    e.unitPrice + " TZs ",
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w300),
-                                                  ),
-                                                  // Text(
-                                                  //   e.priceWithTax.toString(),
-                                                  //   style: TextStyle(
-                                                  //       fontSize: 12,
-                                                  //       fontWeight:
-                                                  //           FontWeight.w300),
-                                                  // ),
-                                                ],
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (_) =>
-                                                        myEditordialog(
-                                                      islod: isloading,
-                                                      widget: "addproduct",
-                                                      heading: "Product Editor",
-                                                      data1: e.title,
-                                                      data2: e.description,
-                                                      data3: e.inventory
-                                                          .toString(),
-                                                      data4: e.unitPrice,
-                                                      data5: e.collection
-                                                          .toString(),
-                                                      accesstok: accesTok,
-                                                      image: img,
-                                                      imageId: imgId,
-                                                      id: e.id,
-                                                    ),
-                                                  );
-                                                },
-                                                icon: Icon(
-                                                  Icons.edit,
-                                                  color: ColorTheme.m_blue,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  showDialog(
+                                          trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                IconButton(
+                                                  onPressed: () {
+                                                    showDialog(
                                                       context: context,
                                                       builder: (_) =>
-                                                          myDeletedialog(
-                                                            pid: e.id,
-                                                            email: "null",
-                                                            tit: e.title,
-                                                            isloading: isloading,
-                                                          ));
-                                                },
-                                                icon: Icon(
-                                                  Icons.delete,
-                                                  color: ColorTheme.m_red,
+                                                          myEditordialog(
+                                                        islod: isloading,
+                                                        widget: "addproduct",
+                                                        heading:
+                                                            "Product Editor",
+                                                        data1: e.title,
+                                                        data2: e.description,
+                                                        data3: e.inventory
+                                                            .toString(),
+                                                        whatpart: "product",
+                                                        data4: e.unitPrice,
+                                                        data5: e.collection
+                                                            .toString(),
+                                                        accesstok: accesTok,
+                                                        image: img,
+                                                        imageId: imgId,
+                                                        id: e.id,
+                                                        collId: widget.id,
+                                                        collname: widget.title,
+                                                      ),
+                                                    );
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.edit,
+                                                    color: ColorTheme.m_blue,
+                                                  ),
                                                 ),
-                                              )
-                                            ]),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (_) =>
+                                                            myDeletedialog(
+                                                              pid: e.id,
+                                                              email: "null",
+                                                              tit: e.title,
+                                                              whatpart:
+                                                                  "product",
+                                                              collId: widget.id,
+                                                              collname:
+                                                                  widget.title,
+                                                            ));
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.delete,
+                                                    color: ColorTheme.m_red,
+                                                  ),
+                                                )
+                                              ]),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -366,7 +391,7 @@ class _ProductsState extends State<Products> {
                         ),
                       )
                     : Center(
-                        child: CircularProgressIndicator(),
+                        child: circularLoader(),
                       )),
           ),
         ],

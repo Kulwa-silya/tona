@@ -222,6 +222,13 @@ class _AddproductState extends State<Addproduct> {
                           onPressed: () {
                             uploadImage();
                           },
+
+                          style: ElevatedButton.styleFrom(
+                                  primary: ColorTheme.m_blue_mpauko,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(80.0)),
+                                ),
                           child: Text("Pick image")),
                       _isImageSelected == false
                           ? SizedBox.shrink()
@@ -358,7 +365,10 @@ class _AddproductState extends State<Addproduct> {
                       //     regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]"),
 
                       success == true
-                          ? CircularProgressIndicator()
+                          ? CircularProgressIndicator(
+                  strokeWidth: 1,
+                  color: ColorTheme.m_blue,
+                )
                           : Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 60.0, vertical: 25.0),

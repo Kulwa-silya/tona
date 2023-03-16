@@ -18,23 +18,7 @@ class TransactionRow extends StatefulWidget {
 }
 
 class _TransactionRowState extends State<TransactionRow> {
-  String? accesTok;
-
-  @override
-  void initState() {
-    getAccessToken();
-    super.initState();
-  }
-
-  getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue;
-    });
-    return stringValue;
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +33,7 @@ class _TransactionRowState extends State<TransactionRow> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => UserConfig(
-                      acctok: accesTok!,
+        
                     )));
           },
           child: Container(

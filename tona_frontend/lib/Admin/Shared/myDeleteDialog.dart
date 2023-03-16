@@ -5,18 +5,26 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Pages/Users/view.dart';
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
 
 class myDeletedialog extends StatefulWidget {
-  int pid;
+  int? pid, collId;
 
-  String tit, email;
+  String? tit, email, collname, whatpart;
 
-   bool? isloading;
+  bool? isloading;
 
   myDeletedialog(
-      {Key? key, required this.pid, this.isloading, required this.email, required this.tit})
+      {Key? key,
+      required this.pid,
+      this.isloading,
+      this.collId,
+      required this.whatpart,
+      this.collname,
+      required this.email,
+      required this.tit})
       : super(key: key);
 
   @override
@@ -32,8 +40,6 @@ class _mydialogState extends State<myDeletedialog> {
   bool saveAttempt = false;
 
   String? accesTok;
-  
- 
 
   Future getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -166,11 +172,25 @@ class _mydialogState extends State<myDeletedialog> {
                       onPressed: () async {
                         setState(() {
                           saveAttempt = true;
-                          widget.isloading = false;
                         });
-                        // deleteProducts();
-                        deleteUser();
-                        Navigator.pop(context);
+
+                        if (widget.whatpart == "product") {
+                          deleteProducts();
+                          Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(
+                                  builder: (context) => Products(
+                                        id: widget.collId,
+                                        title: widget.collname,
+                                      )));
+                        } else if (widget.whatpart == "user") {
+                          deleteUser();
+                          Navigator.pop(context);
+
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => UserConfig()));
+                        }
+
                         // await Navigator.pushAndRemoveUntil(
                         //   context,
                         //   MaterialPageRoute(

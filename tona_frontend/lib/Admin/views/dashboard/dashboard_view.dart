@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:machafuapp/Admin/ui/shared/edge_insect.dart';
 import 'package:machafuapp/Admin/ui/shared/spacing.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
@@ -26,117 +29,164 @@ class DashBoardView extends StatefulWidget {
 
 class _DashBoardViewState extends State<DashBoardView> {
   MainView mainView = MainView();
+
+  var jsondat;
+
+  String? accesTok;
+
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+
+    print(" tokeni  fee $accesTok");
+    return stringValue;
+  }
+
+  fetchUserData() async {
+    final response = await http.get(
+      Uri.parse("http://tona-production-8ea1.up.railway.app/auth/users/me/"),
+      headers: {
+        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        // "Accept": "application/json",
+        // 'Content-Type': 'application/json',
+      },
+    );
+    jsondat = jsonDecode(response.body);
+    print("user info $jsondat");
+    print("kulwa tok $accesTok");
+    return jsondat;
+  }
+
+  @override
+  void initState() {
+    getAccessToken();
+    fetchUserData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final Size _size = MediaQuery.of(context).size;
 
-    return Row(
-      children: [
-        Expanded(
-          flex: 3,
-          child: Column(
+    return FutureBuilder<Object>(
+        future: null,
+        builder: (context, snapshot) {
+          return Row(
             children: [
-              verticalSpaceSmall,
-              const MainHeader(),
-              verticalSpaceRegular,
-              Container(
-                padding: kEdgeInsetsHorizontalNormal,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: kBlackColor,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Expanded(
+                flex: 3,
+                child: Column(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Balance',
-                          style: kBodyRegularTextStyle.copyWith(
-                            color: kWhiteColor,
-                          ),
-                        ),
-                        verticalSpaceSmall,
-                        Text(
-                          '500,000 TZS',
-                          style: kHeading2TextStyle.copyWith(
-                            color: kWhiteColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                    verticalSpaceSmall,
+                    const MainHeader(),
+                    verticalSpaceRegular,
                     Container(
                       padding: kEdgeInsetsHorizontalNormal,
-                      height: height * 0.06,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: kWhiteColor),
-                      child: Center(
-                        child: Text(
-                          'See more',
-                          style: kBodyTextStyle.copyWith(color: kBlackColor),
+                        borderRadius: BorderRadius.circular(10),
+                        color: kBlackColor,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Balance',
+                                style: kBodyRegularTextStyle.copyWith(
+                                  color: kWhiteColor,
+                                ),
+                              ),
+                              verticalSpaceSmall,
+                              Text(
+                                '500,000 TZS',
+                                style: kHeading2TextStyle.copyWith(
+                                  color: kWhiteColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: kEdgeInsetsHorizontalNormal,
+                            height: height * 0.06,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: kWhiteColor),
+                            child: Center(
+                              child: Text(
+                                'See more',
+                                style:
+                                    kBodyTextStyle.copyWith(color: kBlackColor),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      height: height * 0.20,
+                    ),
+                    verticalSpaceRegular,
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Responsive(
+                              mobile: TransactionsGridView(
+                                crossAxisCount: _size.width < 650 ? 2 : 4,
+                                childAspectRatio:
+                                    _size.width < 650 && _size.width > 350
+                                        ? 1
+                                        : 1,
+                              ),
+                              tablet: const TransactionsGridView(),
+                              desktop: TransactionsGridView(
+                                childAspectRatio:
+                                    _size.width < 1400 ? 1.1 : 1.4,
+                              ),
+                            ),
+                            verticalSpaceRegular,
+                            const TransactionRow(
+                              title: 'User(Employees)',
+                              cardText: 'More',
+                            ),
+                            verticalSpaceRegular,
+                            // for (final transaction in userList) ...[
+                            TransactionsCard(),
+                            // ],
+                            verticalSpaceRegular,
+                            if (!Responsive.isDesktop(context))
+                              const SizedBox(height: defaultPadding),
+                            if (Responsive.isMobile(context)) ...[
+                              const AllExpensesCard(),
+                              verticalSpaceRegular,
+                              // const QuickTransferCard()
+                            ],
+                            verticalSpaceRegular
+                          ],
                         ),
                       ),
                     ),
                   ],
                 ),
-                height: height * 0.20,
               ),
-              verticalSpaceRegular,
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Responsive(
-                        mobile: TransactionsGridView(
-                          crossAxisCount: _size.width < 650 ? 2 : 4,
-                          childAspectRatio:
-                              _size.width < 650 && _size.width > 350 ? 1 : 1,
-                        ),
-                        tablet: const TransactionsGridView(),
-                        desktop: TransactionsGridView(
-                          childAspectRatio: _size.width < 1400 ? 1.1 : 1.4,
-                        ),
-                      ),
-                      verticalSpaceRegular,
-                      const TransactionRow(
-                        title: 'User(Employees)',
-                        cardText: 'More',
-                      ),
-                      verticalSpaceRegular,
-                      // for (final transaction in userList) ...[
-                      TransactionsCard(),
-                      // ],
-                      verticalSpaceRegular,
-                      if (!Responsive.isDesktop(context))
-                        const SizedBox(height: defaultPadding),
-                      if (Responsive.isMobile(context)) ...[
-                        const AllExpensesCard(),
-                        verticalSpaceRegular,
-                        // const QuickTransferCard()
-                      ],
-                      verticalSpaceRegular
-                    ],
+              horizontalSpaceSmall,
+              if (Responsive.isDesktop(context))
+                Expanded(
+                  child: Padding(
+                    padding: kEdgeInsetsAllSmall,
+                    child: const ExpensesDetails(),
                   ),
                 ),
-              ),
             ],
-          ),
-        ),
-        horizontalSpaceSmall,
-        if (Responsive.isDesktop(context))
-          Expanded(
-            child: Padding(
-              padding: kEdgeInsetsAllSmall,
-              child: const ExpensesDetails(),
-            ),
-          ),
-      ],
-    );
+          );
+        });
   }
 }

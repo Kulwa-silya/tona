@@ -3,6 +3,7 @@ import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
 import 'package:machafuapp/Admin/Shared/myEditorDialog.dart';
+import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,8 +12,10 @@ import '../../Models/getUserList.dart';
 import '../../consts/colorTheme.dart';
 
 class UserConfig extends StatefulWidget {
-  String acctok;
-  UserConfig({Key? key, required this.acctok}) : super(key: key);
+  // String acctok;
+  UserConfig({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<UserConfig> createState() => _UserConfigState();
@@ -34,7 +37,9 @@ class _UserConfigState extends State<UserConfig> {
     http.Response res = await userProvider.fetchInfoe(accesTok!);
 
     setState(() {
+      isloading = false;
       userList = welcomeFromJson(res.body);
+      isloading = true;
     });
 
     // print(accesTok);
@@ -172,7 +177,6 @@ class _UserConfigState extends State<UserConfig> {
                           fname: fname,
                           lname: lname,
                           phone: phone,
-                          axxton: widget.acctok,
                         )));
               },
               child: Center(
@@ -197,7 +201,7 @@ class _UserConfigState extends State<UserConfig> {
               // String? email = snap.data[index]['email'];
               // String? uname = snap.data[index]['username'];
               // int? id = snap.data[index]['id'];
-              isloading == false
+              isloading == true
                   ? SingleChildScrollView(
                       physics: BouncingScrollPhysics(),
                       child: Column(
@@ -270,6 +274,7 @@ class _UserConfigState extends State<UserConfig> {
                                                           widget: "adduser",
                                                           heading:
                                                               "User Editor",
+                                                          whatpart: "user",
                                                           islod: isloading,
                                                           data1: e.last_name,
                                                           data2: e.first_name));
@@ -286,6 +291,7 @@ class _UserConfigState extends State<UserConfig> {
                                                   builder: (_) =>
                                                       myDeletedialog(
                                                           pid: e.id,
+                                                          whatpart: "user",
                                                           email: e.last_name,
                                                           tit: e.first_name));
                                             }),
@@ -313,7 +319,7 @@ class _UserConfigState extends State<UserConfig> {
                       ),
                     )
                   : Center(
-                      child: CircularProgressIndicator(),
+                      child: circularLoader(),
                     )
 
           // children: [Text(id.toString())],

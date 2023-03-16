@@ -17,18 +17,21 @@ class myEditordialog extends StatefulWidget {
   bool? islod;
   String? data3;
   String? data4, data5;
-  int? imageId;
-  String? heading;
-  String? widget, image;
+  int? imageId, collId;
+  String? heading, collname;
+  String? widget, image, whatpart;
   String? accesstok;
 
   myEditordialog(
       {Key? key,
       this.data1,
       this.id,
+      this.collname,
       this.heading,
       this.data2,
+      required this.whatpart,
       this.image,
+      this.collId,
       this.imageId,
       this.accesstok,
       required this.islod,
@@ -96,8 +99,7 @@ class _mydialogState extends State<myEditordialog> {
             Uri.parse(
                 "https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/"),
             headers: {
-              HttpHeaders.authorizationHeader:
-                  "JWT $accesTok",
+              HttpHeaders.authorizationHeader: "JWT $accesTok",
               "Accept": "application/json",
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -106,7 +108,7 @@ class _mydialogState extends State<myEditordialog> {
               "description": desc.text,
               "inventory": int.parse(inventory.text),
               "unit_price": unitprice.text,
-              "collection": 1,
+              "collection": widget.collId,
               "images": null
 
               // "title": "heyyy",
@@ -134,6 +136,26 @@ class _mydialogState extends State<myEditordialog> {
     });
 
     print(response);
+  }
+
+  updateUser() async {
+    final response = await http
+        .patch(
+            Uri.parse(
+                "http://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
+            headers: {
+              HttpHeaders.authorizationHeader: "JWT $accesTok",
+              "Accept": "application/json",
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: json.encode({
+              "first_name": title.text,
+              "last_name": desc.text,
+              "user_type": unitprice.text,
+            }))
+        .then((value) async {
+      print(value);
+    });
   }
 
   @override
@@ -423,11 +445,23 @@ class _mydialogState extends State<myEditordialog> {
 
                                 if (formkey.currentState!.validate()) {
                                   formkey.currentState!.save();
-                                  await updateProducts();
+
+                                  if (widget.whatpart == "user") {
+                                    await updateUser();
+                                  } else if (widget.whatpart == "product") {
+                                    await updateProducts();
+                                  }
+
                                   // setState(() {
                                   //   widget.islod = true;
                                   // });
                                   Navigator.pop(context);
+                                  Navigator.of(context)
+                                      .pushReplacement(MaterialPageRoute(
+                                          builder: (context) => Products(
+                                                id: widget.collId,
+                                                title: widget.collname,
+                                              )));
 // await   Navigator.pushAndRemoveUntil(
 //               context,
 //               MaterialPageRoute(builder: (context) => Products(id: widget.id,)),
