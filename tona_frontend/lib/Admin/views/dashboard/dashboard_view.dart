@@ -30,7 +30,7 @@ class DashBoardView extends StatefulWidget {
 class _DashBoardViewState extends State<DashBoardView> {
   MainView mainView = MainView();
 
-  var jsondat;
+  // dynamic jsondat;
 
   String? accesTok;
 
@@ -42,22 +42,38 @@ class _DashBoardViewState extends State<DashBoardView> {
       accesTok = stringValue!;
     });
 
-    print(" tokeni  fee $accesTok");
     return stringValue;
   }
 
+  // fetchUserData() async {
+  //   final response = await http.get(
+  //     Uri.parse("https://tona-production-8ea1.up.railway.app/auth/users/me/"),
+  //     headers: {
+  //       HttpHeaders.authorizationHeader: "JWT $accesTok",
+  //       "Accept": "application/json",
+  //       'Content-Type': 'application/json'
+  //     },
+  //   );
+  //   final jsondat = jsonDecode(response.body);
+  //   print(jsondat);
+  //   return response;
+  // }
+
   fetchUserData() async {
     final response = await http.get(
-      Uri.parse("http://tona-production-8ea1.up.railway.app/auth/users/me/"),
+      Uri.parse('https://tona-production-8ea1.up.railway.app/auth/users/me/'),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
-        // "Accept": "application/json",
-        // 'Content-Type': 'application/json',
+        "Accept": "application/json",
+        'Content-Type': 'application/json'
       },
     );
-    jsondat = jsonDecode(response.body);
-    print("user info $jsondat");
-    print("kulwa tok $accesTok");
+
+       print(response.body);
+       
+    final jsondat = jsonDecode(response.body);
+    print(jsondat);
+ 
     return jsondat;
   }
 

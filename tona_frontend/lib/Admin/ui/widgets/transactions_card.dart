@@ -33,9 +33,6 @@ class _TransactionsCardState extends State<TransactionsCard> {
     setState(() {
       userList = welcomeFromJson(res.body);
     });
-
-    print(res.body);
-    // print(accesTok);
   }
 
   Future getAccessToken() async {
@@ -45,8 +42,6 @@ class _TransactionsCardState extends State<TransactionsCard> {
     setState(() {
       accesTok = stringValue!;
     });
-
-    print(" tokeni hii $accesTok");
     return stringValue;
   }
 

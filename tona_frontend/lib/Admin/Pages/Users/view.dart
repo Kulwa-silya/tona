@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Users/Registration/registerUsers.dart';
 import 'package:http/http.dart' as http;
@@ -71,6 +74,47 @@ class _UserConfigState extends State<UserConfig> {
 
     print(" tokeni $accesTok");
     return stringValue;
+  }
+
+  Future<void> _pullRefresh() async {
+    http.Response res = await userProvider.fetchInfoe(accesTok!);
+
+    setState(() {
+      isloading = false;
+      userList = welcomeFromJson(res.body);
+      isloading = true;
+    });
+  }
+
+  Future updateUser() async {
+    try {
+      final response = await http
+          .patch(
+              Uri.parse(
+                  "http://tona-production-8ea1.up.railway.app/tona_users/users/14/"),
+              headers: {
+                HttpHeaders.authorizationHeader: "JWT $accesTok",
+                "Accept": "application/json",
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: json.encode({
+                // "first_name": fname.text,
+                // "last_name": lname.text,
+                // "user_type": int.parse(utype.text),
+
+                "first_name": "fnametext",
+                "last_name": "lnametext 2222ddd",
+                "user_type": 2
+              }))
+          .then((value) async {
+        print(value);
+      });
+
+      print("res ni ${response.body}");
+      print("status ni ${response.statusCode}");
+    } catch (e) {
+      print("shida ni $e");
+    }
   }
 
   @override
@@ -192,52 +236,57 @@ class _UserConfigState extends State<UserConfig> {
         elevation: 0,
         backgroundColor: ColorTheme.m_white,
       ),
-      body: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: ColorTheme.m_white,
-          child:
+      body: RefreshIndicator(
+        strokeWidth: 1,
+        color: ColorTheme.m_blue,
+        onRefresh: _pullRefresh,
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: ColorTheme.m_white,
+            child:
 
-              // String? email = snap.data[index]['email'];
-              // String? uname = snap.data[index]['username'];
-              // int? id = snap.data[index]['id'];
-              isloading == true
-                  ? SingleChildScrollView(
-                      physics: BouncingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(13),
-                              child: Container(
-                                height: 55,
-                                color: ColorTheme.m_white,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: TextField(
-                                    onChanged: (value) => _runFilter(value),
-                                    decoration: InputDecoration(
-                                      labelText: 'Search',
-                                      labelStyle: TextStyle(
-                                          fontWeight: FontWeight.w300),
-                                      suffixIcon: Icon(
-                                        Icons.search,
-                                        color: ColorTheme.m_blue,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(10.0),
-                                        ),
-                                        borderSide: BorderSide(
+                // String? email = snap.data[index]['email'];
+                // String? uname = snap.data[index]['username'];
+                // int? id = snap.data[index]['id'];
+                isloading == true
+                    ? SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(13),
+                                child: Container(
+                                  height: 55,
+                                  color: ColorTheme.m_white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextField(
+                                      onChanged: (value) => _runFilter(value),
+                                      decoration: InputDecoration(
+                                        labelText: 'Search',
+                                        labelStyle: TextStyle(
+                                            fontWeight: FontWeight.w300),
+                                        suffixIcon: Icon(
+                                          Icons.search,
                                           color: ColorTheme.m_blue,
                                         ),
-                                      ),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: ColorTheme.m_blue),
-                                        borderRadius: const BorderRadius.all(
-                                          const Radius.circular(10.0),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.circular(10.0),
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: ColorTheme.m_blue,
+                                          ),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: ColorTheme.m_blue),
+                                          borderRadius: const BorderRadius.all(
+                                            const Radius.circular(10.0),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -245,98 +294,105 @@ class _UserConfigState extends State<UserConfig> {
                                 ),
                               ),
                             ),
-                          ),
-                          ...userList.map(
-                            (e) {
-                              setState(() {
-                                fname = e.first_name;
-                                lname = e.last_name;
-                                phone = e.phone_number;
-                              });
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                                    child: ListTile(
-                                      title: Text(e.first_name),
-                                      subtitle: Text(e.last_name),
-                                      trailing: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (_) =>
-                                                      myEditordialog(
-                                                          widget: "adduser",
-                                                          heading:
-                                                              "User Editor",
-                                                          whatpart: "user",
-                                                          islod: isloading,
-                                                          data1: e.last_name,
-                                                          data2: e.first_name));
-                                            },
-                                            icon: Icon(
-                                              Icons.edit,
-                                              color: ColorTheme.m_blue,
+                            ...userList.map(
+                              (e) {
+                                setState(() {
+                                  fname = e.first_name;
+                                  lname = e.last_name;
+                                  phone = e.phone_number;
+                                });
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                      color:
+                                          ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                                      child: ListTile(
+                                        title: Text(e.first_name),
+                                        subtitle: Text(e.last_name),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              onPressed: () {
+                                                // updateUser();
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (_) =>
+                                                        myEditordialog(
+                                                            widget: "adduser",
+                                                            heading:
+                                                                "User Editor",
+                                                            whatpart: "user",
+                                                            id: e.id,
+                                                            islod: isloading,
+                                                            data1: e.last_name,
+                                                            data2: e.first_name,
+                                                            data3: e.user_type
+                                                                .toString())
+
+                                                                );
+                                              },
+                                              icon: Icon(
+                                                Icons.edit,
+                                                color: ColorTheme.m_blue,
+                                              ),
                                             ),
-                                          ),
-                                          IconButton(
-                                            onPressed: (() {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (_) =>
-                                                      myDeletedialog(
-                                                          pid: e.id,
-                                                          whatpart: "user",
-                                                          email: e.last_name,
-                                                          tit: e.first_name));
-                                            }),
-                                            icon: Icon(
-                                              Icons.delete,
-                                              color: ColorTheme.m_red,
-                                            ),
-                                          )
-                                        ],
+                                            IconButton(
+                                              onPressed: (() {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (_) =>
+                                                        myDeletedialog(
+                                                            pid: e.id,
+                                                            whatpart: "user",
+                                                            email: e.last_name,
+                                                            tit: e.first_name));
+                                              }),
+                                              icon: Icon(
+                                                Icons.delete,
+                                                color: ColorTheme.m_red,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          )
-                          //  ClipRRect(
-                          //         borderRadius: BorderRadius.circular(30),
-                          //         child: Container(
-                          //           height: 50,
-                          //           width: 50,
-                          //           color: ColorTheme.m_blue,
-                          //         )),
-                        ],
-                      ),
-                    )
-                  : Center(
-                      child: circularLoader(),
-                    )
+                                );
+                              },
+                            )
+                            //  ClipRRect(
+                            //         borderRadius: BorderRadius.circular(30),
+                            //         child: Container(
+                            //           height: 50,
+                            //           width: 50,
+                            //           color: ColorTheme.m_blue,
+                            //         )),
+                          ],
+                        ),
+                      )
+                    : Center(
+                        child: circularLoader(),
+                      )
 
-          // children: [Text(id.toString())],
+            // children: [Text(id.toString())],
 
-          // title: Text(snap.data.email),
-          // subtitle: Text(snap.data.username),
+            // title: Text(snap.data.email),
+            // subtitle: Text(snap.data.username),
 
-          // ListView(
-          //     children: userdata!.map((dat) {
-          //     return Container(
-          //       child: Text(dat.email!),
-          //       margin: EdgeInsets.all(5),
-          //       padding: EdgeInsets.all(15),
-          //       color: Colors.green[100],
-          //     );
-          //   }).toList());
-          ),
+            // ListView(
+            //     children: userdata!.map((dat) {
+            //     return Container(
+            //       child: Text(dat.email!),
+            //       margin: EdgeInsets.all(5),
+            //       padding: EdgeInsets.all(15),
+            //       color: Colors.green[100],
+            //     );
+            //   }).toList());
+            ),
+      ),
     );
   }
 }

@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:machafuapp/Admin/Controllers/userProvider.dart';
 import 'package:machafuapp/Auth/signIn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
@@ -23,26 +21,6 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   late String accesTok;
 
-  // GettingToken gettingToken = GettingToken();
-
-  // var utoken;
-
-  // @override
-  // void initState() {
-  //   gettingTok();
-  //   super.initState();
-  // }
-
-  // void gettingTok() {
-  //   var token = gettingToken.getAccessToken();
-
-  //   setState(() {
-  //     token = utoken;
-  //   });
-
-  //   print(utoken);
-  // }
-
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
@@ -51,7 +29,6 @@ class _MainViewState extends State<MainView> {
       accesTok = stringValue!;
     });
 
-    print(" tokeni $accesTok");
     return stringValue;
   }
 
@@ -76,7 +53,7 @@ class _MainViewState extends State<MainView> {
 
 //check and logout
   void _resetTimer() {
-    Timer _timer = Timer(Duration(minutes: 1), _logOut);
+    Timer _timer = Timer(Duration(minutes: 1200), _logOut);
 
     if (_inactive) {
       setState(() {
@@ -85,7 +62,7 @@ class _MainViewState extends State<MainView> {
       });
     }
     // _timer.cancel();
-    _timer = Timer(Duration(minutes: 1), _logOut);
+    _timer = Timer(Duration(minutes: 1200), _logOut);
   }
 
   void _logOut() {

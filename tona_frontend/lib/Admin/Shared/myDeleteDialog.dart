@@ -70,7 +70,7 @@ class _mydialogState extends State<myDeletedialog> {
   deleteUser() async {
     final response = await http.delete(
       Uri.parse(
-          "http://tona-production-8ea1.up.railway.app/tona_users/users/${widget.pid}/"),
+          "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.pid}/"),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",
@@ -143,7 +143,7 @@ class _mydialogState extends State<myDeletedialog> {
                         ],
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: ColorTheme.m_red,
+                        primary: ColorTheme.m_blue,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
                       ),
@@ -159,13 +159,13 @@ class _mydialogState extends State<myDeletedialog> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Yeah',
+                            'Yes',
                             style: TextStyle(fontWeight: FontWeight.w200),
                           )
                         ],
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: ColorTheme.m_blue,
+                        primary: ColorTheme.m_red,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
                       ),

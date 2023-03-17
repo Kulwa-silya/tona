@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/Pages/Users/view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../consts/colorTheme.dart';
 import 'myTextFormField.dart';
@@ -48,7 +49,9 @@ class myEditordialog extends StatefulWidget {
 class _mydialogState extends State<myEditordialog> {
   TextEditingController name = new TextEditingController();
   TextEditingController email = new TextEditingController();
-  TextEditingController phone = new TextEditingController();
+  TextEditingController fname = new TextEditingController();
+  TextEditingController lname = new TextEditingController();
+  TextEditingController utype = new TextEditingController();
   TextEditingController title = new TextEditingController();
   TextEditingController desc = new TextEditingController();
   TextEditingController inventory = new TextEditingController();
@@ -94,7 +97,7 @@ class _mydialogState extends State<myEditordialog> {
   }
 
   updateProducts() async {
-    final response = await http
+    final responseprod = await http
         .patch(
             Uri.parse(
                 "https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/"),
@@ -115,9 +118,6 @@ class _mydialogState extends State<myEditordialog> {
               // "description": "desc.text",
             }))
         .then((value) async {
-      print(widget.id);
-
-      print(widget.accesstok);
       if (pickedFile != null) {
         var request = http.MultipartRequest(
             'PATCH',
@@ -135,27 +135,33 @@ class _mydialogState extends State<myEditordialog> {
       }
     });
 
-    print(response);
+    print(responseprod);
   }
 
-  updateUser() async {
+  Future updateUser() async {
     final response = await http
         .patch(
             Uri.parse(
-                "http://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
+                "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
             headers: {
               HttpHeaders.authorizationHeader: "JWT $accesTok",
               "Accept": "application/json",
               'Content-Type': 'application/json; charset=UTF-8',
             },
             body: json.encode({
-              "first_name": title.text,
-              "last_name": desc.text,
-              "user_type": unitprice.text,
+              "first_name": fname.text,
+              "last_name": lname.text,
+              "user_type": int.parse(utype.text)
+
+              // "first_name": "fname.text",
+              // "last_name": "lname.text 2222ddd",
+              // "user_type": 2,
             }))
         .then((value) async {
       print(value);
     });
+
+    print("res ni $response");
   }
 
   @override
@@ -166,6 +172,9 @@ class _mydialogState extends State<myEditordialog> {
     desc = new TextEditingController(text: widget.data2);
     inventory = new TextEditingController(text: widget.data3);
     unitprice = new TextEditingController(text: widget.data4);
+    fname = new TextEditingController(text: widget.data1);
+    lname = new TextEditingController(text: widget.data2);
+    utype = new TextEditingController(text: widget.data3);
   }
 
   bool saveAttempt = false;
@@ -200,7 +209,7 @@ class _mydialogState extends State<myEditordialog> {
                     widget.widget == "adduser"
                         ? mytextField(
                             kybType: TextInputType.emailAddress,
-                            contro: name,
+                            contro: fname,
                             // value: widget.data1,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "Fill the new Username",
@@ -223,7 +232,7 @@ class _mydialogState extends State<myEditordialog> {
                     widget.widget == "adduser"
                         ? mytextField(
                             kybType: TextInputType.emailAddress,
-                            contro: email,
+                            contro: lname,
                             // value: widget.data2,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "fill the new email",
@@ -246,11 +255,11 @@ class _mydialogState extends State<myEditordialog> {
                     widget.widget == "adduser"
                         ? mytextField(
                             kybType: TextInputType.emailAddress,
-                            contro: phone,
+                            contro: utype,
                             // value: widget.data3,
                             autoval: AutovalidateMode.onUserInteraction,
                             hint: "fill the new phone",
-                            hintLebel: "${widget.data3}",
+                            hintLebel: "${widget.data3} ${widget.id}",
                             validateText: "Fill in your phone",
                             finalvalidateText: "Invalid Phone Format",
                             icodata: Icons.email,
@@ -268,46 +277,49 @@ class _mydialogState extends State<myEditordialog> {
                         : SizedBox.shrink(),
 
                     //products dialogs fields
-
-                    widget.image != null
-                        ? GestureDetector(
-                            onTap: () {
-                              uploadImage();
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 200,
-                                child: _isImageSelected == true
-                                    ? Image.file(_imageFile!)
-                                    : FadeInImage.assetNetwork(
-                                        image: widget.image!,
-                                        fit: BoxFit.cover,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 200,
-                                        placeholder:
-                                            'assets/images/image_1.png',
-                                        imageErrorBuilder:
-                                            (BuildContext? context,
+                    widget.widget == "addproduct"
+                        ? widget.image != null
+                            ? GestureDetector(
+                                onTap: () {
+                                  uploadImage();
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 200,
+                                    child: _isImageSelected == true
+                                        ? Image.file(_imageFile!)
+                                        : FadeInImage.assetNetwork(
+                                            image: widget.image!,
+                                            fit: BoxFit.cover,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            placeholder:
+                                                'assets/images/image_1.png',
+                                            imageErrorBuilder: (BuildContext?
+                                                        context,
                                                     Object? error,
                                                     StackTrace? stackTrace) =>
                                                 Image.asset(
-                                          'assets/images/image_1.png',
-                                          height: 30,
-                                          width: 30,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ExtendedImage.asset(
-                                fit: BoxFit.cover, "assets/images/image_1.png"),
-                          ),
+                                              'assets/images/image_1.png',
+                                              height: 30,
+                                              width: 30,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ExtendedImage.asset(
+                                    fit: BoxFit.cover,
+                                    "assets/images/image_1.png"),
+                              )
+                        : SizedBox.shrink(),
                     widget.widget == "addproduct"
                         ? mytextField(
                             kybType: TextInputType.text,
@@ -448,20 +460,26 @@ class _mydialogState extends State<myEditordialog> {
 
                                   if (widget.whatpart == "user") {
                                     await updateUser();
+                                    Navigator.pop(context);
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UserConfig()));
                                   } else if (widget.whatpart == "product") {
                                     await updateProducts();
+                                    Navigator.pop(context);
+                                    Navigator.of(context)
+                                        .pushReplacement(MaterialPageRoute(
+                                            builder: (context) => Products(
+                                                  id: widget.collId,
+                                                  title: widget.collname,
+                                                )));
                                   }
 
                                   // setState(() {
                                   //   widget.islod = true;
                                   // });
-                                  Navigator.pop(context);
-                                  Navigator.of(context)
-                                      .pushReplacement(MaterialPageRoute(
-                                          builder: (context) => Products(
-                                                id: widget.collId,
-                                                title: widget.collname,
-                                              )));
+
 // await   Navigator.pushAndRemoveUntil(
 //               context,
 //               MaterialPageRoute(builder: (context) => Products(id: widget.id,)),
