@@ -60,21 +60,26 @@ class _DashBoardViewState extends State<DashBoardView> {
   // }
 
   fetchUserData() async {
-    final response = await http.get(
-      Uri.parse('https://tona-production-8ea1.up.railway.app/auth/users/me/'),
-      headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
-        "Accept": "application/json",
-        'Content-Type': 'application/json'
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('https://tona-production-8ea1.up.railway.app/auth/users/me/'),
+        headers: {
+          HttpHeaders.authorizationHeader: "JWT $accesTok",
+          "Accept": "application/json",
+          'Content-Type': 'application/json'
+        },
+      );
 
-       print(response.body);
-       
-    final jsondat = jsonDecode(response.body);
-    print(jsondat);
- 
-    return jsondat;
+      if (response.statusCode == 200) {
+        final jsondat = jsonDecode(response.body);
+        print(jsondat);
+        return jsondat;
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print('Error during http request: $e');
+    }
   }
 
   @override
