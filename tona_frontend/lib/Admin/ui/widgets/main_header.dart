@@ -8,12 +8,12 @@ import '../shared/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class MainHeader extends ViewModelWidget<MainViewModel> {
-  const MainHeader({Key? key}) : super(key: key);
+  String? name;
+   MainHeader({required this.name, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, viewModel) {
     return Row(
-      
       children: [
         SizedBox(
           height: 100,
@@ -36,7 +36,7 @@ class MainHeader extends ViewModelWidget<MainViewModel> {
               style: kBodyRegularTextStyle,
             ),
             Text(
-              'Machafu',
+              '${name}',
               style: kHeading3TextStyle,
             ),
           ],

@@ -72,6 +72,9 @@ class _mydialogState extends State<myEditordialog> {
 
   String? accesTok;
 
+  bool showtextfields = false;
+  bool showtextauthfields = false;
+
   Future<void> uploadImage() async {
     pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -164,6 +167,32 @@ class _mydialogState extends State<myEditordialog> {
     print("res ni $response");
   }
 
+  Future updateAuthDetails() async {
+    final response = await http
+        .patch(
+            Uri.parse(
+                "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
+            headers: {
+              HttpHeaders.authorizationHeader: "JWT $accesTok",
+              "Accept": "application/json",
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: json.encode({
+              "first_name": fname.text,
+              "last_name": lname.text,
+              "user_type": int.parse(utype.text)
+
+              // "first_name": "fname.text",
+              // "last_name": "lname.text 2222ddd",
+              // "user_type": 2,
+            }))
+        .then((value) async {
+      print(value);
+    });
+
+    print("res ni $response");
+  }
+
   @override
   void initState() {
     print(widget.imageId);
@@ -194,87 +223,161 @@ class _mydialogState extends State<myEditordialog> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 8),
-                      child: Center(
-                        child: Text(
-                          "${widget.heading}",
-                          style: TextStyle(
-                              color: ColorTheme.m_blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                      ),
+                      child: showtextfields == false
+                          ? SizedBox.shrink()
+                          : Center(
+                              child: Text(
+                                "${widget.heading}",
+                                style: TextStyle(
+                                    color: ColorTheme.m_blue,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                            ),
                     ),
 
                     // //userdialogtextfields
-                    widget.widget == "adduser"
-                        ? mytextField(
-                            kybType: TextInputType.emailAddress,
-                            contro: fname,
-                            // value: widget.data1,
-                            autoval: AutovalidateMode.onUserInteraction,
-                            hint: "Fill the new Username",
-                            hintLebel: "${widget.data1.toString()}",
-                            validateText: "Fill in the Username",
-                            finalvalidateText: "Invalid UserName Format",
-                            icodata: Icons.person,
-                            // inputFormatter: [
-                            //   FilteringTextInputFormatter.deny(
-                            //       new RegExp(r"\s\b|\b\s"))
-                            // ],
-                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                "\\@" +
-                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                                "(" +
-                                "\\." +
-                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                                ")+")
-                        : SizedBox.shrink(),
-                    widget.widget == "adduser"
-                        ? mytextField(
-                            kybType: TextInputType.emailAddress,
-                            contro: lname,
-                            // value: widget.data2,
-                            autoval: AutovalidateMode.onUserInteraction,
-                            hint: "fill the new email",
-                            hintLebel: "${widget.data2}",
-                            validateText: "Fill in your email",
-                            finalvalidateText: "Invalid Email Format",
-                            icodata: Icons.email,
-                            // inputFormatter: [
-                            //   FilteringTextInputFormatter.deny(
-                            //       new RegExp(r"\s\b|\b\s"))
-                            // ],
-                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                "\\@" +
-                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                                "(" +
-                                "\\." +
-                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                                ")+")
-                        : SizedBox.shrink(),
-                    widget.widget == "adduser"
-                        ? mytextField(
-                            kybType: TextInputType.emailAddress,
-                            contro: utype,
-                            // value: widget.data3,
-                            autoval: AutovalidateMode.onUserInteraction,
-                            hint: "fill the new phone",
-                            hintLebel: "${widget.data3} ${widget.id}",
-                            validateText: "Fill in your phone",
-                            finalvalidateText: "Invalid Phone Format",
-                            icodata: Icons.email,
-                            // inputFormatter: [
-                            //   FilteringTextInputFormatter.deny(
-                            //       new RegExp(r"\s\b|\b\s"))
-                            // ],
-                            regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                "\\@" +
-                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                                "(" +
-                                "\\." +
-                                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                                ")+")
-                        : SizedBox.shrink(),
+
+                    showtextfields == false && widget.widget == "adduser"
+                        ? Column(
+                            children: [
+                              Text(
+                                "Update?",
+                                style: TextStyle(
+                                    fontSize: 22, fontWeight: FontWeight.w300),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            showtextfields = true;
+                                          });
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(17),
+                                          child: Container(
+                                              color: ColorTheme.m_blue,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "Login Details",
+                                                  style: TextStyle(
+                                                      color:
+                                                          ColorTheme.m_white),
+                                                ),
+                                              )),
+                                        )),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            showtextauthfields = true;
+                                          });
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(17),
+                                          child: Container(
+                                              color: ColorTheme.m_blue,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "Other Details",
+                                                  style: TextStyle(
+                                                      color:
+                                                          ColorTheme.m_white),
+                                                ),
+                                              )),
+                                        )),
+                                  ],
+                                ),
+                              )
+                            ],
+                          )
+                        : Column(
+                            children: [
+                              widget.widget == "adduser"
+                                  ? mytextField(
+                                      kybType: TextInputType.emailAddress,
+                                      contro: fname,
+                                      // value: widget.data1,
+                                      autoval:
+                                          AutovalidateMode.onUserInteraction,
+                                      hint: "Fill the new Username",
+                                      hintLebel: "${widget.data1.toString()}",
+                                      validateText: "Fill in the Username",
+                                      finalvalidateText:
+                                          "Invalid UserName Format",
+                                      icodata: Icons.person,
+                                      // inputFormatter: [
+                                      //   FilteringTextInputFormatter.deny(
+                                      //       new RegExp(r"\s\b|\b\s"))
+                                      // ],
+                                      regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                          "\\@" +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                          "(" +
+                                          "\\." +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                          ")+")
+                                  : SizedBox.shrink(),
+                              widget.widget == "adduser"
+                                  ? mytextField(
+                                      kybType: TextInputType.emailAddress,
+                                      contro: lname,
+                                      // value: widget.data2,
+                                      autoval:
+                                          AutovalidateMode.onUserInteraction,
+                                      hint: "fill the new email",
+                                      hintLebel: "${widget.data2}",
+                                      validateText: "Fill in your email",
+                                      finalvalidateText: "Invalid Email Format",
+                                      icodata: Icons.email,
+                                      // inputFormatter: [
+                                      //   FilteringTextInputFormatter.deny(
+                                      //       new RegExp(r"\s\b|\b\s"))
+                                      // ],
+                                      regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                          "\\@" +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                          "(" +
+                                          "\\." +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                          ")+")
+                                  : SizedBox.shrink(),
+                              widget.widget == "adduser"
+                                  ? mytextField(
+                                      kybType: TextInputType.emailAddress,
+                                      contro: utype,
+                                      // value: widget.data3,
+                                      autoval:
+                                          AutovalidateMode.onUserInteraction,
+                                      hint: "fill the new phone",
+                                      hintLebel: "${widget.data3} ${widget.id}",
+                                      validateText: "Fill in your phone",
+                                      finalvalidateText: "Invalid Phone Format",
+                                      icodata: Icons.email,
+                                      // inputFormatter: [
+                                      //   FilteringTextInputFormatter.deny(
+                                      //       new RegExp(r"\s\b|\b\s"))
+                                      // ],
+                                      regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                          "\\@" +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                          "(" +
+                                          "\\." +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                          ")+")
+                                  : SizedBox.shrink(),
+                            ],
+                          ),
 
                     //products dialogs fields
                     widget.widget == "addproduct"
@@ -412,73 +515,81 @@ class _mydialogState extends State<myEditordialog> {
                     //         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                     //         ")+")
                     // : SizedBox.shrink(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            child: Text(
-                              'Close',
-                              style: TextStyle(fontWeight: FontWeight.w200),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: ColorTheme.m_red,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0)),
-                            ),
-                            onPressed: () async {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                        Padding(
-                            padding: EdgeInsets.all(8),
-                            child: ElevatedButton(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Update',
+
+                    showtextfields == true || widget.widget == "addproduct"
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  child: Text(
+                                    'Close',
                                     style:
                                         TextStyle(fontWeight: FontWeight.w200),
-                                  )
-                                ],
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                primary: ColorTheme.m_blue,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0)),
-                              ),
-                              onPressed: () async {
-                                setState(() {
-                                  saveAttempt = true;
-                                });
-
-                                if (formkey.currentState!.validate()) {
-                                  formkey.currentState!.save();
-
-                                  if (widget.whatpart == "user") {
-                                    await updateUser();
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: ColorTheme.m_red,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                  ),
+                                  onPressed: () async {
                                     Navigator.pop(context);
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                UserConfig()));
-                                  } else if (widget.whatpart == "product") {
-                                    await updateProducts();
-                                    Navigator.pop(context);
-                                    Navigator.of(context)
-                                        .pushReplacement(MaterialPageRoute(
-                                            builder: (context) => Products(
-                                                  id: widget.collId,
-                                                  title: widget.collname,
-                                                )));
-                                  }
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: ElevatedButton(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Update',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w200),
+                                        )
+                                      ],
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: ColorTheme.m_blue,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                    ),
+                                    onPressed: () async {
+                                      setState(() {
+                                        saveAttempt = true;
+                                      });
 
-                                  // setState(() {
-                                  //   widget.islod = true;
-                                  // });
+                                      if (formkey.currentState!.validate()) {
+                                        formkey.currentState!.save();
+
+                                        if (widget.whatpart == "user") {
+                                          await updateUser();
+                                          Navigator.pop(context);
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UserConfig()));
+                                        } else if (widget.whatpart ==
+                                            "product") {
+                                          await updateProducts();
+                                          Navigator.pop(context);
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Products(
+                                                        id: widget.collId,
+                                                        title: widget.collname,
+                                                      )));
+                                        }
+
+                                        // setState(() {
+                                        //   widget.islod = true;
+                                        // });
 
 // await   Navigator.pushAndRemoveUntil(
 //               context,
@@ -486,11 +597,12 @@ class _mydialogState extends State<myEditordialog> {
 //               (Route<dynamic> route) => false,
 //             );
 //                                 }
-                                }
-                              },
-                            )),
-                      ],
-                    ),
+                                      }
+                                    },
+                                  )),
+                            ],
+                          )
+                        : SizedBox.shrink()
                   ],
                 ),
               ),
