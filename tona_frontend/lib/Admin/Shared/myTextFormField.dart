@@ -48,14 +48,14 @@ class mytextField extends StatelessWidget {
         validator: (Value) {
           if (Value!.isEmpty) {
             return validateText;
-          } else if (maxlength! < 9) {
+          } else if (Value.length < 9 && maxlength == 9) {
             return numbererrotxt;
           }
           RegExp regExp = new RegExp(regExpn!);
           if (regExp.hasMatch(Value)) {
             return null;
           }
-          return finalvalidateText;
+          // return finalvalidateText;
         },
         controller: contro,
         // initialValue: value,
