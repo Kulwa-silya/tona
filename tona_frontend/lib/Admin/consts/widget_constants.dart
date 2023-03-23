@@ -6,7 +6,7 @@ import 'package:machafuapp/Admin/Pages/Purchases/purchases.dart';
 import 'package:machafuapp/Admin/ui/widgets/wallet_card.dart';
 import 'package:flutter/material.dart';
 
-const List<Widget> demoTransactions = [
+ List<Widget> demoTransactions = [
   WalletCard(
     onBTap: ProductCat(),
     icon: Icons.money,
