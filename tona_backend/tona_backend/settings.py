@@ -163,9 +163,9 @@ SIMPLE_JWT = {
 DJOSER = {
     'SERIALIZERS':
     {
-        'user_create': 'tona_backend.serializers.UserCreateSerializer',
-        'user': 'tona_backend.serializers.UserCreateSerializer',
-        'current_user': 'tona_backend.serializers.UserSerializer',
+        'user_create': 'tona_users.serializers.UserCreateSerializer',
+        'user': 'tona_users.serializers.UserCreateSerializer',
+        'current_user': 'tona_users.serializers.UserSerializer',
     }
 }
 

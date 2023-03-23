@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from tona_backend.serializers import UserSerializer
+from tona_users.serializers import UserSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
