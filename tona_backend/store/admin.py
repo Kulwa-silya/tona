@@ -135,3 +135,11 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(models.OrderDelivery)
 class OrderDeliveryAdmin(admin.ModelAdmin):
     list_display = ['order','delivery_person', 'status']
+
+@admin.register(models.SoldProduct)
+class SoldProductAdmin(admin.ModelAdmin):
+    list_display = ['product','quantity','date']
+
+@admin.register(models.Sale)
+class SaleAdmin(admin.ModelAdmin):
+    list_display = ['date','total_amount']

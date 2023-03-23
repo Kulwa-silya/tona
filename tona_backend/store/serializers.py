@@ -3,6 +3,7 @@ from django.db import transaction
 from rest_framework import serializers
 from .signals import order_created
 from .models import *
+from tona_users.serializers import *
 # Cart, CartItem, Customer, Order, OrderItem, Product, Collection, ProductImage, Review
 
 
@@ -119,10 +120,11 @@ class UpdateCartItemSerializer(serializers.ModelSerializer):
 
 class CustomerSerializer(serializers.ModelSerializer):
     # user_id = serializers.IntegerField(read_only=True)
-
+    user = UserSerializer()
     class Meta:
         model = Customer
-        fields = ('__all__')
+        # fields = ('__all__')
+        fields = ['id','street','city','user']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -193,9 +195,12 @@ class PurchasedProductSerializer(serializers.ModelSerializer):
 
     
 class SoldProductSerializer(serializers.ModelSerializer):
+    # product = SimpleProductSerializer()
+    # customer = CustomerSerializer()
     class Meta:
         model = SoldProduct
-        fields = fields = ('__all__')
+        fields = ['id','quantity','date','product','customer']
+
 
 
 
