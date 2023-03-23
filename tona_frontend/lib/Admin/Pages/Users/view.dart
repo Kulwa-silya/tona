@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Controllers/userProvider.dart';
 import '../../Models/getUserList.dart';
 import '../../consts/colorTheme.dart';
+import '../../ui/shared/text_styles.dart';
 
 class UserConfig extends StatefulWidget {
   // String acctok;
@@ -309,8 +310,25 @@ class _UserConfigState extends State<UserConfig> {
                                       color:
                                           ColorTheme.m_blue_mpauko_zaidi_zaidi,
                                       child: ListTile(
-                                        title: Text(e.first_name),
-                                        subtitle: Text(e.last_name),
+                                        title: Row(
+                                          children: [
+                                            Text(
+                                              e.first_name,
+                                              style: kBodyRegularTextStyle,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(
+                                              e.last_name,
+                                              style: kBodyRegularTextStyle,
+                                            ),
+                                          ],
+                                        ),
+                                        subtitle: Text(
+                                          e.phone_number,
+                                          style: kTinyBoldTextStyle,
+                                        ),
                                         trailing: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
@@ -330,9 +348,9 @@ class _UserConfigState extends State<UserConfig> {
                                                             data1: e.last_name,
                                                             data2: e.first_name,
                                                             data3: e.user_type
-                                                                .toString())
-
-                                                                );
+                                                                .toString(),
+                                                            data4: e
+                                                                .phone_number));
                                               },
                                               icon: Icon(
                                                 Icons.edit,

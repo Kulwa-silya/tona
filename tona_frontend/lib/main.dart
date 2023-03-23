@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Auth/signIn.dart';
 
 void main() {

@@ -25,7 +25,12 @@ class mytextField extends StatelessWidget {
       required this.kybType,
       this.inputFormatter})
       : super(key: key);
-  String? validateText, finalvalidateText, hint, hintLebel, regExpn,numbererrotxt;
+  String? validateText,
+      finalvalidateText,
+      hint,
+      hintLebel,
+      regExpn,
+      numbererrotxt;
   IconData icodata;
   Widget? prex;
   TextInputType kybType;
@@ -36,25 +41,25 @@ class mytextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(6),
+      padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
       child: TextFormField(
         keyboardType: kybType,
         autovalidateMode: autoval,
-        validator: (emailValue) {
-          if (emailValue!.isEmpty) {
+        validator: (Value) {
+          if (Value!.isEmpty) {
             return validateText;
-          } else if (emailValue.length < 9) {
+          } else if (Value.length < 9 && maxlength == 9) {
             return numbererrotxt;
           }
           RegExp regExp = new RegExp(regExpn!);
-          if (regExp.hasMatch(emailValue)) {
+          if (regExp.hasMatch(Value)) {
             return null;
           }
-          return finalvalidateText;
+          // return finalvalidateText;
         },
         controller: contro,
         // initialValue: value,
-        maxLength: maxlength,
+        // maxLength: maxlength,
         inputFormatters: inputFormatter,
         decoration: InputDecoration(
           prefixIcon: Icon(icodata),

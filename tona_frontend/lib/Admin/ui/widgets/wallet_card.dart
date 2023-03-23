@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
+import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import '../shared/colors.dart';
 import '../shared/edge_insect.dart';
 import '../shared/text_styles.dart';
@@ -39,7 +40,7 @@ class WalletCard extends StatelessWidget {
         future: fetchProductsCategory(),
         builder: (context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
-            return SizedBox.shrink();
+            return Shimer();
           }
           return GestureDetector(
             onTap: () {
