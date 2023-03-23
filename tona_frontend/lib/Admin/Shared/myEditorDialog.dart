@@ -158,7 +158,9 @@ class _mydialogState extends State<myEditordialog> {
               "last_name": lname.text,
               "user_type": int.parse(utype.text),
               "phone_number": phone.text,
-              "password": paaswd.text.isEmpty ? "Machafu2023" : paaswd.text,
+              "password": paaswd.text == "Fill in new password"
+                  ? "Machafu2023"
+                  : paaswd.text,
               // "user_type": 2,
             }))
         .then((value) async {
