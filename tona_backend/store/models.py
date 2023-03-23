@@ -1,9 +1,12 @@
 from django.contrib import admin
 from django.conf import settings
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 from django.db import models
 from uuid import uuid4
 from store.validators import validate_file_size
+from datetime import date
 
 
 class Promotion(models.Model):
@@ -169,17 +172,45 @@ class Purchase(models.Model):
 class SoldProduct(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='productSold')
-    quantity = models.IntegerField()
-    date = models.DateField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
-    customer = models.ForeignKey(Customer, related_name='customer', on_delete=models.CASCADE)
+    quantity = models.IntegerField(validators=[MinValueValidator(1)])
+    date = models.DateField(auto_now_add=True)
+    # unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    customer = models.ForeignKey(Customer, blank=True,null=True, 
+                                 related_name='customer', on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        if self.product.inventory >= self.quantity:
+            super().save(*args, **kwargs)
+            # update inventory
+            self.product.inventory -= self.quantity
+            self.product.save()
+
+            # update sales
+            sales = Sale.objects.get_or_create(date=date.today())[0]
+            sales.sold_products.add(self)
+            sales.total_amount += self.quantity
+            sales.calculate_total_income()
+            sales.save()
+        else:
+            raise ValueError("Not enough inventory to fulfill this request.")
+    
 
 
 class Sale(models.Model):
-    date = models.DateField()
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    sold_products = models.ManyToManyField(SoldProduct, related_name='soldproduct')
+    date = models.DateField(default=date.today)
+    total_amount = models.IntegerField(default=0)
+    sold_products = models.ManyToManyField('SoldProduct', related_name='sales')
+    total_income = models.DecimalField(max_digits=9, decimal_places=2, default=0)
 
+    def __str__(self) -> str:
+        return f"Sales for {self.date}"
+    
+    def calculate_total_income(self):
+        total_income = 0
+        for sold_product in self.sold_products.all():
+            total_income += sold_product.quantity * sold_product.product.unit_price
+        self.total_income = total_income
+        self.save()
 
 class AssociatedCost(models.Model):
     name = models.CharField(max_length=255)
