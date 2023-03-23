@@ -254,17 +254,26 @@ class _SingInState extends State<SingIn> {
                                 new RegExp(r"\s\b|\b\s"))
                           ],
                           decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.person),
-                            labelText: 'Phone',
-                            hintText: 'Ex: +255...',
-                            enabledBorder: OutlineInputBorder(
+                            focusedBorder: OutlineInputBorder(
                               borderRadius: const BorderRadius.all(
                                 const Radius.circular(10.0),
                               ),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
+                              borderSide: BorderSide(color: ColorTheme.m_blue),
                             ),
+                            prefixIcon: Icon(Icons.person),
+                            labelText: 'Phone',
+                            labelStyle: TextStyle(color: ColorTheme.m_blue),
+                            focusColor: ColorTheme.m_blue,
+                            prefixIconColor: ColorTheme.m_blue,
+                            hintText: 'Ex: +255...',
+                            // enabledBorder: OutlineInputBorder(
+                            //   borderRadius: const BorderRadius.all(
+                            //     const Radius.circular(10.0),
+                            //   ),
+                            //   borderSide: BorderSide(
+                            //     color: ColorTheme.m_blue,
+                            //   ),
+                            // ),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: ColorTheme.m_blue),
                               borderRadius: const BorderRadius.all(
@@ -291,8 +300,16 @@ class _SingInState extends State<SingIn> {
                           cursorColor: Colors.green[400],
                           decoration: InputDecoration(
                             helperText: "Usiruhusu mtu kuona taarifa hizi.",
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                              borderSide: BorderSide(color: ColorTheme.m_blue),
+                            ),
                             prefixIcon: Icon(Icons.security_rounded),
                             labelText: 'Password',
+                            prefixIconColor: ColorTheme.m_blue,
+                            labelStyle: TextStyle(color: ColorTheme.m_blue),
                             suffix: GestureDetector(
                               onTap: (() => _toggle()),
                               child: _obscureText
@@ -306,12 +323,12 @@ class _SingInState extends State<SingIn> {
                                     ),
                             ),
                             hintText: 'Enter Password',
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
+                            // enabledBorder: const OutlineInputBorder(
+                            //   borderRadius: BorderRadius.all(
+                            //     Radius.circular(10.0),
+                            //   ),
+                            //   borderSide: BorderSide(color: Colors.black),
+                            // ),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: ColorTheme.m_blue),
                               borderRadius: const BorderRadius.all(

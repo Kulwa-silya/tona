@@ -119,7 +119,7 @@ class _mydialogState extends State<myDeletedialog> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "${widget.pid} ?",
+                      "${widget.email} ?",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: ColorTheme.m_grey),

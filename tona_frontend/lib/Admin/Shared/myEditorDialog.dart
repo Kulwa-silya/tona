@@ -52,6 +52,8 @@ class _mydialogState extends State<myEditordialog> {
   TextEditingController fname = new TextEditingController();
   TextEditingController lname = new TextEditingController();
   TextEditingController utype = new TextEditingController();
+  TextEditingController phone = new TextEditingController();
+  TextEditingController paaswd = new TextEditingController();
   TextEditingController title = new TextEditingController();
   TextEditingController desc = new TextEditingController();
   TextEditingController inventory = new TextEditingController();
@@ -145,7 +147,7 @@ class _mydialogState extends State<myEditordialog> {
     final response = await http
         .patch(
             Uri.parse(
-                "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
+                "https://tona-production-8ea1.up.railway.app/auth/users/${widget.id}/"),
             headers: {
               HttpHeaders.authorizationHeader: "JWT $accesTok",
               "Accept": "application/json",
@@ -154,10 +156,9 @@ class _mydialogState extends State<myEditordialog> {
             body: json.encode({
               "first_name": fname.text,
               "last_name": lname.text,
-              "user_type": int.parse(utype.text)
-
-              // "first_name": "fname.text",
-              // "last_name": "lname.text 2222ddd",
+              "user_type": int.parse(utype.text),
+              "phone_number": phone.text,
+              "password": paaswd.text.isEmpty ? "Machafu2023" : paaswd.text,
               // "user_type": 2,
             }))
         .then((value) async {
@@ -167,31 +168,31 @@ class _mydialogState extends State<myEditordialog> {
     print("res ni $response");
   }
 
-  Future updateAuthDetails() async {
-    final response = await http
-        .patch(
-            Uri.parse(
-                "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
-            headers: {
-              HttpHeaders.authorizationHeader: "JWT $accesTok",
-              "Accept": "application/json",
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: json.encode({
-              "first_name": fname.text,
-              "last_name": lname.text,
-              "user_type": int.parse(utype.text)
+  // Future updateAuthDetails() async {
+  //   final response = await http
+  //       .patch(
+  //           Uri.parse(
+  //               "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
+  //           headers: {
+  //             HttpHeaders.authorizationHeader: "JWT $accesTok",
+  //             "Accept": "application/json",
+  //             'Content-Type': 'application/json; charset=UTF-8',
+  //           },
+  //           body: json.encode({
+  //             "first_name": fname.text,
+  //             "last_name": lname.text,
+  //             "user_type": int.parse(utype.text)
 
-              // "first_name": "fname.text",
-              // "last_name": "lname.text 2222ddd",
-              // "user_type": 2,
-            }))
-        .then((value) async {
-      print(value);
-    });
+  //             // "first_name": "fname.text",
+  //             // "last_name": "lname.text 2222ddd",
+  //             // "user_type": 2,
+  //           }))
+  //       .then((value) async {
+  //     print(value);
+  //   });
 
-    print("res ni $response");
-  }
+  //   print("res ni $response");
+  // }
 
   @override
   void initState() {
@@ -204,6 +205,8 @@ class _mydialogState extends State<myEditordialog> {
     fname = new TextEditingController(text: widget.data1);
     lname = new TextEditingController(text: widget.data2);
     utype = new TextEditingController(text: widget.data3);
+    phone = new TextEditingController(text: widget.data4);
+    paaswd = new TextEditingController(text: "Fill in new password");
   }
 
   bool saveAttempt = false;
@@ -256,6 +259,7 @@ class _mydialogState extends State<myEditordialog> {
                                         onTap: () {
                                           setState(() {
                                             showtextfields = true;
+                                            showtextauthfields = true;
                                           });
                                         },
                                         child: ClipRRect(
@@ -277,7 +281,8 @@ class _mydialogState extends State<myEditordialog> {
                                     GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            showtextauthfields = true;
+                                            showtextfields = true;
+                                            // showtextfields = true;
                                           });
                                         },
                                         child: ClipRRect(
@@ -303,18 +308,19 @@ class _mydialogState extends State<myEditordialog> {
                           )
                         : Column(
                             children: [
-                              widget.widget == "adduser"
+                              widget.widget == "adduser" &&
+                                      showtextauthfields == false
                                   ? mytextField(
                                       kybType: TextInputType.emailAddress,
                                       contro: fname,
                                       // value: widget.data1,
                                       autoval:
                                           AutovalidateMode.onUserInteraction,
-                                      hint: "Fill the new Username",
-                                      hintLebel: "${widget.data1.toString()}",
-                                      validateText: "Fill in the Username",
-                                      finalvalidateText:
-                                          "Invalid UserName Format",
+                                      hint: "Fill the new firstname",
+                                      hintLebel: "First Name",
+                                      maxlength: null,
+                                      validateText: "Fill in the first name",
+                                      finalvalidateText: "Invalid name Format",
                                       icodata: Icons.person,
                                       // inputFormatter: [
                                       //   FilteringTextInputFormatter.deny(
@@ -328,17 +334,19 @@ class _mydialogState extends State<myEditordialog> {
                                           "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                                           ")+")
                                   : SizedBox.shrink(),
-                              widget.widget == "adduser"
+                              widget.widget == "adduser" &&
+                                      showtextauthfields == false
                                   ? mytextField(
                                       kybType: TextInputType.emailAddress,
                                       contro: lname,
                                       // value: widget.data2,
                                       autoval:
                                           AutovalidateMode.onUserInteraction,
-                                      hint: "fill the new email",
-                                      hintLebel: "${widget.data2}",
-                                      validateText: "Fill in your email",
-                                      finalvalidateText: "Invalid Email Format",
+                                      hint: "fill the new lastname",
+                                      hintLebel: "Last Name",
+                                      maxlength: null,
+                                      validateText: "Fill in your last name",
+                                      finalvalidateText: "Invalid name Format",
                                       icodata: Icons.email,
                                       // inputFormatter: [
                                       //   FilteringTextInputFormatter.deny(
@@ -352,7 +360,8 @@ class _mydialogState extends State<myEditordialog> {
                                           "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
                                           ")+")
                                   : SizedBox.shrink(),
-                              widget.widget == "adduser"
+                              widget.widget == "adduser" &&
+                                      showtextauthfields == false
                                   ? mytextField(
                                       kybType: TextInputType.emailAddress,
                                       contro: utype,
@@ -360,9 +369,63 @@ class _mydialogState extends State<myEditordialog> {
                                       autoval:
                                           AutovalidateMode.onUserInteraction,
                                       hint: "fill the new phone",
-                                      hintLebel: "${widget.data3} ${widget.id}",
+                                      hintLebel: "User Type",
+                                      maxlength: null,
                                       validateText: "Fill in your phone",
                                       finalvalidateText: "Invalid Phone Format",
+                                      icodata: Icons.email,
+                                      // inputFormatter: [
+                                      //   FilteringTextInputFormatter.deny(
+                                      //       new RegExp(r"\s\b|\b\s"))
+                                      // ],
+                                      regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                          "\\@" +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                          "(" +
+                                          "\\." +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                          ")+")
+                                  : SizedBox.shrink(),
+                              widget.widget == "adduser" &&
+                                      showtextauthfields == true
+                                  ? mytextField(
+                                      kybType: TextInputType.emailAddress,
+                                      contro: phone,
+                                      // value: widget.data3,
+                                      autoval:
+                                          AutovalidateMode.onUserInteraction,
+                                      hint: "fill the new phone",
+                                      hintLebel: "Phone",
+                                      maxlength: 13,
+                                      validateText: "Fill in your phone",
+                                      finalvalidateText: "Invalid Phone Format",
+                                      icodata: Icons.email,
+                                      // inputFormatter: [
+                                      //   FilteringTextInputFormatter.deny(
+                                      //       new RegExp(r"\s\b|\b\s"))
+                                      // ],
+                                      regExpn: "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                          "\\@" +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                          "(" +
+                                          "\\." +
+                                          "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                          ")+")
+                                  : SizedBox.shrink(),
+                              widget.widget == "adduser" &&
+                                      showtextauthfields == true
+                                  ? mytextField(
+                                      kybType: TextInputType.emailAddress,
+                                      contro: paaswd,
+                                      // value: widget.data3,
+                                      autoval:
+                                          AutovalidateMode.onUserInteraction,
+                                      hint: "fill the new password",
+                                      hintLebel: "Password",
+                                      maxlength: null,
+                                      validateText: "Fill in your password",
+                                      finalvalidateText:
+                                          "Invalid password Format",
                                       icodata: Icons.email,
                                       // inputFormatter: [
                                       //   FilteringTextInputFormatter.deny(
