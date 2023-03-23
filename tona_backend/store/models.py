@@ -143,6 +143,8 @@ class Review(models.Model):
     description = models.TextField()
     date = models.DateField(auto_now_add=True)
 
+
+# procurement
 class Supplier(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)

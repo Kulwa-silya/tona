@@ -26,11 +26,22 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
 
     def update(self, instance, validated_data):
-        instance.set_password(validated_data['password'])
-        validated_data.pop('password')
-        return super().update(instance, validated_data)
+        if validated_data['password'] == "Machafu2023":
+            validated_data.pop('password')
+        else:
+            instance.set_password(validated_data['password'])
+            validated_data.pop('password')
 
-   
+        user = User.objects.get(id = instance.id)
+        if validated_data["user_type"] == 1:
+            user.groups.set([1])
+            user.save()
+        if validated_data["user_type"] == 2:
+            user.groups.set([2])
+            user.save()
+        if validated_data["user_type"] == "":
+            user.save()
+        return super().update(instance, validated_data)
 
 
 class UserSerializer(UserSerializer):
@@ -40,4 +51,6 @@ class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         Model = User  
         fields = ['id', 'first_name','last_name','phone_number','user_type']  
+
+    
 
