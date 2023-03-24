@@ -26,6 +26,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
 
     def update(self, instance, validated_data):
+        # handling form submitted  with no password update
         if validated_data['password'] == "Machafu2023":
             validated_data.pop('password')
         else:
@@ -43,7 +44,6 @@ class UserCreateSerializer(BaseUserCreateSerializer):
             user.save()
         return super().update(instance, validated_data)
 
-
 class UserSerializer(UserSerializer):
     """
     displays current logged in user details
@@ -51,6 +51,3 @@ class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         Model = User  
         fields = ['id', 'first_name','last_name','phone_number','user_type']  
-
-    
-

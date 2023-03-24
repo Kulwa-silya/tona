@@ -5,10 +5,12 @@ from rest_framework.response import Response
 from tona_users.serializers import UserSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
+    http_method_names = ['delete']
+
     queryset = get_user_model().objects.all()
     permission_classes = (IsAdminUser,)
     serializer_class = UserSerializer
-
+    
 
     def destroy(self, request, *args, **kwargs):
         print("called")
