@@ -173,44 +173,6 @@ class _ProductsState extends State<Products> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(13),
-              child: Container(
-                height: 55,
-                color: ColorTheme.m_white,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    onChanged: (value) => _runFilter(value),
-                    decoration: InputDecoration(
-                      labelText: 'Search',
-                      labelStyle: TextStyle(fontWeight: FontWeight.w300),
-                      suffixIcon: Icon(
-                        Icons.search,
-                        color: ColorTheme.m_blue,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
-                        borderSide: BorderSide(
-                          color: ColorTheme.m_blue,
-                        ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: ColorTheme.m_blue),
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
           Expanded(
             child: Container(
                 width: MediaQuery.of(context).size.width,
