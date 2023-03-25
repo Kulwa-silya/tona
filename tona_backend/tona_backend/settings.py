@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'tona_users',
     'store',
+    'procurement',
 ]
 
 MIDDLEWARE = [
