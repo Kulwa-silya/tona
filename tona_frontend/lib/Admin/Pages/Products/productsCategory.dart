@@ -24,6 +24,9 @@ class _ProductCatState extends State<ProductCat> {
 
   String? accesTok;
 
+  bool searchoffstg = true;
+  bool collectionoffstg = false;
+
   Future getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
@@ -93,51 +96,127 @@ class _ProductCatState extends State<ProductCat> {
                 ),
               );
             } else {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, int i) {
-                    if (jsondat.isEmpty) {
-                      return CircularProgressIndicator(
-                        strokeWidth: 1,
-                        color: ColorTheme.m_blue,
-                      );
-                    } else {
-                      final data = jsondat[i];
-                      int pid = data['id'];
-                      String title = data['title'];
-                      int count = data['products_count'];
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
-                        child: GestureDetector(
-                            onTap: (() {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Products(
-                                        id: pid,
-                                        title: title,
-                                      )));
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(13),
+                      child: Container(
+                        height: 55,
+                        color: ColorTheme.m_white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            onChanged: (value) {},
+                            onTap: () {
+                              setState(() {
+                                searchoffstg = false;
+                                collectionoffstg = true;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Search Product',
+                              labelStyle:
+                                  TextStyle(fontWeight: FontWeight.w300),
+                              suffixIcon: Icon(
+                                Icons.search,
+                                color: ColorTheme.m_blue,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                                borderSide: BorderSide(
+                                  color: ColorTheme.m_blue,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: ColorTheme.m_blue),
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Offstage(
+                    offstage: searchoffstg,
+                    child: Expanded(
+                      child: Container(
+                        height: 200,
+                        color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                        child: ListView.builder(
+                            itemCount: 5,
+                            itemBuilder: (cnt, i) {
+                              return Text("searched data");
                             }),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(17),
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 100,
-                                    color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          title,
-                                          style: TextStyle(
-                                              color: ColorTheme.m_blue,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(count.toString()),
-                                      ],
-                                    )))),
-                      );
-                    }
-                  });
+                      ),
+                    ),
+                  ),
+                  Offstage(
+                    offstage: collectionoffstg,
+                    child: Expanded(
+                      child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, int i) {
+                            if (jsondat.isEmpty) {
+                              return CircularProgressIndicator(
+                                strokeWidth: 1,
+                                color: ColorTheme.m_blue,
+                              );
+                            } else {
+                              final data = jsondat[i];
+                              int pid = data['id'];
+                              String title = data['title'];
+                              int count = data['products_count'];
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
+                                child: GestureDetector(
+                                    onTap: (() {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                              builder: (context) => Products(
+                                                    id: pid,
+                                                    title: title,
+                                                  )));
+                                    }),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(17),
+                                        child: Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 100,
+                                            color: ColorTheme
+                                                .m_blue_mpauko_zaidi_zaidi,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text(
+                                                  title,
+                                                  style: TextStyle(
+                                                      color: ColorTheme.m_blue,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(count.toString()),
+                                              ],
+                                            )))),
+                              );
+                            }
+                          }),
+                    ),
+                  ),
+                ],
+              );
             }
           }),
     );

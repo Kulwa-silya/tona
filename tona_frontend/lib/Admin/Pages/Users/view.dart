@@ -310,11 +310,19 @@ class _UserConfigState extends State<UserConfig> {
                                       color:
                                           ColorTheme.m_blue_mpauko_zaidi_zaidi,
                                       child: ListTile(
+                                        leading: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            child: Container(
+                                              height: 40,
+                                              width: 40,
+                                              color: ColorTheme.m_blue,
+                                            )),
                                         title: Row(
                                           children: [
                                             Text(
                                               e.first_name,
-                                              style: kBodyRegularTextStyle,
+                                              style: kBodyTextStyle,
                                             ),
                                             SizedBox(
                                               width: 5,
@@ -355,6 +363,7 @@ class _UserConfigState extends State<UserConfig> {
                                               icon: Icon(
                                                 Icons.edit,
                                                 color: ColorTheme.m_blue,
+                                                size: 17,
                                               ),
                                             ),
                                             IconButton(
@@ -370,6 +379,7 @@ class _UserConfigState extends State<UserConfig> {
                                               }),
                                               icon: Icon(
                                                 Icons.delete,
+                                                size: 17,
                                                 color: ColorTheme.m_red,
                                               ),
                                             )

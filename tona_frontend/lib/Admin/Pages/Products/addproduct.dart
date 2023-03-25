@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
@@ -222,14 +223,15 @@ class _AddproductState extends State<Addproduct> {
                           onPressed: () {
                             uploadImage();
                           },
-
                           style: ElevatedButton.styleFrom(
-                                  primary: ColorTheme.m_blue_mpauko,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(80.0)),
-                                ),
-                          child: Text("Pick image")),
+                            primary: ColorTheme.m_blue_mpauko_zaidi,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(80.0)),
+                          ),
+                          child: Text(
+                            "Pick image",
+                            style: kSmallRegularTextStyle,
+                          )),
                       _isImageSelected == false
                           ? SizedBox.shrink()
                           : Padding(
@@ -366,9 +368,9 @@ class _AddproductState extends State<Addproduct> {
 
                       success == true
                           ? CircularProgressIndicator(
-                  strokeWidth: 1,
-                  color: ColorTheme.m_blue,
-                )
+                              strokeWidth: 1,
+                              color: ColorTheme.m_blue,
+                            )
                           : Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 60.0, vertical: 25.0),
