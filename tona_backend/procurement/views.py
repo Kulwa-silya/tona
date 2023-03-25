@@ -32,7 +32,7 @@ class PurchaseViewSet(ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     permission_classes = [DjangoModelPermissions]
-    queryset = Purchase.objects.prefetch_related('purchasedproduct').all()
+    queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
 
     
@@ -42,10 +42,29 @@ class AssociatedCostViewSet(ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     permission_classes = [DjangoModelPermissions]
-    queryset = AssociatedCost.objects.prefetch_related('purchase').all()
+    queryset = AssociatedCost.objects.all()
     serializer_class = AssociatedCostSerializer
 
     # def get_permissions(self):
     #     if self.request.method in ['PATCH', 'DELETE']:
     #         return [IsAdminUser()]
     #     return [IsAuthenticated()]
+
+
+
+class PurchasedProductViewSet(ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    permission_classes = [DjangoModelPermissions]
+    queryset = PurchasedProduct.objects.all()
+    serializer_class = PurchasedProductSerializer
+
+
+class ReceiptViewSet(ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    permission_classes = [DjangoModelPermissions]
+    queryset = Receipt.objects.all()
+    serializer_class = ReceiptSerializer
