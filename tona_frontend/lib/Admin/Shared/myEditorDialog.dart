@@ -105,7 +105,7 @@ class _mydialogState extends State<myEditordialog> {
     final responseprod = await http
         .patch(
             Uri.parse(
-                "https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/"),
+                "https://tona-production.up.railway.app/store/products/${widget.id}/"),
             headers: {
               HttpHeaders.authorizationHeader: "JWT $accesTok",
               "Accept": "application/json",
@@ -127,7 +127,7 @@ class _mydialogState extends State<myEditordialog> {
         var request = http.MultipartRequest(
             'PATCH',
             Uri.parse(
-                'https://tona-production-8ea1.up.railway.app/store/products/${widget.id}/images/${widget.imageId}/'));
+                'https://tona-production.up.railway.app/store/products/${widget.id}/images/${widget.imageId}/'));
         request.headers['Authorization'] = 'JWT ${widget.accesstok}';
         request.files
             .add(await http.MultipartFile.fromPath('image', pickedFile!.path));
@@ -147,7 +147,7 @@ class _mydialogState extends State<myEditordialog> {
     final response = await http
         .patch(
             Uri.parse(
-                "https://tona-production-8ea1.up.railway.app/auth/users/${widget.id}/"),
+                "https://tona-production.up.railway.app/auth/users/${widget.id}/"),
             headers: {
               HttpHeaders.authorizationHeader: "JWT $accesTok",
               "Accept": "application/json",
@@ -174,7 +174,7 @@ class _mydialogState extends State<myEditordialog> {
   //   final response = await http
   //       .patch(
   //           Uri.parse(
-  //               "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.id}/"),
+  //               "https://tona-production.up.railway.app/tona_users/users/${widget.id}/"),
   //           headers: {
   //             HttpHeaders.authorizationHeader: "JWT $accesTok",
   //             "Accept": "application/json",

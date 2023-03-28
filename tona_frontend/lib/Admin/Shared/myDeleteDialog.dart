@@ -56,7 +56,7 @@ class _mydialogState extends State<myDeletedialog> {
   deleteProducts() async {
     final response = await http.delete(
       Uri.parse(
-          "https://tona-production-8ea1.up.railway.app/store/products/${widget.pid}/"),
+          "https://tona-production.up.railway.app/store/products/${widget.pid}/"),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",
@@ -70,7 +70,7 @@ class _mydialogState extends State<myDeletedialog> {
   deleteUser() async {
     final response = await http.delete(
       Uri.parse(
-          "https://tona-production-8ea1.up.railway.app/tona_users/users/${widget.pid}/"),
+          "https://tona-production.up.railway.app/tona_users/users/${widget.pid}/"),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",

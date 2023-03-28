@@ -53,8 +53,7 @@ class _SingInState extends State<SingIn> {
 
   void _login() async {
     final response = await http.post(
-        Uri.parse(
-            "https://tona-production-8ea1.up.railway.app/auth/jwt/create/"),
+        Uri.parse("https://tona-production.up.railway.app/auth/jwt/create/"),
         body: {
           "phone_number": user.text,
           "password": pass.text,
@@ -346,9 +345,26 @@ class _SingInState extends State<SingIn> {
                       //       style: TextStyle(color: Colors.black),
                       //     )),
                       success == true
-                          ? CircularProgressIndicator(
-                              strokeWidth: 1,
-                              color: ColorTheme.m_blue,
+                          ? GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  saveAttempt = true;
+                                });
+
+                                if (formkey.currentState!.validate()) {
+                                  formkey.currentState!.save();
+
+                                  _login();
+                                  setState(() {
+                                    success = true;
+                                    // successErr = true;
+                                  });
+                                }
+                              },
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1,
+                                color: ColorTheme.m_blue,
+                              ),
                             )
                           : Padding(
                               padding: EdgeInsets.symmetric(

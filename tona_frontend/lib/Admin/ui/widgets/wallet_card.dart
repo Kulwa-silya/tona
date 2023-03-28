@@ -27,7 +27,7 @@ class WalletCard extends StatelessWidget {
 
   fetchProductsCategory() async {
     final response = await http.get(
-      Uri.parse('https://tona-production-8ea1.up.railway.app/store/products/'),
+      Uri.parse('https://tona-production.up.railway.app/store/products/'),
     );
     jsondat = jsonDecode(response.body);
     print(jsondat);
