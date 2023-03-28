@@ -42,6 +42,8 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     path('store/', include('store.urls')),
     path('tona_users/', include('tona_users.urls')),
+    path('procurement/', include('procurement.urls')),
+    path('report/', include('report.urls')),
 
     # for documentation
     path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
