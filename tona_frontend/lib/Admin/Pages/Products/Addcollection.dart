@@ -105,7 +105,7 @@ class _AddCollectionState extends State<AddCollection> {
       final res = await http
           .post(
               Uri.parse(
-                  "https://tona-production-8ea1.up.railway.app/store/collections/"),
+                  "https://tona-production.up.railway.app/store/collections/"),
               headers: {
                 HttpHeaders.authorizationHeader: "JWT $accesTok",
                 "Accept": "application/json",

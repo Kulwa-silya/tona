@@ -4,6 +4,8 @@ bin/
 # lib/
 lib64/
 include/
+env/
+tona_backend/tona_backend/__pycache__/
 
 
 
