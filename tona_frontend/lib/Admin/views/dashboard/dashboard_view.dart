@@ -67,7 +67,7 @@ class _DashBoardViewState extends State<DashBoardView> {
   fetchUserData() async {
     // try {
     final response = await http.get(
-      Uri.parse('https://tona-production-8ea1.up.railway.app/auth/users/me/'),
+      Uri.parse('https://tona-production.up.railway.app/auth/users/me/'),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",

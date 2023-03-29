@@ -35,7 +35,7 @@ class _MainViewState extends State<MainView> {
   Future fetchProducts() async {
     final response = await http.get(
         Uri.parse(
-            'https://tona-production-8ea1.up.railway.app/store/products/'),
+            'https://tona-production.up.railway.app/store/products/'),
         headers: {
           HttpHeaders.authorizationHeader: "JWT $accesTok",
         });

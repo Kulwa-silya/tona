@@ -109,7 +109,7 @@ class _AddproductState extends State<Addproduct> {
       final res = await http
           .post(
               Uri.parse(
-                  "https://tona-production-8ea1.up.railway.app/store/products/"),
+                  "https://tona-production.up.railway.app/store/products/"),
               headers: {
                 HttpHeaders.authorizationHeader: "JWT $accesTok",
                 "Accept": "application/json",
@@ -136,7 +136,7 @@ class _AddproductState extends State<Addproduct> {
           var request = http.MultipartRequest(
               'POST',
               Uri.parse(
-                  'https://tona-production-8ea1.up.railway.app/store/products/$id/images/'));
+                  'https://tona-production.up.railway.app/store/products/$id/images/'));
           request.headers['Authorization'] = 'JWT $accesTok';
           request.files.add(
               await http.MultipartFile.fromPath('image', pickedFile!.path));

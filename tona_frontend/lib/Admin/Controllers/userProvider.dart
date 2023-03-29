@@ -6,7 +6,7 @@ class UserProvider {
   // UserProvider({this.axtok});
   Future fetchInfoe(String acctok) async {
     final response = await http.get(
-        Uri.parse('https://tona-production-8ea1.up.railway.app/auth/users/'),
+        Uri.parse('https://tona-production.up.railway.app/auth/users/'),
         headers: {
           HttpHeaders.authorizationHeader:
               "JWT $acctok",

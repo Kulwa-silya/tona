@@ -92,7 +92,7 @@ class _UserConfigState extends State<UserConfig> {
       final response = await http
           .patch(
               Uri.parse(
-                  "http://tona-production-8ea1.up.railway.app/tona_users/users/14/"),
+                  "http://tona-production.up.railway.app/tona_users/users/14/"),
               headers: {
                 HttpHeaders.authorizationHeader: "JWT $accesTok",
                 "Accept": "application/json",
@@ -322,20 +322,20 @@ class _UserConfigState extends State<UserConfig> {
                                           children: [
                                             Text(
                                               e.first_name,
-                                              style: kBodyTextStyle,
+                                              style: kSubtitleRegularTextStyle,
                                             ),
                                             SizedBox(
                                               width: 5,
                                             ),
                                             Text(
                                               e.last_name,
-                                              style: kBodyRegularTextStyle,
+                                              style: kSubtitleTextStyle,
                                             ),
                                           ],
                                         ),
                                         subtitle: Text(
                                           e.phone_number,
-                                          style: kTinyBoldTextStyle,
+                                          style: kBodyRegularTextStyle,
                                         ),
                                         trailing: Row(
                                           mainAxisSize: MainAxisSize.min,

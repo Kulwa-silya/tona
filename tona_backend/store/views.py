@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny, DjangoModelPermissions, DjangoM
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
-from .filters import ProductFilter, SoldProductFilter
+from .filters import ProductFilter, SoldProductFilter, SaleFilter
 from .models import *
 
 from .serializers import *
@@ -192,6 +192,10 @@ class SoldProductViewSet(ModelViewSet):
 
 class SaleViewSet(ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = SaleFilter
+    search_fields = ['product', 'customer']
 
     queryset = Sale.objects.prefetch_related('sold_products').all()
     serializer_class = SaleSerializer

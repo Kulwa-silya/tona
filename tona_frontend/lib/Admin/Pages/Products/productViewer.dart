@@ -33,21 +33,7 @@ class _ViewerState extends State<Viewer> {
         children: [
           Stack(
             children: [
-              FadeInImage.assetNetwork(
-                image: widget.image!,
-                fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
-                height: 300,
-                placeholder: 'assets/images/image_1.png',
-                imageErrorBuilder: (BuildContext? context, Object? error,
-                        StackTrace? stackTrace) =>
-                    Image.asset(
-                  'assets/images/image_1.png',
-                  height: 30,
-                  width: 30,
-                  fit: BoxFit.cover,
-                ),
-              ),
+              myImageView(img: widget.image!,),
               Positioned(
                   top: 30,
                   left: 1,
@@ -157,6 +143,36 @@ class _ViewerState extends State<Viewer> {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class myImageView extends StatelessWidget {
+   myImageView({
+    Key? key,
+    
+    required this.img
+  }) : super(key: key);
+
+  // final Viewer widget;
+  String img;
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeInImage.assetNetwork(
+      image: img,
+      fit: BoxFit.cover,
+      width: MediaQuery.of(context).size.width,
+      height: 300,
+      placeholder: 'assets/images/image_1.png',
+      imageErrorBuilder:
+          (BuildContext? context, Object? error, StackTrace? stackTrace) =>
+              Image.asset(
+        'assets/images/image_1.png',
+        height: 30,
+        width: 30,
+        fit: BoxFit.cover,
       ),
     );
   }
