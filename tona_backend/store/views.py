@@ -189,9 +189,36 @@ class SoldProductViewSet(ModelViewSet):
         # Serialize the saved SoldProduct instance and return it in the response
         response_serializer = self.get_serializer(sold_product)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+    
+    def destroy(self, request, *args, **kwargs):
+        sold_product = self.get_object()
+        sold_product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def partial_update(self, request, *args, **kwargs):
+        # Get the SoldProduct instance to be updated
+        
+        instance = self.get_object()
+
+        # Serialize the request data and validate it
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+
+        print('data from user',serializer.validated_data)
+        # Call the update method to update the instance
+        try:
+            instance.update_sold_product(self,validated_data=serializer.validated_data)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Serialize the updated SoldProduct instance and return it in the response
+        response_serializer = self.get_serializer(instance)
+        # print("response_serializer", response_serializer.data)
+        return Response(response_serializer.data)
 
 class SaleViewSet(ModelViewSet):
-    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
+    http_method_names = ['get']
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = SaleFilter

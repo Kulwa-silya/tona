@@ -57,7 +57,7 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    product = SimpleProductSerializer()
+    # product = SimpleProductSerializer()
     total_price = serializers.SerializerMethodField()
 
     def get_total_price(self, cart_item: CartItem):
@@ -191,11 +191,11 @@ class CreateOrderSerializer(serializers.Serializer):
 
     
 class SoldProductSerializer(serializers.ModelSerializer):
-    # product = SimpleProductSerializer()
+    product_title = serializers.ReadOnlyField(source='product.title') 
     # customer = CustomerSerializer()
     class Meta:
         model = SoldProduct
-        fields = ['id','quantity','date','product','customer']
+        fields = ['id','quantity','date','product','product_title','customer']
 
 
 
