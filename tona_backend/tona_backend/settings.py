@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'tona_users',
     'store',
     'procurement',
+    'sales',
     'report',
 ]
 

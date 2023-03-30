@@ -188,21 +188,3 @@ class CreateOrderSerializer(serializers.Serializer):
             return order
 
 
-
-    
-class SoldProductSerializer(serializers.ModelSerializer):
-    product_title = serializers.ReadOnlyField(source='product.title') 
-    # customer = CustomerSerializer()
-    class Meta:
-        model = SoldProduct
-        fields = ['id','quantity','date','product','product_title','customer']
-
-
-
-
-class SaleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sale
-        fields = fields = ('__all__')
-
-
