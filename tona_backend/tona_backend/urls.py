@@ -43,6 +43,7 @@ urlpatterns = [
     path('store/', include('store.urls')),
     path('tona_users/', include('tona_users.urls')),
     path('procurement/', include('procurement.urls')),
+    path('sales/', include('sales.urls')),
     path('report/', include('report.urls')),
 
     # for documentation

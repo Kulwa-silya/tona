@@ -5,7 +5,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import Paragraph, Spacer
 from reportlab.lib.units import inch
 
-from store.models import Sale
+# from store.models import Sale
 
 def some_view(request):
     # Create a file-like buffer to receive PDF data.

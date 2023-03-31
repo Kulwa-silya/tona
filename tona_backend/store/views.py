@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny, DjangoModelPermissions, DjangoM
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
-from .filters import ProductFilter, SoldProductFilter, SaleFilter
+from .filters import ProductFilter
 from .models import *
 
 from .serializers import *
@@ -154,55 +154,3 @@ class ProductImageViewSet(ModelViewSet):
 
     def get_queryset(self):
         return ProductImage.objects.filter(product_id=self.kwargs['product_pk'])
-
-
-
-
-
-class SoldProductViewSet(ModelViewSet):
-    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
-
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = SoldProductFilter
-    search_fields = ['product', 'customer']
-    queryset = SoldProduct.objects.prefetch_related('product').all()
-    serializer_class = SoldProductSerializer
-
-    def get_permissions(self):
-        if self.request.method in ['PATCH', 'DELETE']:
-            return [IsAdminUser()]
-        return [IsAuthenticated()]
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # Create a SoldProduct instance based on the serializer data
-        sold_product = SoldProduct(**serializer.validated_data)
-
-        # Call the save method to handle the sale
-        try:
-            sold_product.save()
-        except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Serialize the saved SoldProduct instance and return it in the response
-        response_serializer = self.get_serializer(sold_product)
-        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-
-class SaleViewSet(ModelViewSet):
-    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
-
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_class = SaleFilter
-    search_fields = ['product', 'customer']
-
-    queryset = Sale.objects.prefetch_related('sold_products').all()
-    serializer_class = SaleSerializer
-
-    def get_permissions(self):
-        if self.request.method in ['PATCH', 'DELETE']:
-            return [IsAdminUser()]
-        return [IsAuthenticated()]
-
-

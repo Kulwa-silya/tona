@@ -6,6 +6,8 @@ from . import views
 router = routers.DefaultRouter()
 router.register('supplier', views.SupplierViewSet, basename='supplier')
 router.register('purchase', views.PurchaseViewSet, basename='purchase')
+router.register('purchasedproduct', views.PurchasedProductViewSet, basename='purchasedproduct')
+router.register('receipt', views.ReceiptViewSet, basename='receipt')
 router.register('associatedcost', views.AssociatedCostViewSet, basename='associatedcost')
 
 urlpatterns = router.urls

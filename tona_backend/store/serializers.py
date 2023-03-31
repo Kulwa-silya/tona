@@ -57,7 +57,7 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-    product = SimpleProductSerializer()
+    # product = SimpleProductSerializer()
     total_price = serializers.SerializerMethodField()
 
     def get_total_price(self, cart_item: CartItem):
@@ -186,23 +186,5 @@ class CreateOrderSerializer(serializers.Serializer):
             order_created.send_robust(self.__class__, order=order)
 
             return order
-
-
-
-    
-class SoldProductSerializer(serializers.ModelSerializer):
-    # product = SimpleProductSerializer()
-    # customer = CustomerSerializer()
-    class Meta:
-        model = SoldProduct
-        fields = ['id','quantity','date','product','customer']
-
-
-
-
-class SaleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sale
-        fields = fields = ('__all__')
 
 
