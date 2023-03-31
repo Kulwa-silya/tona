@@ -36,6 +36,13 @@ TextStyle kSubtitleRegularTextStyle = GoogleFonts.poppins(
   height: 1.5,
   color: kBlackColor,
 );
+
+TextStyle kInfoRegularTextStyle = GoogleFonts.poppins(
+  fontWeight: FontWeight.normal,
+  fontSize: 14,
+  height: 1.5,
+  color: kBlackColor,
+);
 TextStyle kBodyRegularTextStyle = GoogleFonts.poppins(
   fontWeight: FontWeight.normal,
   fontSize: 12,

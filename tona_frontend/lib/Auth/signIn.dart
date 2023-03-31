@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:machafuapp/Admin/Pages/Income/Income.dart';
+import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wc_form_validators/wc_form_validators.dart';
@@ -55,7 +56,7 @@ class _SingInState extends State<SingIn> {
     final response = await http.post(
         Uri.parse("https://tona-production.up.railway.app/auth/jwt/create/"),
         body: {
-          "phone_number": user.text,
+          "phone_number": "+255${user.text}",
           "password": pass.text,
         });
     var res = json.decode(response.body);
@@ -259,12 +260,27 @@ class _SingInState extends State<SingIn> {
                               ),
                               borderSide: BorderSide(color: ColorTheme.m_blue),
                             ),
-                            prefixIcon: Icon(Icons.person),
+                            prefixIcon: Icon(
+                              Icons.person,
+                              color: ColorTheme.m_blue,
+                            ),
                             labelText: 'Phone',
                             labelStyle: TextStyle(color: ColorTheme.m_blue),
                             focusColor: ColorTheme.m_blue,
-                            prefixIconColor: ColorTheme.m_blue,
-                            hintText: 'Ex: +255...',
+                            // prefixIconColor: ColorTheme.m_blue,
+                            prefix: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                  color: ColorTheme.m_blue_mpauko_zaidi,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Text(
+                                      "+255 ",
+                                      style: kInfoRegularTextStyle,
+                                    ),
+                                  )),
+                            ),
+                            hintText: 'Ex: 764...',
                             // enabledBorder: OutlineInputBorder(
                             //   borderRadius: const BorderRadius.all(
                             //     const Radius.circular(10.0),
@@ -305,9 +321,12 @@ class _SingInState extends State<SingIn> {
                               ),
                               borderSide: BorderSide(color: ColorTheme.m_blue),
                             ),
-                            prefixIcon: Icon(Icons.security_rounded),
+                            prefixIcon: Icon(
+                              Icons.security_rounded,
+                              color: ColorTheme.m_blue,
+                            ),
                             labelText: 'Password',
-                            prefixIconColor: ColorTheme.m_blue,
+                            // prefixIconColor: ColorTheme.m_blue,
                             labelStyle: TextStyle(color: ColorTheme.m_blue),
                             suffix: GestureDetector(
                               onTap: (() => _toggle()),
