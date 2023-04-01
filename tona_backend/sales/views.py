@@ -81,7 +81,7 @@ class SaleViewSet(ModelViewSet):
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = SaleFilter
-    search_fields = ['product', 'customer']
+    search_fields = ['date', 'customer_name','description','phone_number']
 
     queryset = Sale.objects.prefetch_related('sold_products').all()
     serializer_class = SaleSerializer

@@ -1,17 +1,22 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from datetime import date
+from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 from store.models import *
 
 # Create your models here.
 class Sale(models.Model):
     customer_name = models.CharField(max_length=255,blank=True,null=True)
-    # phone_number = PhoneNumberField(verbose_name="phone number", unique=True)
-    date = models.DateTimeField(auto_now_add=True)
+    phone_number = PhoneNumberField(verbose_name="phone number", unique=True)
+    date = models.DateTimeField(default=timezone.now)
+    description = models.TextField(blank=True,null=True,max_length=1000)
     # date = models.DateField(default=date.today)
     total_quantity_bought = models.IntegerField(default=0)
     sale_revenue = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+
+    class Meta:
+        ordering = ['date']
 
 
     def __str__(self) -> str:

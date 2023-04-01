@@ -15,9 +15,9 @@ class SoldProductSerializer(serializers.ModelSerializer):
 
 
 class SaleSerializer(serializers.ModelSerializer):
-    date = serializers.DateTimeField(format='%A %Y-%m-%d %H:%M', read_only=True)
+    date = serializers.DateTimeField(format='%A %Y-%m-%d %H:%M')
     class Meta:
         model = Sale
-        fields = ['id','customer_name', 'total_quantity_bought', 'date', 'sale_revenue']
+        fields = ['id','customer_name','phone_number', 'description', 'total_quantity_bought', 'date', 'sale_revenue']
         read_only_fields = ['total_quantity_bought', 'sale_revenue']
-        # read_only_fields = ['total_quantity_bought']
+      
