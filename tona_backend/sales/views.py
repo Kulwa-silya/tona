@@ -75,9 +75,9 @@ class SoldProductViewSet(ModelViewSet):
         response_serializer = self.get_serializer(instance)
         # print("response_serializer", response_serializer.data)
         return Response(response_serializer.data)
-
+ 
 class SaleViewSet(ModelViewSet):
-    http_method_names = ['get']
+    http_method_names = ['get','post', 'patch', 'delete', 'head', 'options']
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = SaleFilter
