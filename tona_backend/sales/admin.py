@@ -9,8 +9,8 @@ from . import models
 # Register your models here.
 @admin.register(models.SoldProduct)
 class SoldProductAdmin(admin.ModelAdmin):
-    list_display = ['product','quantity','date']
+    list_display = ['product','quantity','sale']
 
 @admin.register(models.Sale)
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ['date','total_amount']
+    list_display = ['date','customer_name','total_quantity_bought','sale_revenue']
