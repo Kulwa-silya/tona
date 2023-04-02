@@ -6,13 +6,35 @@ from phonenumber_field.modelfields import PhoneNumberField
 from store.models import *
 
 # Create your models here.
+class DailySales(models.Model):
+    date = models.DateField(default=date.today, unique=True)
+    total_sales_revenue_on_day = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    total_quantity_sold_on_day = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['date']
+
+    def __str__(self) -> str:
+        return f"sales for {self.date.strftime('%A %Y-%m-%d')}"
+
+    def calc_total_sales_revenue_on_day(self):
+        sales_of_day = Sale.objects.filter(date__date=self.date)
+        total_sales_revenue_on_day = 0
+        total_quantity_sold_on_day = 0
+        for sale in sales_of_day:
+            total_sales_revenue_on_day += sale.sale_revenue
+            total_quantity_sold_on_day += sale.total_quantity_sold
+        self.total_sales_revenue_on_day = total_sales_revenue_on_day
+        self.total_quantity_sold_on_day = total_quantity_sold_on_day
+        self.save()
+
+
 class Sale(models.Model):
     customer_name = models.CharField(max_length=255,blank=True,null=True)
     phone_number = PhoneNumberField(verbose_name="phone number", unique=True)
     date = models.DateTimeField(default=timezone.now)
     description = models.TextField(blank=True,null=True,max_length=1000)
-    # date = models.DateField(default=date.today)
-    total_quantity_bought = models.IntegerField(default=0)
+    total_quantity_sold = models.IntegerField(default=0)
     sale_revenue = models.DecimalField(max_digits=9, decimal_places=2, default=0)
 
     class Meta:
@@ -60,7 +82,7 @@ class SoldProduct(models.Model):
             # update sale
             sale = self.sale
             sale.sold_products.add(self)
-            sale.total_quantity_bought += self.quantity
+            sale.total_quantity_sold += self.quantity
             if self.discount > 0:
                 discount_amount = (self.product.unit_price * self.discount) / 100
                 sale.sale_revenue += (self.product.unit_price - discount_amount) * self.quantity
@@ -77,7 +99,7 @@ class SoldProduct(models.Model):
 
         # re-update sale
         sale = self.sale
-        sale.total_quantity_bought -= self.quantity
+        sale.total_quantity_sold -= self.quantity
         sale.calc_rev_onDelete(self.quantity * self.product.unit_price)
         sale.save()
         # delete the soldProduct instance
@@ -101,7 +123,7 @@ class SoldProduct(models.Model):
                 self.product.save()
 
                 sale = self.sale
-                sale.total_quantity_bought -= quantity_diff
+                sale.total_quantity_sold -= quantity_diff
 
                 new_discount_amount = ((self.product.unit_price * new_discount) / 100)
                 old_discount_amount = ((self.product.unit_price * old_discount) / 100)
@@ -117,7 +139,7 @@ class SoldProduct(models.Model):
                     self.product.save()
 
                     sale = self.sale
-                    sale.total_quantity_bought += quantity_diff
+                    sale.total_quantity_sold += quantity_diff
 
                     new_discount_amount = ((self.product.unit_price * new_discount) / 100)
                     old_discount_amount = ((self.product.unit_price * old_discount) / 100)

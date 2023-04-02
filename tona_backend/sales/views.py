@@ -90,3 +90,9 @@ class SaleViewSet(ModelViewSet):
         if self.request.method in ['PATCH', 'DELETE']:
             return [IsAdminUser()]
         return [IsAuthenticated()]
+    
+
+class DailySalesViewSet(ModelViewSet):
+    http_method_names = ['get','head', 'options']
+    queryset = DailySales.objects.all()
+    serializer_class = DailySalesSerializer
