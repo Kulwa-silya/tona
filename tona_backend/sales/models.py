@@ -43,6 +43,11 @@ class Sale(models.Model):
 
     def __str__(self) -> str:
         return f"Sale to {self.customer_name} for {self.date.strftime('%A %Y-%m-%d %H:%M')}"
+
+    def delete(self, *args, **kwargs):
+        if self.sold_products.exists():
+            raise ValidationError('Cannot delete Sale instance with associated SoldProduct instances, delete the individual sold products in this sale first')
+        super().delete(*args, **kwargs)
     
     def calculate_sale_revenue(self):
         sale_revenue = 0

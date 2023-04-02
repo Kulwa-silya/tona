@@ -86,6 +86,14 @@ class SaleViewSet(ModelViewSet):
     queryset = Sale.objects.prefetch_related('sold_products').all()
     serializer_class = SaleSerializer
 
+    def destroy(self, request, *args, **kwargs):
+        sale = self.get_object()
+        try:
+            sale.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     def get_permissions(self):
         if self.request.method in ['PATCH', 'DELETE']:
             return [IsAdminUser()]
