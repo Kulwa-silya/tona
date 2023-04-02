@@ -51,10 +51,6 @@ class Sale(models.Model):
         self.sale_revenue = sale_revenue
         self.save()
 
-    def calc_rev_onDelete(self, income):
-        self.sale_revenue -= income
-        self.save()
-
 
 class SoldProduct(models.Model):
     product = models.ForeignKey(
@@ -100,7 +96,8 @@ class SoldProduct(models.Model):
         # re-update sale
         sale = self.sale
         sale.total_quantity_sold -= self.quantity
-        sale.calc_rev_onDelete(self.quantity * self.product.unit_price)
+        discount_amount = ((self.product.unit_price * self.discount) / 100)
+        sale.sale_revenue -= ((self.product.unit_price - discount_amount) * self.quantity)
         sale.save()
         # delete the soldProduct instance
         super().delete(*args, **kwargs)
