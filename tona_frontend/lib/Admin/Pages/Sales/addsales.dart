@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
+import 'package:machafuapp/Admin/Pages/Sales/addsoldProducts.dart';
 import 'package:machafuapp/Admin/Pages/Sales/salesHome.dart';
 import 'package:machafuapp/Admin/Shared/CustomDateTimePicker.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
@@ -88,6 +89,16 @@ class _AddSalesState extends State<AddSales> {
   @override
   void initState() {
     getAccessToken();
+
+    phoneC.addListener(() {
+      final text = phoneC.text;
+      if (text.isNotEmpty && text.startsWith('0')) {
+        phoneC.text = text.substring(1);
+        phoneC.selection = TextSelection.fromPosition(
+          TextPosition(offset: phoneC.text.length),
+        );
+      }
+    });
     super.initState();
   }
 
@@ -105,7 +116,7 @@ class _AddSalesState extends State<AddSales> {
     }
   }
 
-  void _salesadd() async {
+  Future _salesadd() async {
     try {
       final res = await http
           .post(Uri.parse("https://tona-production.up.railway.app/sales/sale/"),
@@ -116,7 +127,7 @@ class _AddSalesState extends State<AddSales> {
               },
               body: json.encode({
                 "customer_name": cnameC.text,
-                "phone_number": phoneC.text,
+                "phone_number": "+255${phoneC.text}",
                 "description": descC.text,
                 "date": gdate == null ? DateTime.now().toString() : gdate
               }))
@@ -125,6 +136,8 @@ class _AddSalesState extends State<AddSales> {
           success = false;
         });
       });
+
+      return res;
     } catch (e) {
       setState(() {
         success = false;
@@ -235,11 +248,12 @@ class _AddSalesState extends State<AddSales> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
                         child: TextFormField(
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.phone,
+                          maxLength: 9,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (emailValue) {
                             if (emailValue!.isEmpty) {
-                              return "Fill in Phone name";
+                              return "Fill in Phone number";
                             }
                             RegExp regExp = new RegExp(
                                 "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
@@ -247,12 +261,12 @@ class _AddSalesState extends State<AddSales> {
                             if (regExp.hasMatch(emailValue)) {
                               return null;
                             }
-                            return "Invalid Phone Name Format";
+                            return "Invalid Phone Number Format";
                           },
                           controller: phoneC,
                           decoration: InputDecoration(
                             prefixIcon: Icon(
-                              Icons.adobe_sharp,
+                              Icons.phone,
                             ),
                             labelText: "Phone Name",
                             hintText: "Ex: Electronics",
@@ -262,6 +276,21 @@ class _AddSalesState extends State<AddSales> {
                               ),
                               borderSide: BorderSide(
                                 color: Colors.black,
+                              ),
+                            ),
+                            prefix: Padding(
+                              padding: const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                    color: ColorTheme.m_blue_mpauko_zaidi,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text(
+                                        "+255",
+                                        style: kInfoRegularTextStyle,
+                                      ),
+                                    )),
                               ),
                             ),
                             border: OutlineInputBorder(
@@ -282,7 +311,7 @@ class _AddSalesState extends State<AddSales> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (emailValue) {
                             if (emailValue!.isEmpty) {
-                              return "Fill in Description name";
+                              return "Fill in Description ";
                             }
                             RegExp regExp = new RegExp(
                                 "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
@@ -290,15 +319,15 @@ class _AddSalesState extends State<AddSales> {
                             if (regExp.hasMatch(emailValue)) {
                               return null;
                             }
-                            return "Invalid Description Name Format";
+                            return "Invalid Description  Format";
                           },
                           controller: descC,
                           decoration: InputDecoration(
                             prefixIcon: Icon(
-                              Icons.adobe_sharp,
+                              Icons.description_rounded,
                             ),
-                            labelText: "Description Name",
-                            hintText: "Ex: Electronics",
+                            labelText: "Description ",
+                            hintText: "Ex: Type, form, condition",
                             enabledBorder: OutlineInputBorder(
                               borderRadius: const BorderRadius.all(
                                 const Radius.circular(10.0),
@@ -404,7 +433,13 @@ class _AddSalesState extends State<AddSales> {
                                   if (formkey.currentState!.validate()) {
                                     formkey.currentState!.save();
 
-                                    _salesadd();
+                                    _salesadd().then((value) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AddSoldProd();
+                                          });
+                                    });
                                     setState(() {
                                       success = true;
                                       // successErr = true;
