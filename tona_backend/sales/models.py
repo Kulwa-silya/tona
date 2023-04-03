@@ -31,7 +31,7 @@ class DailySales(models.Model):
 
 class Sale(models.Model):
     customer_name = models.CharField(max_length=255,blank=True,null=True)
-    phone_number = PhoneNumberField(verbose_name="phone number", unique=True)
+    phone_number = PhoneNumberField(verbose_name="phone number")
     date = models.DateTimeField(default=timezone.now)
     description = models.TextField(blank=True,null=True,max_length=1000)
     total_quantity_sold = models.IntegerField(default=0)
