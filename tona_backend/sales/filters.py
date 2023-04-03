@@ -6,12 +6,15 @@ class SoldProductFilter(FilterSet):
     model = SoldProduct
     # fields = ['customer', 'product']
     fields = {
-      'customer': ['exact'],
       'product':['exact'],
-      'date': ['exact','gte', 'lte']
+      'quantity': ['exact','gte', 'lte'],
+      'sale':['exact']
       }
 
 class SaleFilter(FilterSet):
   class Meta:
     model = Sale
-    fields = {'date': ['exact','gte', 'lte']} # greater than or equal and less than or equal so that both margin dates are included
+    fields = {
+      'customer_name': ['exact'],
+      'date': ['exact','gte', 'lte']
+      } # greater than or equal and less than or equal so that both margin dates are included

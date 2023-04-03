@@ -75,18 +75,32 @@ class SoldProductViewSet(ModelViewSet):
         response_serializer = self.get_serializer(instance)
         # print("response_serializer", response_serializer.data)
         return Response(response_serializer.data)
-
+ 
 class SaleViewSet(ModelViewSet):
-    http_method_names = ['get']
+    http_method_names = ['get','post', 'patch', 'delete', 'head', 'options']
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = SaleFilter
-    search_fields = ['product', 'customer']
+    search_fields = ['date', 'customer_name','description','phone_number']
 
     queryset = Sale.objects.prefetch_related('sold_products').all()
     serializer_class = SaleSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        sale = self.get_object()
+        try:
+            sale.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def get_permissions(self):
         if self.request.method in ['PATCH', 'DELETE']:
             return [IsAdminUser()]
         return [IsAuthenticated()]
+    
+
+class DailySalesViewSet(ModelViewSet):
+    http_method_names = ['get','head', 'options']
+    queryset = DailySales.objects.all()
+    serializer_class = DailySalesSerializer
