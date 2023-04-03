@@ -43,6 +43,12 @@ TextStyle kInfoRegularTextStyle = GoogleFonts.poppins(
   height: 1.5,
   color: kBlackColor,
 );
+TextStyle kInfoTextStyle = GoogleFonts.poppins(
+  fontWeight: FontWeight.w600,
+  fontSize: 14,
+  height: 1.5,
+  color: kBlackColor,
+);
 TextStyle kBodyRegularTextStyle = GoogleFonts.poppins(
   fontWeight: FontWeight.normal,
   fontSize: 12,

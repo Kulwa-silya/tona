@@ -8,6 +8,7 @@ import 'package:machafuapp/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../../../globalconst/globalUrl.dart';
 import '../../ui/shared/colors.dart';
 import '../../ui/shared/text_styles.dart';
 import '../../ui/widgets/all_expenses_card.dart';
@@ -67,7 +68,7 @@ class _DashBoardViewState extends State<DashBoardView> {
   fetchUserData() async {
     // try {
     final response = await http.get(
-      Uri.parse('https://tona-production.up.railway.app/auth/users/me/'),
+      Uri.parse('${globalUrl}auth/users/me/'),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",

@@ -3,10 +3,11 @@ import 'package:machafuapp/Admin/Pages/Income/Income.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
 import 'package:machafuapp/Admin/Pages/Purchases/purchases.dart';
+import 'package:machafuapp/Admin/Pages/Sales/salesHome.dart';
 import 'package:machafuapp/Admin/ui/widgets/wallet_card.dart';
 import 'package:flutter/material.dart';
 
- List<Widget> demoTransactions = [
+List<Widget> demoTransactions = [
   WalletCard(
     onBTap: ProductCat(),
     icon: Icons.money,
@@ -15,10 +16,10 @@ import 'package:flutter/material.dart';
     amount: 'jumla 49',
   ),
   WalletCard(
-    onBTap: Income(),
+    onBTap: SalesHome(),
     icon: Icons.attach_money_outlined,
-    desc: 'Mapato yalioingia kwa siku',
-    text: 'Income',
+    desc: 'Mauzo yaliyofanyika kwa siku',
+    text: 'Sales',
     amount: '100000 (today)',
   ),
   WalletCard(
