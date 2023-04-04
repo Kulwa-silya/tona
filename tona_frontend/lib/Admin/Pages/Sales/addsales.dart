@@ -74,6 +74,8 @@ class _AddSalesState extends State<AddSales> {
 
   DateTime? gdate;
 
+  bool showsnack = false;
+
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
@@ -129,11 +131,13 @@ class _AddSalesState extends State<AddSales> {
                 "customer_name": cnameC.text,
                 "phone_number": "+255${phoneC.text}",
                 "description": descC.text,
-                "date": gdate == null ? DateTime.now().toString() : gdate
+                "date":
+                    gdate == null ? DateTime.now().toString() : gdate.toString()
               }))
           .then((value) async {
         setState(() {
           success = false;
+          showsnack = true;
         });
       });
 
@@ -148,9 +152,32 @@ class _AddSalesState extends State<AddSales> {
     print(success);
   }
 
+  String getDayOfWeek(int day) {
+    switch (day) {
+      case 1:
+        return 'Monday';
+      case 2:
+        return 'Tuesday';
+      case 3:
+        return 'Wednesday';
+      case 4:
+        return 'Thursday';
+      case 5:
+        return 'Friday';
+      case 6:
+        return 'Saturday';
+      case 7:
+        return 'Sunday';
+      default:
+        return '';
+    }
+  }
+
   bool saveAttempt = false;
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final dayOfWeek = getDayOfWeek(now.weekday);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -204,145 +231,120 @@ class _AddSalesState extends State<AddSales> {
 
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (emailValue) {
-                            if (emailValue!.isEmpty) {
-                              return "Fill in Customer name";
-                            }
-                            RegExp regExp = new RegExp(
-                                "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                            if (regExp.hasMatch(emailValue)) {
-                              return null;
-                            }
-                            return "Invalid Customer Name Format";
-                          },
-                          controller: cnameC,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.adobe_sharp,
-                            ),
-                            labelText: "Customer Name",
-                            hintText: "Ex: Norman Mushi",
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (emailValue) {
+                              if (emailValue!.isEmpty) {
+                                return "Fill in Customer name";
+                              }
+                              RegExp regExp = new RegExp(
+                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                              if (regExp.hasMatch(emailValue)) {
+                                return null;
+                              }
+                              return "Invalid Customer Name Format";
+                            },
+                            controller: cnameC,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.adobe_sharp,
                               ),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
+                              labelText: "Customer Name",
+                              hintText: "Ex: Norman Mushi",
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                             ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: ColorTheme.m_blue),
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                            filled: true,
                           ),
                         ),
                       ),
 
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                        child: TextFormField(
-                          keyboardType: TextInputType.phone,
-                          maxLength: 9,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (emailValue) {
-                            if (emailValue!.isEmpty) {
-                              return "Fill in Phone number";
-                            }
-                            RegExp regExp = new RegExp(
-                                "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                            if (regExp.hasMatch(emailValue)) {
-                              return null;
-                            }
-                            return "Invalid Phone Number Format";
-                          },
-                          controller: phoneC,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.phone,
-                            ),
-                            labelText: "Phone Name",
-                            hintText: "Ex: Electronics",
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            keyboardType: TextInputType.phone,
+                            maxLength: 9,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (emailValue) {
+                              if (emailValue!.isEmpty) {
+                                return "Fill in Phone number";
+                              }
+                              RegExp regExp = new RegExp(r'^[0-9]+$');
+                              if (regExp.hasMatch(emailValue)) {
+                                return null;
+                              }
+                              return "Invalid Phone Number Format";
+                            },
+                            controller: phoneC,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.phone,
                               ),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
-                            ),
-                            prefix: Padding(
-                              padding: const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    color: ColorTheme.m_blue_mpauko_zaidi,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Text(
-                                        "+255",
-                                        style: kInfoRegularTextStyle,
-                                      ),
-                                    )),
+                              labelText: "Phone Name",
+                              hintText: "Ex: Electronics",
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                              prefix: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                      color: ColorTheme.m_blue_mpauko_zaidi,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          "+255",
+                                          style: kInfoRegularTextStyle,
+                                        ),
+                                      )),
+                                ),
                               ),
                             ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: ColorTheme.m_blue),
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                            filled: true,
                           ),
                         ),
                       ),
 
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (emailValue) {
-                            if (emailValue!.isEmpty) {
-                              return "Fill in Description ";
-                            }
-                            RegExp regExp = new RegExp(
-                                "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                            if (regExp.hasMatch(emailValue)) {
-                              return null;
-                            }
-                            return "Invalid Description  Format";
-                          },
-                          controller: descC,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.description_rounded,
-                            ),
-                            labelText: "Description ",
-                            hintText: "Ex: Type, form, condition",
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (emailValue) {
+                              if (emailValue!.isEmpty) {
+                                return "Fill in Description ";
+                              }
+                              RegExp regExp = new RegExp(
+                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                              if (regExp.hasMatch(emailValue)) {
+                                return null;
+                              }
+                              return "Invalid Description  Format";
+                            },
+                            controller: descC,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.description_rounded,
                               ),
-                              borderSide: BorderSide(
-                                color: Colors.black,
-                              ),
+                              labelText: "Description ",
+                              hintText: "Ex: Type, form, condition",
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                             ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: ColorTheme.m_blue),
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                            filled: true,
                           ),
                         ),
                       ),
@@ -437,14 +439,17 @@ class _AddSalesState extends State<AddSales> {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
-                                            return AddSoldProd();
+                                            return AddSoldProd(
+                                              salename:
+                                                  "Sale to ${cnameC.text} for $dayOfWeek ${gdate == null ? DateTime.now().toString().substring(0, 16) : gdate.toString().substring(0, 16)}",
+                                            );
                                           });
                                     });
                                     setState(() {
                                       success = true;
                                       // successErr = true;
                                     });
-                                    if (success == true)
+                                    if (showsnack == true)
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                         content: Padding(

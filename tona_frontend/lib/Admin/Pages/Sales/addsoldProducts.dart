@@ -1,32 +1,120 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:machafuapp/Admin/Controllers/productsProvider.dart';
+import 'package:machafuapp/Admin/Models/getProducts.dart';
+import 'package:machafuapp/Admin/Pages/Sales/salesHome.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
+import 'package:machafuapp/Shared/gettingTokens.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../consts/colorTheme.dart';
 
 class AddSoldProd extends StatefulWidget {
-  const AddSoldProd({Key? key}) : super(key: key);
-
+  AddSoldProd({required this.salename, Key? key}) : super(key: key);
+  String? salename;
   @override
   State<AddSoldProd> createState() => _AddSoldProdState();
+
+  GettingToken gettingToken = new GettingToken();
 }
 
 class _AddSoldProdState extends State<AddSoldProd> {
   bool saveAttempt = false;
   final formkey = GlobalKey<FormState>();
-  TextEditingController cnameC = new TextEditingController();
-  TextEditingController descC = new TextEditingController();
+  TextEditingController quantityC = new TextEditingController();
+  TextEditingController discoutC = new TextEditingController();
   TextEditingController phoneC = new TextEditingController();
-
   bool loading = false;
 
   DateTime? gdate;
-
+  String? productname;
   bool success = false;
   bool successErr = false;
+
+  bool showsnack = false;
+
+  var jsonProdData;
+
+  String dropdownvalue = 'Select Product';
+
+  // List of items in our dropdown menu
+  // var items1 = [
+  //   'Select Category     ',
+  //   'Cat 1',
+  //   'Cat 2',
+  //   'Cat 3',
+  //   'Cat 4',
+  //   'Cat 5',
+  // ];
+
+  List<String> items = [];
+
+  getProducts() async {
+    final response = await http.get(
+      Uri.parse("https://tona-production.up.railway.app/store/products/"),
+    );
+    jsonProdData = jsonDecode(response.body);
+    // print(jsonsearchData[0]['results']);
+    // items.add(jsonProdData[0]['results']);
+    setState(() {
+      items.add("Select Product");
+      for (int i = 0; i < jsonProdData["count"]; i++) {
+        items.add(jsonProdData['results'][i]['title']);
+      }
+    });
+
+    print("dataaa $items");
+    // print(items1);
+    return items;
+  }
+
+  Future _addsoldProd() async {
+    try {
+      final res = await http
+          .post(
+              Uri.parse(
+                  "https://tona-production.up.railway.app/sales/soldproduct/"),
+              headers: {
+                HttpHeaders.authorizationHeader:
+                    "JWT ${widget.gettingToken.getAccessToken()}",
+                "Accept": "application/json",
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: json.encode({
+                "quantity": int.parse(quantityC.text),
+                "product": dropdownvalue,
+                "discount": int.parse(discoutC.text),
+                "sale": widget.salename
+              }))
+          .then((value) async {
+        setState(() {
+          success = false;
+          showsnack = true;
+        });
+      });
+
+      return res;
+    } catch (e) {
+      setState(() {
+        success = false;
+        successErr = true;
+      });
+    }
+
+    print(success);
+  }
+
+  @override
+  void initState() {
+    getProducts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +126,42 @@ class _AddSoldProdState extends State<AddSoldProd> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 8),
+                padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 2),
                 child: Center(
-                  child: Text(
-                    "Add Sold Product!",
-                    style: TextStyle(
-                        color: ColorTheme.m_blue,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
+                  child: Text("Add Sold Product!", style: kHeading3TextStyle),
+                ),
+              ),
+              SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 8),
+                        child: Center(
+                          child: Text("On", style: kInfoRegularTextStyle),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(3.0, 0, 8, 8),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            color: ColorTheme.m_blue_mpauko_zaidi,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Center(
+                                child: Text("${widget.salename}",
+                                    style: kBodyRegularTextStyle),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -57,214 +173,127 @@ class _AddSoldProdState extends State<AddSoldProd> {
                     key: formkey,
                     child: Column(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (emailValue) {
-                              if (emailValue!.isEmpty) {
-                                return "Fill in Customer name";
-                              }
-                              RegExp regExp = new RegExp(
-                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                              if (regExp.hasMatch(emailValue)) {
-                                return null;
-                              }
-                              return "Invalid Customer Name Format";
-                            },
-                            controller: cnameC,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.adobe_sharp,
-                              ),
-                              labelText: "Customer Name",
-                              hintText: "Ex: Norman Mushi",
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
+                        items == null
+                            ? Shimmer(
+                                period: Duration(seconds: 5),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    ColorTheme.m_grey,
+                                    ColorTheme.m_white
+                                  ],
                                 ),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ColorTheme.m_blue),
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
-                              filled: true,
-                            ),
-                          ),
-                        ),
-
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                          child: TextFormField(
-                            keyboardType: TextInputType.phone,
-                            maxLength: 9,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (emailValue) {
-                              if (emailValue!.isEmpty) {
-                                return "Fill in Phone number";
-                              }
-                              RegExp regExp = new RegExp(
-                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                              if (regExp.hasMatch(emailValue)) {
-                                return null;
-                              }
-                              return "Invalid Phone Number Format";
-                            },
-                            controller: phoneC,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.phone,
-                              ),
-                              labelText: "Phone Name",
-                              hintText: "Ex: Electronics",
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              prefix: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                      color: ColorTheme.m_blue_mpauko_zaidi,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          "+255",
-                                          style: kInfoRegularTextStyle,
-                                        ),
-                                      )),
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ColorTheme.m_blue),
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
-                              filled: true,
-                            ),
-                          ),
-                        ),
-
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (emailValue) {
-                              if (emailValue!.isEmpty) {
-                                return "Fill in Description ";
-                              }
-                              RegExp regExp = new RegExp(
-                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                              if (regExp.hasMatch(emailValue)) {
-                                return null;
-                              }
-                              return "Invalid Description  Format";
-                            },
-                            controller: descC,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.description_rounded,
-                              ),
-                              labelText: "Description ",
-                              hintText: "Ex: Type, form, condition",
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ColorTheme.m_blue),
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
-                              filled: true,
-                            ),
-                          ),
-                        ),
-
-                        TextButton(
-                            onPressed: () {
-                              DatePicker.showDateTimePicker(context,
-                                  minTime: DateTime(2018, 3, 5),
-                                  maxTime: DateTime(2049, 6, 7),
-                                  showTitleActions: true, onChanged: (date) {
-                                print('change $date in time zone ' +
-                                    date.timeZoneOffset.inHours.toString());
-                              }, onConfirm: (date) {
-                                print('confirm $date');
-                                setState(() {
-                                  gdate = date;
-                                });
-                              }, currentTime: DateTime.now());
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  color: ColorTheme.m_blue_mpauko_zaidi,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                            gdate == null ? "" : '$gdate',
-                                            style: kBodyTextStyle),
+                                  height: 13,
+                                  width: 200,
+                                ), // ,
+                              )
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(16.0, 12, 16, 8),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(13),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                                    child: Center(
+                                      child: DropdownButton(
+                                        dropdownColor: ColorTheme.m_white,
+                                        style: kBodyRegularTextStyle,
+                                        hint: Text("Loading..."),
+                                        // underline: Container(
+                                        //   height: 2,
+                                        //   width: 200,
+                                        //   color: ColorTheme.m_blue,
+                                        // ),
+                                        value: dropdownvalue,
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color: ColorTheme.m_blue,
+                                        ),
+                                        items: items.map((String items) {
+                                          return DropdownMenuItem(
+                                            value: items,
+                                            child: Text(items),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            dropdownvalue = newValue!;
+                                          });
+                                        },
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text('Pick Date',
-                                            style: kBodyRegularTextStyle),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            )),
-                        // Container(
-                        //   child: SfDateRangePicker(
-                        //     initialSelectedRange: PickerDateRange(
-                        //       DateTime.now().subtract(Duration(days: 5)),
-                        //       DateTime.now().add(Duration(days: 5)),
-                        //     ),
-                        //     selectionMode: DateRangePickerSelectionMode.range,
-                        //     // dateFormat: 'dd/MM/yyyy',
-                        //     onSelectionChanged:
-                        //         (DateRangePickerSelectionChangedArgs args) {
-                        //       // Handle the selection change event here
-                        //     },
-                        //   ),
-                        // ),
+
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(13),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (Value) {
+                                if (Value!.isEmpty) {
+                                  return "Fill in product quantity";
+                                }
+                                RegExp regExp = new RegExp(r'^[0-9]+$');
+                                if (regExp.hasMatch(Value)) {
+                                  return null;
+                                }
+                                return "Invalid Quantity Format";
+                              },
+                              controller: quantityC,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.adobe_sharp,
+                                ),
+                                labelText: "Quantity",
+                                hintText: "Ex: 6",
+                                border: InputBorder.none,
+                                filled: true,
+                                fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(13),
+                            child: TextFormField(
+                              keyboardType: TextInputType.phone,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (emailValue) {
+                                if (emailValue!.isEmpty) {
+                                  return "Fill in discount";
+                                }
+                                RegExp regExp = new RegExp(r'^[0-9]+$');
+                                if (regExp.hasMatch(emailValue)) {
+                                  return null;
+                                }
+                                return "Invalid discount format";
+                              },
+                              controller: discoutC,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.phone,
+                                ),
+                                labelText: "Discount",
+                                hintText: "Ex: 10%",
+                                border: InputBorder.none,
+                                filled: true,
+                                fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                              ),
+                            ),
+                          ),
+                        ),
 
                         success == true
                             ? circularLoader()
@@ -325,7 +354,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                         if (formkey.currentState!.validate()) {
                                           formkey.currentState!.save();
 
-                                          // _salesadd();
+                                          _addsoldProd();
                                           setState(() {
                                             success = true;
                                             // successErr = true;
@@ -337,7 +366,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Text(
-                                                  "Sale added (${cnameC.text})",
+                                                  "added (${productname})",
                                                   style: TextStyle(
                                                       color: ColorTheme.m_blue,
                                                       fontWeight:

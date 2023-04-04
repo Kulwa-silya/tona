@@ -219,141 +219,120 @@ class _SingInState extends State<SingIn> {
                       Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: 16.0, horizontal: 16.0),
-                        child: TextFormField(
-                          // onChanged: (textVal) {
-                          //   setState(() {
-                          //     email = textVal;
-                          //   });
-                          // },
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (emailValue) {
-                            if (emailValue!.isEmpty) {
-                              return "Phone required!";
-                            }
-                          },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (emailValue) {
+                              if (emailValue!.isEmpty) {
+                                return "Phone required";
+                              }
+                              RegExp regExp = new RegExp(r'^[0-9]+$');
+                              if (regExp.hasMatch(emailValue)) {
+                                return null;
+                              }
+                              return "Invalid phone format";
+                            },
 
-                          //   String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                          //       "\\@" +
-                          //       "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                          //       "(" +
-                          //       "\\." +
-                          //       "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                          //       ")+";
+                            //   String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                            //       "\\@" +
+                            //       "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                            //       "(" +
+                            //       "\\." +
+                            //       "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                            //       ")+";
 
-                          //   RegExp regExp = new RegExp(p);
+                            //   RegExp regExp = new RegExp(p);
 
-                          //   if (regExp.hasMatch(emailValue)) {
-                          //     return null;
-                          //   }
+                            //   if (regExp.hasMatch(emailValue)) {
+                            //     return null;
+                            //   }
 
-                          //   return 'Invalid Email Format';
-                          // },
-                          controller: user,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.deny(
-                                new RegExp(r"\s\b|\b\s"))
-                          ],
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                            //   return 'Invalid Email Format';
+                            // },
+                            controller: user,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(
+                                  new RegExp(r"\s\b|\b\s"))
+                            ],
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.person,
+                                color: ColorTheme.m_blue,
                               ),
-                              borderSide: BorderSide(color: ColorTheme.m_blue),
-                            ),
-                            prefixIcon: Icon(
-                              Icons.person,
-                              color: ColorTheme.m_blue,
-                            ),
-                            labelText: 'Phone',
-                            labelStyle: TextStyle(color: ColorTheme.m_blue),
-                            focusColor: ColorTheme.m_blue,
-                            // prefixIconColor: ColorTheme.m_blue,
-                            prefix: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                  color: ColorTheme.m_blue_mpauko_zaidi,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Text(
-                                      "+255 ",
-                                      style: kInfoRegularTextStyle,
-                                    ),
-                                  )),
-                            ),
-                            hintText: 'Ex: 764...',
-                            // enabledBorder: OutlineInputBorder(
-                            //   borderRadius: const BorderRadius.all(
-                            //     const Radius.circular(10.0),
-                            //   ),
-                            //   borderSide: BorderSide(
-                            //     color: ColorTheme.m_blue,
-                            //   ),
-                            // ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: ColorTheme.m_blue),
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                              labelText: 'Phone',
+                              labelStyle: TextStyle(color: ColorTheme.m_blue),
+                              focusColor: ColorTheme.m_blue,
+                              // prefixIconColor: ColorTheme.m_blue,
+                              prefix: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                      color: ColorTheme.m_blue_mpauko_zaidi,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          "+255 ",
+                                          style: kInfoRegularTextStyle,
+                                        ),
+                                      )),
+                                ),
                               ),
+                              hintText: 'Ex: 764...',
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                             ),
-                            filled: true,
                           ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(
                             vertical: 1.0, horizontal: 16.0),
-                        child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: Validators.compose([
-                            Validators.required('Password required'),
-                            // Validators.patternString(
-                            //     r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
-                            //     'Invalif format')
-                          ]),
-                          obscureText: _obscureText,
-                          controller: pass,
-                          cursorColor: Colors.green[400],
-                          decoration: InputDecoration(
-                            helperText: "Usiruhusu mtu kuona taarifa hizi.",
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: Validators.compose([
+                              Validators.required('Password required'),
+                              // Validators.patternString(
+                              //     r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
+                              //     'Invalif format')
+                            ]),
+                            obscureText: _obscureText,
+                            controller: pass,
+                            cursorColor: Colors.green[400],
+                            decoration: InputDecoration(
+                              helperText: "Usiruhusu mtu kuona taarifa hizi.",
+
+                              prefixIcon: Icon(
+                                Icons.security_rounded,
+                                color: ColorTheme.m_blue,
                               ),
-                              borderSide: BorderSide(color: ColorTheme.m_blue),
-                            ),
-                            prefixIcon: Icon(
-                              Icons.security_rounded,
-                              color: ColorTheme.m_blue,
-                            ),
-                            labelText: 'Password',
-                            // prefixIconColor: ColorTheme.m_blue,
-                            labelStyle: TextStyle(color: ColorTheme.m_blue),
-                            suffix: GestureDetector(
-                              onTap: (() => _toggle()),
-                              child: _obscureText
-                                  ? Icon(
-                                      Icons.visibility,
-                                      color: ColorTheme.m_blue,
-                                    )
-                                  : Icon(
-                                      Icons.visibility_off,
-                                      color: ColorTheme.m_blue,
-                                    ),
-                            ),
-                            hintText: 'Enter Password',
-                            // enabledBorder: const OutlineInputBorder(
-                            //   borderRadius: BorderRadius.all(
-                            //     Radius.circular(10.0),
-                            //   ),
-                            //   borderSide: BorderSide(color: Colors.black),
-                            // ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: ColorTheme.m_blue),
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
+                              labelText: 'Password',
+                              // prefixIconColor: ColorTheme.m_blue,
+                              labelStyle: TextStyle(color: ColorTheme.m_blue),
+                              suffix: GestureDetector(
+                                onTap: (() => _toggle()),
+                                child: _obscureText
+                                    ? Icon(
+                                        Icons.visibility,
+                                        color: ColorTheme.m_blue,
+                                      )
+                                    : Icon(
+                                        Icons.visibility_off,
+                                        color: ColorTheme.m_blue,
+                                      ),
                               ),
+                              hintText: 'Enter Password',
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                             ),
-                            filled: true,
                           ),
                         ),
                       ),

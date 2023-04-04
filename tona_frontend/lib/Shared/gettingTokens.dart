@@ -10,7 +10,6 @@ class GettingToken{
     return stringValue;
   }
 }
-
 // _fetchList() {
 //   return _prefs.getStringList('key');
 // }
