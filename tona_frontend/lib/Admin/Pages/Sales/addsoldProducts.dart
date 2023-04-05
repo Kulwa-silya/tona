@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -16,8 +17,10 @@ import 'package:shimmer/shimmer.dart';
 import '../../consts/colorTheme.dart';
 
 class AddSoldProd extends StatefulWidget {
-  AddSoldProd({required this.salename, Key? key}) : super(key: key);
+  AddSoldProd({required this.salename, required this.saleId, Key? key})
+      : super(key: key);
   String? salename;
+  int? saleId;
   @override
   State<AddSoldProd> createState() => _AddSoldProdState();
 
@@ -41,7 +44,9 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
   var jsonProdData;
 
-  String dropdownvalue = 'Select Product';
+  dynamic dropdownvalue = [
+    {"id": 0, "name": 'Select Product'}
+  ];
 
   // List of items in our dropdown menu
   // var items1 = [
@@ -53,7 +58,11 @@ class _AddSoldProdState extends State<AddSoldProd> {
   //   'Cat 5',
   // ];
 
-  List<String> items = [];
+  // List<String> items = [];
+
+  List<Map<String, dynamic>> items = [];
+
+  int? pId;
 
   getProducts() async {
     final response = await http.get(
@@ -63,9 +72,13 @@ class _AddSoldProdState extends State<AddSoldProd> {
     // print(jsonsearchData[0]['results']);
     // items.add(jsonProdData[0]['results']);
     setState(() {
-      items.add("Select Product");
+      items.add({"id": 0, "name": "Select Product"});
       for (int i = 0; i < jsonProdData["count"]; i++) {
-        items.add(jsonProdData['results'][i]['title']);
+        items.add({
+          "id": jsonProdData['results'][i]['id'],
+          "name": jsonProdData['results'][i]['title']
+        });
+        //  pId =jsonProdData['results'][i]['title'];
       }
     });
 
@@ -82,15 +95,15 @@ class _AddSoldProdState extends State<AddSoldProd> {
                   "https://tona-production.up.railway.app/sales/soldproduct/"),
               headers: {
                 HttpHeaders.authorizationHeader:
-                    "JWT ${widget.gettingToken.getAccessToken()}",
+                    "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgwOTYwMDYyLCJqdGkiOiI5ZGRlNmI4ODA4NzE0YjdmYThiMjc2MjQyNDAyN2IyZiIsInVzZXJfaWQiOjF9.72vmK9qxwRcj-D602SEKvKjdImq-mBGPX8cyfvqJyxQ",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
               body: json.encode({
                 "quantity": int.parse(quantityC.text),
-                "product": dropdownvalue,
-                "discount": int.parse(discoutC.text),
-                "sale": widget.salename
+                "product": pId,
+                "discount": discoutC.text,
+                "sale": widget.saleId
               }))
           .then((value) async {
         setState(() {
@@ -113,6 +126,8 @@ class _AddSoldProdState extends State<AddSoldProd> {
   @override
   void initState() {
     getProducts();
+
+    print("${widget.gettingToken.getAccessToken()}");
     super.initState();
   }
 
@@ -207,20 +222,22 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                         //   width: 200,
                                         //   color: ColorTheme.m_blue,
                                         // ),
-                                        value: dropdownvalue,
+                                        value: dropdownvalue[0]["name"],
                                         icon: Icon(
                                           Icons.keyboard_arrow_down,
                                           color: ColorTheme.m_blue,
                                         ),
-                                        items: items.map((String items) {
+                                        items: items.map((item) {
                                           return DropdownMenuItem(
-                                            value: items,
-                                            child: Text(items),
+                                            value: item['id'],
+                                            child: Text(item['name']),
                                           );
                                         }).toList(),
-                                        onChanged: (String? newValue) {
+                                        onChanged: (dynamic newValue) {
                                           setState(() {
-                                            dropdownvalue = newValue!;
+                                            dropdownvalue = newValue[0]['name'];
+                                            pId = items.firstWhere((item) =>
+                                                item["id"] == newValue)["id"];
                                           });
                                         },
                                       ),
@@ -250,7 +267,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                               controller: quantityC,
                               decoration: InputDecoration(
                                 prefixIcon: Icon(
-                                  Icons.adobe_sharp,
+                                  Icons.numbers,
                                 ),
                                 labelText: "Quantity",
                                 hintText: "Ex: 6",
@@ -282,9 +299,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                               },
                               controller: discoutC,
                               decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.phone,
-                                ),
+                                prefixIcon: Icon(Icons.discount_rounded),
                                 labelText: "Discount",
                                 hintText: "Ex: 10%",
                                 border: InputBorder.none,

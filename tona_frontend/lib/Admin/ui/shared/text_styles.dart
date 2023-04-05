@@ -3,6 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'colors.dart';
 
+TextStyle kBigHeading1TextStyle = GoogleFonts.poppins(
+  fontWeight: FontWeight.bold,
+  fontSize: 50,
+  height: 2,
+  color: kBlackColor,
+);
+
 TextStyle kHeading1TextStyle = GoogleFonts.poppins(
   fontWeight: FontWeight.bold,
   fontSize: 28,

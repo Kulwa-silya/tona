@@ -135,6 +135,14 @@ class _AddSalesState extends State<AddSales> {
                     gdate == null ? DateTime.now().toString() : gdate.toString()
               }))
           .then((value) async {
+
+         
+        jsonre = jsonDecode(value.body);
+        setState(() {
+          id = jsonre['id'];
+          print("id ni: $id");
+          success = false;
+        });
         setState(() {
           success = false;
           showsnack = true;
@@ -440,6 +448,7 @@ class _AddSalesState extends State<AddSales> {
                                           context: context,
                                           builder: (context) {
                                             return AddSoldProd(
+                                              saleId: id,
                                               salename:
                                                   "Sale to ${cnameC.text} for $dayOfWeek ${gdate == null ? DateTime.now().toString().substring(0, 16) : gdate.toString().substring(0, 16)}",
                                             );

@@ -202,14 +202,7 @@ class _SingInState extends State<SingIn> {
                         //   ),
                         // ),
                         // Solid text as fill.
-                        Text(
-                          'TONA',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 50,
-                            color: ColorTheme.m_blue,
-                          ),
-                        ),
+                        Text('TONA', style: kBigHeading1TextStyle),
                       ]),
                       Padding(
                         padding: EdgeInsets.symmetric(
@@ -262,7 +255,7 @@ class _SingInState extends State<SingIn> {
                                 color: ColorTheme.m_blue,
                               ),
                               labelText: 'Phone',
-                              labelStyle: TextStyle(color: ColorTheme.m_blue),
+                              labelStyle: kInfoRegularTextStyle,
                               focusColor: ColorTheme.m_blue,
                               // prefixIconColor: ColorTheme.m_blue,
                               prefix: Padding(
@@ -315,7 +308,7 @@ class _SingInState extends State<SingIn> {
                               ),
                               labelText: 'Password',
                               // prefixIconColor: ColorTheme.m_blue,
-                              labelStyle: TextStyle(color: ColorTheme.m_blue),
+                              labelStyle: kInfoRegularTextStyle,
                               suffix: GestureDetector(
                                 onTap: (() => _toggle()),
                                 child: _obscureText
