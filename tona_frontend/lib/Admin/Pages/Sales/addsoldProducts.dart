@@ -44,10 +44,11 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
   var jsonProdData;
 
-  dynamic dropdownvalue = [
+  dynamic dropdownvalue2 = [
     {"id": 0, "name": 'Select Product'}
   ];
 
+  String dropdownvalue = 'Select Product one';
   // List of items in our dropdown menu
   // var items1 = [
   //   'Select Category     ',
@@ -216,13 +217,13 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                       child: DropdownButton(
                                         dropdownColor: ColorTheme.m_white,
                                         style: kBodyRegularTextStyle,
-                                        hint: Text("Loading..."),
+                                        hint: Text("$dropdownvalue"),
                                         // underline: Container(
                                         //   height: 2,
                                         //   width: 200,
                                         //   color: ColorTheme.m_blue,
                                         // ),
-                                        value: dropdownvalue[0]["name"],
+                                        // value: dropdownvalue,
                                         icon: Icon(
                                           Icons.keyboard_arrow_down,
                                           color: ColorTheme.m_blue,
@@ -233,11 +234,19 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                             child: Text(item['name']),
                                           );
                                         }).toList(),
-                                        onChanged: (dynamic newValue) {
+                                        onChanged: (newValue) {
                                           setState(() {
-                                            dropdownvalue = newValue[0]['name'];
+                                            // dropdownvalue = newValue;
                                             pId = items.firstWhere((item) =>
                                                 item["id"] == newValue)["id"];
+
+                                            // dropdownvalue = items.firstWhere(
+                                            //     (item) =>
+                                            //         item["name"] ==
+                                            //         newValue)["name"];
+
+                                            print("pid ni:  $pId");
+                                            print("pid ni:  $dropdownvalue");
                                           });
                                         },
                                       ),

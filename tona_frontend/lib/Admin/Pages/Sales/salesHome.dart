@@ -6,6 +6,7 @@ import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/productViewer.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Sales/addsales.dart';
+import 'package:machafuapp/Admin/Pages/Sales/viewSale.dart';
 import 'package:machafuapp/Admin/Shared/backarrow.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
@@ -82,6 +83,27 @@ class _SalesHomeState extends State<SalesHome> {
     return jsonsearchData;
   }
 
+  String getDayOfWeek(int day) {
+    switch (day) {
+      case 1:
+        return 'Monday';
+      case 2:
+        return 'Tuesday';
+      case 3:
+        return 'Wednesday';
+      case 4:
+        return 'Thursday';
+      case 5:
+        return 'Friday';
+      case 6:
+        return 'Saturday';
+      case 7:
+        return 'Sunday';
+      default:
+        return '';
+    }
+  }
+
   @override
   void initState() {
     getAccessToken().then((value) {
@@ -92,6 +114,8 @@ class _SalesHomeState extends State<SalesHome> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final dayOfWeek = getDayOfWeek(now.weekday);
     return Scaffold(
       backgroundColor: ColorTheme.m_white,
       appBar: AppBar(
@@ -206,6 +230,7 @@ class _SalesHomeState extends State<SalesHome> {
                                         itemBuilder: (cnt, i) {
                                           String cname =
                                               snapshot.data[i]['customer_name'];
+                                          int sId = snapshot.data[i]['id'];
                                           String date =
                                               snapshot.data[i]["date"];
                                           String desc =
@@ -225,29 +250,16 @@ class _SalesHomeState extends State<SalesHome> {
                                           return Builder(builder: (context) {
                                             return GestureDetector(
                                                 onTap: () {
-                                                  // Navigator.of(context).push(
-                                                  //     MaterialPageRoute(
-                                                  //         builder: (context) =>
-                                                  //             Viewer(
-                                                  //               image: img,
-                                                  //               title: snapshot
-                                                  //                       .data[i]
-                                                  //                   ['title'],
-                                                  //               collId: pidG,
-                                                  //               tit: titleG,
-                                                  //               inventory: snapshot
-                                                  //                       .data[i]
-                                                  //                   [
-                                                  //                   'inventory'],
-                                                  //               desc: snapshot
-                                                  //                       .data[i]
-                                                  //                   [
-                                                  //                   'description'],
-                                                  //               uprice: snapshot
-                                                  //                   .data[i][
-                                                  //                       'unit_price']
-                                                  //                   .toString(),
-                                                  //             )));
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ViewSales(
+                                                                  saleId: sId,
+                                                                  date: date,
+                                                                  salename:
+                                                                      "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                                  accessTok:
+                                                                      accesTok)));
                                                 },
                                                 child: Padding(
                                                   padding:
@@ -370,9 +382,12 @@ class _SalesHomeState extends State<SalesHome> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      Products(
-                                                        id: pid,
-                                                        title: cname,
+                                                      ViewSales(
+                                                        accessTok: accesTok,
+                                                        date: date,
+                                                        salename:
+                                                            "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                        saleId: sid,
                                                       )));
                                         }),
                                         child: ClipRRect(
