@@ -7,10 +7,10 @@ from tona_users.serializers import *
 
 class SoldProductSerializer(serializers.ModelSerializer):
     product_title = serializers.ReadOnlyField(source='product.title') 
-    # customer = CustomerSerializer()
+    original_price = serializers.ReadOnlyField(source='product.unit_price') 
     class Meta:
         model = SoldProduct
-        fields = ['id','sale','quantity','product','product_title','discount']
+        fields = ['id','sale','quantity','product','product_title','original_price','discount']
 
 
 
