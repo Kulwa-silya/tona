@@ -1,5 +1,5 @@
 from django_filters.rest_framework import FilterSet
-from .models import SoldProduct, Sale
+from .models import SoldProduct, Sale , DailySales
 
 class SoldProductFilter(FilterSet):
   class Meta:
@@ -18,3 +18,11 @@ class SaleFilter(FilterSet):
       'customer_name': ['exact'],
       'date': ['exact','gte', 'lte']
       } # greater than or equal and less than or equal so that both margin dates are included
+
+
+class DailySalesFilter(FilterSet):
+  class Meta:
+    model = DailySales
+    fields = {
+      'date': ['exact','gte', 'lte']
+      }
