@@ -49,7 +49,7 @@ class _WalletCardState extends State<WalletCard> {
   fetchAlldailySales() async {
     final response = await http.get(
       Uri.parse(
-          'https://tona-production.up.railway.app/sales/dailysales/?search=2023-04-05'),
+          'https://tona-production.up.railway.app/sales/dailysales/?search=2023-04-07'),
       headers: {
         HttpHeaders.authorizationHeader:
             "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgxMDY3MTM5LCJqdGkiOiIyOTQyZTExODIxMDg0Nzg2OTg2NjJkNmFiY2JiODVkZSIsInVzZXJfaWQiOjF9.fA8yLhC3L8GgNgkh3xq9IclOqXTPx1ZAcQK4wHfSGZs",
