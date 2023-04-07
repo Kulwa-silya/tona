@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/Pages/Sales/viewSale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Pages/Users/view.dart';
 import '../consts/colorTheme.dart';
@@ -12,7 +13,7 @@ import 'myTextFormField.dart';
 class myDeletedialog extends StatefulWidget {
   int? pid, collId;
 
-  String? tit, email, collname, whatpart;
+  String? tit, email, collname, whatpart, salename, date;
 
   bool? isloading;
 
@@ -22,6 +23,8 @@ class myDeletedialog extends StatefulWidget {
       this.isloading,
       this.collId,
       required this.whatpart,
+      this.salename,
+      this.date,
       this.collname,
       required this.email,
       required this.tit})
@@ -81,6 +84,20 @@ class _mydialogState extends State<myDeletedialog> {
     print(response);
   }
 
+  deleteSoldProd() async {
+    final response = await http.delete(
+      Uri.parse(
+          "https://tona-production.up.railway.app/sales/soldproduct/${widget.pid}/"),
+      headers: {
+        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        "Accept": "application/json",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).then((value) => {print("success")});
+
+    print(response);
+  }
+
   @override
   void initState() {
     getAccessToken();
@@ -119,7 +136,7 @@ class _mydialogState extends State<myDeletedialog> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "${widget.email} ?",
+                      "${widget.email} ?  ${widget.pid}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: ColorTheme.m_grey),
@@ -189,6 +206,18 @@ class _mydialogState extends State<myDeletedialog> {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => UserConfig()));
+                        } else if (widget.whatpart == "soldproduct") {
+                          deleteSoldProd();
+                          Navigator.pop(context);
+
+                          // Navigator.of(context)
+                          //     .pushReplacement(MaterialPageRoute(
+                          //         builder: (context) => ViewSales(
+                          //               saleId: widget.pid,
+                          //               salename: widget.salename,
+                          //               date: widget.date,
+                          //               accessTok: accesTok,
+                          //             )));
                         }
 
                         // await Navigator.pushAndRemoveUntil(

@@ -17,10 +17,19 @@ import 'package:shimmer/shimmer.dart';
 import '../../consts/colorTheme.dart';
 
 class AddSoldProd extends StatefulWidget {
-  AddSoldProd({required this.salename, required this.saleId, Key? key})
+  AddSoldProd(
+      {required this.salename,
+      required this.title,
+      required this.accessTok,
+      required this.saleId,
+      this.Pid,
+      required this.showdropdown,
+      Key? key})
       : super(key: key);
-  String? salename;
-  int? saleId;
+  String? salename, title, accessTok;
+  bool? showdropdown = true;
+
+  int? saleId, Pid;
   @override
   State<AddSoldProd> createState() => _AddSoldProdState();
 
@@ -95,8 +104,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
               Uri.parse(
                   "https://tona-production.up.railway.app/sales/soldproduct/"),
               headers: {
-                HttpHeaders.authorizationHeader:
-                    "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgwOTYwMDYyLCJqdGkiOiI5ZGRlNmI4ODA4NzE0YjdmYThiMjc2MjQyNDAyN2IyZiIsInVzZXJfaWQiOjF9.72vmK9qxwRcj-D602SEKvKjdImq-mBGPX8cyfvqJyxQ",
+                HttpHeaders.authorizationHeader: "JWT  ${widget.accessTok}",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -124,6 +132,31 @@ class _AddSoldProdState extends State<AddSoldProd> {
     print(success);
   }
 
+  Future updateSoldProd() async {
+    final response = await http
+        .patch(
+            Uri.parse(
+                "https://tona-production.up.railway.app/sales/soldproduct/${widget.Pid}/"),
+            headers: {
+              HttpHeaders.authorizationHeader: "JWT ${widget.accessTok}",
+              "Accept": "application/json",
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: json.encode({
+              "quantity": int.parse(quantityC.text),
+              "discount": discoutC.text
+            }))
+        .then((value) async {
+      setState(() {
+        success = false;
+        showsnack = true;
+      });
+      print(value);
+    });
+
+    print("res ni $response");
+  }
+
   @override
   void initState() {
     getProducts();
@@ -144,7 +177,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 2),
                 child: Center(
-                  child: Text("Add Sold Product!", style: kHeading3TextStyle),
+                  child: Text("${widget.title}", style: kHeading3TextStyle),
                 ),
               ),
               SingleChildScrollView(
@@ -189,22 +222,8 @@ class _AddSoldProdState extends State<AddSoldProd> {
                     key: formkey,
                     child: Column(
                       children: [
-                        items == null
-                            ? Shimmer(
-                                period: Duration(seconds: 5),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    ColorTheme.m_grey,
-                                    ColorTheme.m_white
-                                  ],
-                                ),
-                                child: Container(
-                                  height: 13,
-                                  width: 200,
-                                ), // ,
-                              )
+                        widget.showdropdown == false
+                            ? SizedBox.shrink()
                             : Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(16.0, 12, 16, 8),
@@ -347,6 +366,9 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                       ),
                                       onPressed: () async {
                                         Navigator.pop(context);
+                                        setState(() {
+                                          widget.showdropdown = true;
+                                        });
                                       },
                                     ),
                                   ),
@@ -358,7 +380,9 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            'Add',
+                                            widget.showdropdown == false
+                                                ? 'Edit'
+                                                : 'Add',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w200),
                                           )
@@ -377,10 +401,12 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
                                         if (formkey.currentState!.validate()) {
                                           formkey.currentState!.save();
-
-                                          _addsoldProd();
+                                          widget.showdropdown == true
+                                              ? _addsoldProd()
+                                              : updateSoldProd();
                                           setState(() {
                                             success = true;
+                                            widget.showdropdown = true;
                                             // successErr = true;
                                           });
                                           if (success == true)

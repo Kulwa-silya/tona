@@ -20,7 +20,7 @@ List<Widget> demoTransactions = [
     icon: Icons.attach_money_outlined,
     desc: 'Mauzo yaliyofanyika kwa siku',
     text: 'Sales',
-    amount: '100000 (today)',
+    amount: '10500',
   ),
   WalletCard(
     onBTap: ExpenditureExpenses(),
