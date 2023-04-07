@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, DjangoModelPermissions, DjangoM
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
-from .filters import SoldProductFilter, SaleFilter
+from .filters import SoldProductFilter, SaleFilter, DailySalesFilter
 from .models import *
 
 from .serializers import *
@@ -96,5 +96,8 @@ class SaleViewSet(ModelViewSet):
 
 class DailySalesViewSet(ModelViewSet):
     http_method_names = ['get','head', 'options']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = DailySalesFilter
+    search_fields = ['date']
     queryset = DailySales.objects.all()
     serializer_class = DailySalesSerializer
