@@ -87,9 +87,9 @@ class _WalletCardState extends State<WalletCard> {
 
         // future: fetchAlldailySales(),
         builder: (context, AsyncSnapshot snapshot) {
-      if (!snapshot.hasData) {
-        return Shimer();
-      }
+      // if (!snapshot.hasData) {
+      //   return Shimer();
+      // }
       return GestureDetector(
         onTap: () {
           Navigator.of(context)
@@ -131,8 +131,7 @@ class _WalletCardState extends State<WalletCard> {
                     )
                   : (widget.text == "Sales"
                       ? Text(
-                          snapshot.data[0]['total_sales_revenue_on_day']
-                              .toString(),
+                          totalsales.toString().toString(),
                           style: kBodyTextStyle,
                         )
                       : Text(
