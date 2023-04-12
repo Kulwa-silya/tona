@@ -2,7 +2,7 @@ import 'package:machafuapp/Admin/Pages/Expenditure_and_Expenses/ExpenditureExpen
 import 'package:machafuapp/Admin/Pages/Income/Income.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
-import 'package:machafuapp/Admin/Pages/Purchases/purchases.dart';
+import 'package:machafuapp/Admin/Pages/Purchases/purchasesHome.dart';
 import 'package:machafuapp/Admin/Pages/Sales/salesHome.dart';
 import 'package:machafuapp/Admin/ui/widgets/wallet_card.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ List<Widget> demoTransactions = [
     amount: '20,000 (today)',
   ),
   WalletCard(
-    onBTap: Purchases(),
+    onBTap: PurchasesHome(),
     icon: Icons.monitor_weight_sharp,
     text: 'Purchases',
     desc: 'Manunuzi kwa siku',

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../shared/colors.dart';
 import '../shared/edge_insect.dart';
 import '../shared/text_styles.dart';
@@ -36,6 +37,16 @@ class _WalletCardState extends State<WalletCard> {
   int? productcount = 0;
 
   String? totalsales = "0.0";
+  String? accesTok;
+
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+    return stringValue;
+  }
 
   fetchProductsCategory() async {
     final response = await http.get(
@@ -51,8 +62,7 @@ class _WalletCardState extends State<WalletCard> {
       Uri.parse(
           'https://tona-production.up.railway.app/sales/dailysales/?search=2023-04-12'),
       headers: {
-        HttpHeaders.authorizationHeader:
-            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgxNTU5NTk5LCJqdGkiOiI4ZDI0YjBkMTJhMGU0NzUwYjZhOTYzYWMxNzk5MTg1MCIsInVzZXJfaWQiOjF9.Js85SKn8qXKDqiwzc_pqSKB46xR9IhJFIoUR8XN5DO0",
+        HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -78,7 +88,12 @@ class _WalletCardState extends State<WalletCard> {
 
   @override
   void initState() {
-    fetchData();
+    getAccessToken().then(
+      (value) {
+        fetchData();
+      },
+    );
+
     super.initState();
   }
 

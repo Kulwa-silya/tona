@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
+import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:machafuapp/Auth/signIn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,11 +44,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String? accesTok;
 
-
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue;
+    });
+    return stringValue;
+  }
 
   @override
   void initState() {
+    getAccessToken();
     super.initState();
   }
 
@@ -54,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: Icon(Icons.holiday_village),
-      nextScreen: SingIn(),
+      nextScreen: accesTok == null ? SingIn() : MainView(),
       splashTransition: SplashTransition.scaleTransition,
       duration: 500,
       splashIconSize: 500,

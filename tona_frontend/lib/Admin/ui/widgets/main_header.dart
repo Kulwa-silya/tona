@@ -1,4 +1,5 @@
 import 'package:machafuapp/Admin/ui/widgets/transactions_row.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import '../../../responsive.dart';
 import '../../views/main/main_viewmodel.dart';
@@ -9,7 +10,13 @@ import 'package:flutter/material.dart';
 
 class MainHeader extends ViewModelWidget<MainViewModel> {
   String? name;
-   MainHeader({required this.name, Key? key}) : super(key: key);
+  MainHeader({required this.name, Key? key}) : super(key: key);
+
+  Future<void> deletePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('accesstoken');
+    prefs.remove('refreshtoken');
+  }
 
   @override
   Widget build(BuildContext context, viewModel) {
@@ -52,9 +59,14 @@ class MainHeader extends ViewModelWidget<MainViewModel> {
           color: kSecondaryColor4,
         ),
         horizontalSpaceSmall,
-        const CircleAvatar(
-          radius: 15,
-          backgroundImage: AssetImage('assets/images/image_1.png'),
+        GestureDetector(
+          onTap: () {
+            deletePreference();
+          },
+          child: const CircleAvatar(
+            radius: 15,
+            backgroundImage: AssetImage('assets/images/image_1.png'),
+          ),
         ),
       ],
     );

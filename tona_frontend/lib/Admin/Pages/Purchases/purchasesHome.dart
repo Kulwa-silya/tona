@@ -19,14 +19,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../globalconst/globalUrl.dart';
 
-class SalesHome extends StatefulWidget {
-  const SalesHome({Key? key}) : super(key: key);
+class PurchasesHome extends StatefulWidget {
+  const PurchasesHome({Key? key}) : super(key: key);
 
   @override
-  State<SalesHome> createState() => _SalesHomeState();
+  State<PurchasesHome> createState() => _PurchasesHomeHomeState();
 }
 
-class _SalesHomeState extends State<SalesHome> {
+class _PurchasesHomeHomeState extends State<PurchasesHome> {
   var jsondat;
 
   String? accesTok;
@@ -46,18 +46,16 @@ class _SalesHomeState extends State<SalesHome> {
 
   Future getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
     String? stringValue = prefs.getString('accesstoken');
     setState(() {
       accesTok = stringValue!;
     });
-
     return stringValue;
   }
 
-  fetchSalesCategory() async {
+  fetchPurchasedProduct() async {
     final response = await http.get(
-      Uri.parse('${globalUrl}sales/sale/'),
+      Uri.parse('${globalUrl}procurement/purchasedproduct/'),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",
@@ -65,14 +63,12 @@ class _SalesHomeState extends State<SalesHome> {
       },
     );
     jsondat = jsonDecode(response.body);
-
     return jsondat;
   }
 
   searchSales() async {
     final response = await http.get(
-      Uri.parse(
-          '${globalUrl}/sales/sale/?search=$searchValue'),
+      Uri.parse('${globalUrl}sales/sale/?search=$searchValue'),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",
@@ -108,7 +104,7 @@ class _SalesHomeState extends State<SalesHome> {
   @override
   void initState() {
     getAccessToken().then((value) {
-      fetchSalesCategory();
+      fetchPurchasedProduct();
     });
     super.initState();
   }
@@ -132,14 +128,14 @@ class _SalesHomeState extends State<SalesHome> {
                     .push(MaterialPageRoute(builder: (context) => AddSales()));
               },
               child: Center(
-                child: Text("New Sale", style: kInfoTextStyle),
+                child: Text("New Purchase", style: kInfoTextStyle),
               ),
             ),
           )
         ],
       ),
       body: FutureBuilder(
-          future: fetchSalesCategory(),
+          future: fetchPurchasedProduct(),
           builder: (context, AsyncSnapshot snapsht) {
             if (!snapsht.hasData) {
               return Center(
@@ -174,7 +170,7 @@ class _SalesHomeState extends State<SalesHome> {
                               });
                             },
                             decoration: InputDecoration(
-                              labelText: 'Search Sales',
+                              labelText: 'Search Purchases',
                               labelStyle:
                                   TextStyle(fontWeight: FontWeight.w300),
                               suffixIcon: GestureDetector(
@@ -229,15 +225,19 @@ class _SalesHomeState extends State<SalesHome> {
                                     child: ListView.builder(
                                         itemCount: snapshot.data.length,
                                         itemBuilder: (cnt, i) {
-                                          String cname =
-                                              snapshot.data[i]['customer_name'];
-                                          int sId = snapshot.data[i]['id'];
+                                          int suppliername =
+                                              snapshot.data[i]['supplier'];
+                                          int puchaseId =
+                                              snapshot.data[i]['id'];
                                           String date =
                                               snapshot.data[i]["date"];
-                                          String desc =
-                                              snapshot.data[i]["description"];
-                                          String saleRevenue =
-                                              snapshot.data[i]["sale_revenue"];
+                                          // String desc =
+                                          //     snapshot.data[i]["description"];
+                                          String unitprice =
+                                              snapshot.data[i]["unit_price"];
+
+                                          int? quantity =
+                                              snapshot.data[i]["quantity"];
                                           // String img;
                                           // int imgId;
                                           // try {
@@ -255,10 +255,11 @@ class _SalesHomeState extends State<SalesHome> {
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               ViewSales(
-                                                                  saleId: sId,
+                                                                  saleId:
+                                                                      puchaseId,
                                                                   date: date,
                                                                   salename:
-                                                                      "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                                      "Sale to ${suppliername.toString()} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
                                                                   accessTok:
                                                                       accesTok)));
                                                 },
@@ -306,12 +307,14 @@ class _SalesHomeState extends State<SalesHome> {
                                                                   Column(
                                                                     children: [
                                                                       Text(
-                                                                        cname,
+                                                                        suppliername
+                                                                            .toString(),
                                                                         style:
                                                                             kBodyRegularTextStyle,
                                                                       ),
                                                                       Text(
-                                                                        desc,
+                                                                        quantity
+                                                                            .toString(),
                                                                         style:
                                                                             kTinyRegularTextStyle,
                                                                       ),
@@ -327,7 +330,7 @@ class _SalesHomeState extends State<SalesHome> {
                                                                   Column(
                                                                     children: [
                                                                       Text(
-                                                                        saleRevenue,
+                                                                        unitprice,
                                                                         style:
                                                                             kSmallBoldTextStyle,
                                                                       ),
@@ -364,117 +367,126 @@ class _SalesHomeState extends State<SalesHome> {
                                     color: ColorTheme.m_blue,
                                   );
                                 } else {
-                                  try {
-                                    data = jsondat[i];
-                                    // pid = data['id'];
-                                    // title = data['title'];
-                                    // count = data['products_count'];
-                                    int sid = data['id'];
-                                    String cname = data['customer_name'];
-                                    String desc = data['description'];
-                                    String saleRevenue = data['sale_revenue'];
-                                    int count = data['total_quantity_sold'];
-                                    String date = data['date'];
+                                  // try {
+                                  data = jsondat[i];
+                                  // pid = data['id'];
+                                  // title = data['title'];
+                                  // count = data['products_count'];
+                                  // int sid = data['id'];
+                                  // String cname = data['customer_name'];
+                                  // String desc = data['description'];
+                                  // String saleRevenue = data['sale_revenue'];
+                                  // int count = data['total_quantity_sold'];
+                                  // String date = data['date'];
 
-                                    return Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          16.0, 8, 16, 8),
-                                      child: GestureDetector(
-                                          onTap: (() {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ViewSales(
-                                                          accessTok: accesTok,
-                                                          date: date,
-                                                          salename:
-                                                              "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
-                                                          saleId: sid,
-                                                        )));
-                                          }),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(13),
-                                            child: Container(
-                                                color: ColorTheme
-                                                    .m_blue_mpauko_zaidi_zaidi,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        9),
-                                                            child: Container(
-                                                                width: 50,
-                                                                height: 50,
-                                                                child: myImageView(
-                                                                    img:
-                                                                        "assets/images/image_1.png")),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Column(
-                                                            children: [
-                                                              Text(
-                                                                cname,
-                                                                style:
-                                                                    kInfoTextStyle,
-                                                              ),
-                                                              Text(
-                                                                desc,
-                                                                style:
-                                                                    kBodyRegularTextStyle,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Column(
-                                                            children: [
-                                                              Text(
-                                                                saleRevenue,
-                                                                style:
-                                                                    kSmallBoldTextStyle,
-                                                              ),
-                                                              Text(
-                                                                date,
-                                                                style:
-                                                                    kTinyRegularTextStyle,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                )),
-                                          )),
-                                    );
-                                  } catch (e) {
-                                    print("erra ni $e");
-                                    return circularLoader();
-                                  }
+                                  int? suppliername = data['supplier'];
+                                  int? puchaseId = data[i]['id'];
+                                  String date = data[i]["date"];
+                                  // String desc =
+                                  //     snapshot.data[i]["description"];
+                                  String unitprice = data[i]["unit_price"];
+
+                                  int? quantity = data[i]["quantity"];
+
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        16.0, 8, 16, 8),
+                                    child: GestureDetector(
+                                        onTap: (() {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ViewSales(
+                                                        accessTok: accesTok,
+                                                        date: date,
+                                                        salename:
+                                                            "Sale to ${suppliername} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                        saleId: puchaseId,
+                                                      )));
+                                        }),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(13),
+                                          child: Container(
+                                              color: ColorTheme
+                                                  .m_blue_mpauko_zaidi_zaidi,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(9),
+                                                          child: Container(
+                                                              width: 50,
+                                                              height: 50,
+                                                              child: myImageView(
+                                                                  img:
+                                                                      "assets/images/image_1.png")),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Column(
+                                                          children: [
+                                                            Text(
+                                                              suppliername
+                                                                  .toString(),
+                                                              style:
+                                                                  kInfoTextStyle,
+                                                            ),
+                                                            Text(
+                                                              quantity
+                                                                  .toString(),
+                                                              style:
+                                                                  kBodyRegularTextStyle,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Column(
+                                                          children: [
+                                                            Text(
+                                                              unitprice,
+                                                              style:
+                                                                  kSmallBoldTextStyle,
+                                                            ),
+                                                            Text(
+                                                              date,
+                                                              style:
+                                                                  kTinyRegularTextStyle,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              )),
+                                        )),
+                                  );
+                                  // } catch (e) {
+                                  //   print("erra ni $e");
+                                  //   return circularLoader();
+                                  // }
                                 }
                               }),
                         ),
