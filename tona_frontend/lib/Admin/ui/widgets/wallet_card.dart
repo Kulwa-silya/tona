@@ -33,9 +33,9 @@ class _WalletCardState extends State<WalletCard> {
 
   var endpoint1Data, endpoint2Data;
 
-  int? productcount;
+  int? productcount = 0;
 
-  var totalsales;
+  String? totalsales = "0.0";
 
   fetchProductsCategory() async {
     final response = await http.get(
@@ -49,10 +49,10 @@ class _WalletCardState extends State<WalletCard> {
   fetchAlldailySales() async {
     final response = await http.get(
       Uri.parse(
-          'https://tona-production.up.railway.app/sales/dailysales/?search=2023-04-05'),
+          'https://tona-production.up.railway.app/sales/dailysales/?search=2023-04-12'),
       headers: {
         HttpHeaders.authorizationHeader:
-            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgxMDY3MTM5LCJqdGkiOiIyOTQyZTExODIxMDg0Nzg2OTg2NjJkNmFiY2JiODVkZSIsInVzZXJfaWQiOjF9.fA8yLhC3L8GgNgkh3xq9IclOqXTPx1ZAcQK4wHfSGZs",
+            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgxNTU5NTk5LCJqdGkiOiI4ZDI0YjBkMTJhMGU0NzUwYjZhOTYzYWMxNzk5MTg1MCIsInVzZXJfaWQiOjF9.Js85SKn8qXKDqiwzc_pqSKB46xR9IhJFIoUR8XN5DO0",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -68,7 +68,11 @@ class _WalletCardState extends State<WalletCard> {
     endpoint2Data = await fetchAlldailySales();
     setState(() {
       productcount = endpoint1Data.length;
+      // try {
       totalsales = endpoint2Data['total_sales_revenue_on_day'];
+      // } catch (e) {
+      //   totalsales = "0.0";
+      // }
     });
   }
 
@@ -131,7 +135,7 @@ class _WalletCardState extends State<WalletCard> {
                     )
                   : (widget.text == "Sales"
                       ? Text(
-                          totalsales.toString().toString(),
+                          totalsales!.toString().toString(),
                           style: kBodyTextStyle,
                         )
                       : Text(

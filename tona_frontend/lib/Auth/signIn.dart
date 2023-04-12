@@ -402,14 +402,14 @@ class _SingInState extends State<SingIn> {
                                 },
                               )),
 
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MainView()));
-                          },
-                          child: Text("ingia"))
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => MainView()));
+                      //     },
+                      //     child: Text("ingia"))
                     ],
                   ),
                 ),
