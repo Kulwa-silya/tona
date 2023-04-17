@@ -5,6 +5,7 @@ import 'package:machafuapp/Admin/Pages/Products/Addcollection.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/productViewer.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/Pages/Purchases/addPurchasesProduct.dart';
 import 'package:machafuapp/Admin/Pages/Sales/addsales.dart';
 import 'package:machafuapp/Admin/Pages/Sales/viewSale.dart';
 import 'package:machafuapp/Admin/Shared/backarrow.dart';
@@ -124,8 +125,8 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AddSales()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AddPurchased()));
               },
               child: Center(
                 child: Text("New Purchase", style: kInfoTextStyle),
@@ -380,13 +381,13 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                   // String date = data['date'];
 
                                   int? suppliername = data['supplier'];
-                                  int? puchaseId = data[i]['id'];
-                                  String date = data[i]["date"];
+                                  int? puchaseId = data['id'];
+                                  String date = data["date"];
                                   // String desc =
                                   //     snapshot.data[i]["description"];
-                                  String unitprice = data[i]["unit_price"];
+                                  String unitprice = data["unit_price"];
 
-                                  int? quantity = data[i]["quantity"];
+                                  int? quantity = data["quantity"];
 
                                   return Padding(
                                     padding: const EdgeInsets.fromLTRB(

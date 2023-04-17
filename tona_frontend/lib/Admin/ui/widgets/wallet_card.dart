@@ -58,19 +58,24 @@ class _WalletCardState extends State<WalletCard> {
   }
 
   fetchAlldailySales() async {
-    final response = await http.get(
-      Uri.parse(
-          'https://tona-production.up.railway.app/sales/dailysales/?search=2023-04-12'),
-      headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
-        "Accept": "application/json",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://tona-production.up.railway.app/sales/dailysales/?search=${DateTime.now().toString().substring(0, 10)}'),
+        headers: {
+          HttpHeaders.authorizationHeader: "JWT $accesTok",
+          "Accept": "application/json",
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
 
-    jsondat = jsonDecode(response.body);
-    print(jsondat);
-    return jsondat[0];
+      jsondat = jsonDecode(response.body);
+      print(jsondat);
+      print("muda ni: ${DateTime.now().toString().substring(0, 10)}");
+      return jsondat[0];
+    } catch (e) {
+      return null;
+    }
   }
 
   void fetchData() async {
@@ -78,11 +83,15 @@ class _WalletCardState extends State<WalletCard> {
     endpoint2Data = await fetchAlldailySales();
     setState(() {
       productcount = endpoint1Data.length;
-      // try {
-      totalsales = endpoint2Data['total_sales_revenue_on_day'];
-      // } catch (e) {
-      //   totalsales = "0.0";
-      // }
+      try {
+        totalsales = endpoint2Data['total_sales_revenue_on_day'];
+      } catch (e) {
+        if (totalsales == "0.0") {
+          setState(() {
+            totalsales = "0.00";
+          });
+        }
+      }
     });
   }
 
@@ -107,7 +116,7 @@ class _WalletCardState extends State<WalletCard> {
         // future: fetchAlldailySales(),
         builder: (context, AsyncSnapshot snapshot) {
       // if (!snapshot.hasData) {
-      //   return Shimer();
+      // return Shimer();
       // }
       return GestureDetector(
         onTap: () {

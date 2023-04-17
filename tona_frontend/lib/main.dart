@@ -43,7 +43,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   String? accesTok;
 
   Future getAccessToken() async {
@@ -55,11 +55,36 @@ class _MyHomePageState extends State<MyHomePage> {
     return stringValue;
   }
 
-  @override
+
+   @override
   void initState() {
     getAccessToken();
+      WidgetsBinding.instance!.addObserver(this);
     super.initState();
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      // App is being suspended (e.g., minimized, pushed to background)
+      // Clear shared preferences here
+      clearSharedPreferences();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  Future<void> clearSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
