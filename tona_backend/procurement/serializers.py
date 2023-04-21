@@ -20,9 +20,13 @@ class PurchasedProductSerializer(serializers.ModelSerializer):
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
+    supplier = SupplierSerializer(read_only=True)
+    purchased_products = PurchasedProductSerializer(many=True, read_only=True)
+
     class Meta:
         model = Purchase
-        fields = ('__all__')
+        fields = ['id', 'date', 'total_amount',
+                  'payment_method', 'supplier', 'purchased_products']
 
     def create(self, validated_data):
         purchased_products_data = validated_data.pop('purchased_products')
