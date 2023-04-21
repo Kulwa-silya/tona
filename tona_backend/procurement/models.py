@@ -16,18 +16,16 @@ class Supplier(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     address = models.CharField(max_length=255)
 
-    def __str__(self) -> str:
-        return str(self.user)
-
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
 
 
 class PurchasedProduct(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='productPurchased')
-    date = models.DateField()
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.IntegerField(validators=[MinValueValidator(1)], default='1')
-    supplier = models.ForeignKey(Supplier, related_name='supplier', on_delete=models.CASCADE)
+    quantity = models.IntegerField(
+        validators=[MinValueValidator(1)], default='1')
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -37,7 +35,6 @@ class PurchasedProduct(models.Model):
 
     def __str__(self) -> str:
         return str(self.product.title)
-
 
 
 class Purchase(models.Model):
@@ -50,32 +47,40 @@ class Purchase(models.Model):
         (PAYMENT_METHOD_CREDIT, 'credit'),
         (PAYMENT_METHOD_CHECK, 'check'),
 
-       ]
-    
+    ]
+
     date = models.DateField()
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = models.CharField(max_length=255, default=PAYMENT_METHOD_CASH, choices=PAYMENT_METHOD_CHOICES)
-    purchased_products = models.ManyToManyField(PurchasedProduct, related_name='purchasedproduct')
+    total_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, default=0)
+    payment_method = models.CharField(
+        max_length=255, default=PAYMENT_METHOD_CASH, choices=PAYMENT_METHOD_CHOICES)
+    purchased_products = models.ManyToManyField(
+        PurchasedProduct, related_name='purchasedproduct')
+    supplier = models.ForeignKey(
+        Supplier, related_name='supplier', on_delete=models.CASCADE, default=1)
+
     # include receipts
+
     def __str__(self) -> str:
         return str(self.id)
-    
-    
 
-#single purchase can have more than one receipts
+        return total_amount
+
+
+# single purchase can have more than one receipts
 class Receipt(models.Model):
     purchase = models.ForeignKey(
         Purchase, on_delete=models.CASCADE, related_name='receipt')
     image = models.ImageField(
         upload_to='store/receipts',
         validators=[validate_file_size])
-    
 
 
 class AssociatedCost(models.Model):
     name = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE, related_name='purchase')
+    purchase = models.ForeignKey(
+        Purchase, on_delete=models.CASCADE, related_name='purchase')
 
     def __str__(self) -> str:
         return self.name

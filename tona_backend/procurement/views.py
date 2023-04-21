@@ -35,6 +35,12 @@ class PurchaseViewSet(ModelViewSet):
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
 
+    # @action(detail=True)
+    # def calculate_total_amount(self, request, pk=None):
+    #     purchase = self.get_object()
+    #     total_amount = purchase.calculate_total_amount()
+    #     return Response({'total_amount': total_amount})
+
     def destroy(self, request, *args, **kwargs):
         purchase = self.get_object()
         try:
