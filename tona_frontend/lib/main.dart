@@ -55,11 +55,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     return stringValue;
   }
 
-
-   @override
+  @override
   void initState() {
     getAccessToken();
-      WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     super.initState();
   }
 
@@ -84,13 +83,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     await prefs.clear();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: Icon(Icons.holiday_village),
-      nextScreen: accesTok == null ? SingIn() : MainView(),
+      // nextScreen: accesTok == null ? SingIn() : MainView(),
+      nextScreen: SingIn(),
       splashTransition: SplashTransition.scaleTransition,
       duration: 500,
       splashIconSize: 500,

@@ -16,11 +16,13 @@ class WalletCard extends StatefulWidget {
     required this.text,
     required this.desc,
     required this.onBTap,
+    this.axxtok,
     required this.amount,
   }) : super(key: key);
 
   final IconData icon;
   final Widget onBTap;
+  String? axxtok;
   final String text;
   final String desc;
   final String amount;

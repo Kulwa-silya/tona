@@ -24,7 +24,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 class AddPurchased extends StatefulWidget {
   int? pid;
   String? titl;
-  AddPurchased({this.pid, this.titl, Key? key}) : super(key: key);
+  String Axtok;
+  AddPurchased({required this.Axtok, this.pid, this.titl, Key? key}) : super(key: key);
 
   @override
   State<AddPurchased> createState() => _AddPurchasedState();
@@ -179,7 +180,7 @@ class _AddPurchasedState extends State<AddPurchased> {
           onTap: () {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                builder: (BuildContext context) => PurchasesHome()));
+                builder: (BuildContext context) => PurchasesHome(Axtok: widget.Axtok,)));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),

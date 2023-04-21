@@ -236,7 +236,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                       child: DropdownButton(
                                         dropdownColor: ColorTheme.m_white,
                                         style: kBodyRegularTextStyle,
-                                        hint: Text("$dropdownvalue"),
+                                        hint: Text("${dropdownvalue2[0]['name']}"),
                                         // underline: Container(
                                         //   height: 2,
                                         //   width: 200,

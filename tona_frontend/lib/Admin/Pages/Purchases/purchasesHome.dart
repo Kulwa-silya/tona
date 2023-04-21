@@ -5,6 +5,7 @@ import 'package:machafuapp/Admin/Pages/Products/Addcollection.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/productViewer.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/Pages/Purchases/Viewpurchases.dart';
 import 'package:machafuapp/Admin/Pages/Purchases/addPurchasesProduct.dart';
 import 'package:machafuapp/Admin/Pages/Sales/addsales.dart';
 import 'package:machafuapp/Admin/Pages/Sales/viewSale.dart';
@@ -21,8 +22,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globalconst/globalUrl.dart';
 
 class PurchasesHome extends StatefulWidget {
-  const PurchasesHome({Key? key}) : super(key: key);
-
+  PurchasesHome({required this.Axtok, Key? key}) : super(key: key);
+  String Axtok;
   @override
   State<PurchasesHome> createState() => _PurchasesHomeHomeState();
 }
@@ -45,20 +46,11 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
 
   TextEditingController searchController = new TextEditingController();
 
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
-    return stringValue;
-  }
-
   fetchPurchasedProduct() async {
     final response = await http.get(
-      Uri.parse('${globalUrl}procurement/purchasedproduct/'),
+      Uri.parse('${globalUrl}procurement/purchase/'),
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.Axtok}",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -104,9 +96,8 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
 
   @override
   void initState() {
-    getAccessToken().then((value) {
-      fetchPurchasedProduct();
-    });
+    fetchPurchasedProduct();
+
     super.initState();
   }
 
@@ -125,8 +116,10 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => AddPurchased()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => AddPurchased(
+                          Axtok: widget.Axtok,
+                        )));
               },
               child: Center(
                 child: Text("New Purchase", style: kInfoTextStyle),
@@ -260,7 +253,7 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                                       puchaseId,
                                                                   date: date,
                                                                   salename:
-                                                                      "Sale to ${suppliername.toString()} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                                      "Purchase from ${suppliername.toString()} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
                                                                   accessTok:
                                                                       accesTok)));
                                                 },
@@ -380,14 +373,19 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                   // int count = data['total_quantity_sold'];
                                   // String date = data['date'];
 
-                                  int? suppliername = data['supplier'];
+                                  String? fname =
+                                      data['supplier']['user']['first_name'];
+                                  String? lname =
+                                      data['supplier']['user']['last_name'];
+                                  String? phone =
+                                      data['supplier']['user']['phone_number'];
                                   int? puchaseId = data['id'];
                                   String date = data["date"];
                                   // String desc =
                                   //     snapshot.data[i]["description"];
-                                  String unitprice = data["unit_price"];
+                                  String unitprice = data["total_amount"];
 
-                                  int? quantity = data["quantity"];
+                                  // int? quantity = data["quantity"];
 
                                   return Padding(
                                     padding: const EdgeInsets.fromLTRB(
@@ -397,12 +395,12 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      ViewSales(
-                                                        accessTok: accesTok,
+                                                      ViewPurchase(
+                                                        accessTok: widget.Axtok,
                                                         date: date,
-                                                        salename:
-                                                            "Sale to ${suppliername} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
-                                                        saleId: puchaseId,
+                                                        purchasename:
+                                                            "Purchase from ${fname} ${lname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 4)}",
+                                                        purchaseId: puchaseId,
                                                       )));
                                         }),
                                         child: ClipRRect(
@@ -439,16 +437,18 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                           width: 10,
                                                         ),
                                                         Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             Text(
-                                                              suppliername
+                                                              "$lname $fname"
                                                                   .toString(),
                                                               style:
                                                                   kInfoTextStyle,
                                                             ),
                                                             Text(
-                                                              quantity
-                                                                  .toString(),
+                                                              "$phone",
                                                               style:
                                                                   kBodyRegularTextStyle,
                                                               overflow:
