@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+import jwt
 # from django.contrib.auth.mixins import UserPassesTestMixin
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import AllowAny, DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly, IsAdminUser, IsAuthenticated
@@ -7,6 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
 from .filters import SoldProductFilter, SaleFilter, DailySalesFilter
 from .models import *
+
 
 from .serializers import *
 # Create your views here.
@@ -50,13 +52,11 @@ class SoldProductViewSet(ModelViewSet):
     
     def partial_update(self, request, *args, **kwargs):
         # Get the SoldProduct instance to be updated
-        
         instance = self.get_object()
 
         # Serialize the request data and validate it
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer = self.get_serializer(instance, data=request.data ,partial=True)
         serializer.is_valid(raise_exception=True)
-
 
         print('data from user',serializer.validated_data)
         # Call the update method to update the instance
@@ -101,3 +101,37 @@ class DailySalesViewSet(ModelViewSet):
     search_fields = ['date']
     queryset = DailySales.objects.all()
     serializer_class = DailySalesSerializer
+
+class ReturnInwardsViewSet(ModelViewSet):
+    http_method_names = ['get','patch','head', 'options']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ['date','return_reason']
+    queryset = ReturnInwards.objects.prefetch_related('sold_product').all()
+    serializer_class = ReturnInwardsSerializer
+
+    def partial_update(self, request, *args, **kwargs):
+        # Get the ReturnInwards instance to be updated
+        instance = self.get_object()
+
+        TOKEN = request.META.get('HTTP_AUTHORIZATION', None).split()[-1]
+        TOKEN_DICT = jwt.decode(TOKEN, options={"verify_signature": False})
+
+
+        # Serialize the request data and validate it
+        serializer = self.get_serializer(instance, data=request.data ,partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        print(type(TOKEN_DICT['user_id']))
+        print('data from user',serializer.validated_data)
+        # Call the update method to update the instance
+        try:
+            instance.authorize_return(user_id=TOKEN_DICT['user_id'])
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except PermissionError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Serialize the updated ReturnInwards instance and return it in the response
+        response_serializer = self.get_serializer(instance)
+        # print("response_serializer", response_serializer.data)
+        return Response(response_serializer.data)
