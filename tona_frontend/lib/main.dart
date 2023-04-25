@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
+import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:machafuapp/Auth/signIn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,19 +43,51 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  String? accesTok;
 
-
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue;
+    });
+    return stringValue;
+  }
 
   @override
   void initState() {
+    getAccessToken();
+    WidgetsBinding.instance!.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      // App is being suspended (e.g., minimized, pushed to background)
+      // Clear shared preferences here
+      clearSharedPreferences();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  Future<void> clearSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: Icon(Icons.holiday_village),
+      // nextScreen: accesTok == null ? SingIn() : MainView(),
       nextScreen: SingIn(),
       splashTransition: SplashTransition.scaleTransition,
       duration: 500,

@@ -8,9 +8,12 @@ from store.models import *
 from django.contrib.auth import get_user_model
 
 # Create your models here.
+
+
 class DailySales(models.Model):
     date = models.DateField(default=date.today, unique=True)
-    total_sales_revenue_on_day = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    total_sales_revenue_on_day = models.DecimalField(
+        max_digits=9, decimal_places=2, default=0)
     total_quantity_sold_on_day = models.IntegerField(default=0)
 
     class Meta:
@@ -32,25 +35,26 @@ class DailySales(models.Model):
 
 
 class Sale(models.Model):
-    customer_name = models.CharField(max_length=255,blank=True,null=True)
+    customer_name = models.CharField(max_length=255, blank=True, null=True)
     phone_number = PhoneNumberField(verbose_name="phone number")
     date = models.DateTimeField(default=timezone.now)
-    description = models.TextField(blank=True,null=True,max_length=1000)
+    description = models.TextField(blank=True, null=True, max_length=1000)
     total_quantity_sold = models.IntegerField(default=0)
-    sale_revenue = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    sale_revenue = models.DecimalField(
+        max_digits=9, decimal_places=2, default=0)
 
     class Meta:
         ordering = ['date']
-
 
     def __str__(self) -> str:
         return f"Sale to {self.customer_name} for {self.date.strftime('%A %Y-%m-%d %H:%M')}"
 
     def delete(self, *args, **kwargs):
         if self.sold_products.exists():
-            raise ValidationError('Cannot delete Sale instance with associated SoldProduct instances, delete the individual sold products in this sale first')
+            raise ValidationError(
+                'Cannot delete Sale instance with associated SoldProduct instances, delete the individual sold products in this sale first')
         super().delete(*args, **kwargs)
-    
+
     def calculate_sale_revenue(self):
         sale_revenue = 0
         for sold_product in self.sold_products.all():
@@ -63,14 +67,15 @@ class SoldProduct(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='productSold')
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
-    sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='sold_products')
+    sale = models.ForeignKey(
+        Sale, on_delete=models.CASCADE, related_name='sold_products')
     discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     class Meta:
-        # add unique constraint for product and sale fields, 
+        # add unique constraint for product and sale fields,
         # This will ensure that a product can only be sold once per sale.
         unique_together = ('product', 'sale')
-    
+
     def __str__(self) -> str:
         return f"{self.product.title} for {self.sale}"
 
@@ -87,14 +92,16 @@ class SoldProduct(models.Model):
             sale.sold_products.add(self)
             sale.total_quantity_sold += self.quantity
             if self.discount > 0:
-                discount_amount = (self.product.unit_price * self.discount) / 100
-                sale.sale_revenue += (self.product.unit_price - discount_amount) * self.quantity
+                discount_amount = (
+                    self.product.unit_price * self.discount) / 100
+                sale.sale_revenue += (self.product.unit_price -
+                                      discount_amount) * self.quantity
             else:
                 sale.sale_revenue += self.product.unit_price * self.quantity
             sale.save()
         else:
-            raise ValueError("Not enough inventory to fulfill this request.") 
-    
+            raise ValueError("Not enough inventory to fulfill this request.")
+
     def delete(self, *args, **kwargs):
         # re-update inventory to reinstate to original state
         self.product.inventory += self.quantity
@@ -104,7 +111,8 @@ class SoldProduct(models.Model):
         sale = self.sale
         sale.total_quantity_sold -= self.quantity
         discount_amount = ((self.product.unit_price * self.discount) / 100)
-        sale.sale_revenue -= ((self.product.unit_price - discount_amount) * self.quantity)
+        sale.sale_revenue -= ((self.product.unit_price -
+                              discount_amount) * self.quantity)
         sale.save()
         # delete the soldProduct instance
         super().delete(*args, **kwargs)
@@ -119,7 +127,8 @@ class SoldProduct(models.Model):
             quantity_diff = abs(old_quantity - new_quantity)
 
             if new_quantity < old_quantity and new_discount > old_discount:
-                raise ValueError("you can't reduce quantity and increase discount.")
+                raise ValueError(
+                    "you can't reduce quantity and increase discount.")
 
             if old_quantity > new_quantity:
                 return_inwards = ReturnInwards(sold_product=self, quantity_returned=quantity_diff, return_reason=validated_data['return_reason'])
@@ -132,6 +141,7 @@ class SoldProduct(models.Model):
                 # sale = self.sale
                 # sale.total_quantity_sold -= quantity_diff
 
+<<<<<<< HEAD
                 # new_discount_amount = ((self.product.unit_price * new_discount) / 100)
                 # old_discount_amount = ((self.product.unit_price * old_discount) / 100)
                 # # revenue without the old price and and old quantity
@@ -139,6 +149,19 @@ class SoldProduct(models.Model):
                 # # revenue_difference = abs(sale.sale_revenue - (self.product.unit_price - discount_amount) * new_quantity) ##this is the old method
                 # sale.sale_revenue += ((self.product.unit_price - new_discount_amount) * new_quantity)
                 # sale.save()
+=======
+                new_discount_amount = (
+                    (self.product.unit_price * new_discount) / 100)
+                old_discount_amount = (
+                    (self.product.unit_price * old_discount) / 100)
+                # revenue without the old price and and old quantity
+                sale.sale_revenue -= ((self.product.unit_price -
+                                      old_discount_amount) * old_quantity)
+                # revenue_difference = abs(sale.sale_revenue - (self.product.unit_price - discount_amount) * new_quantity) ##this is the old method
+                sale.sale_revenue += ((self.product.unit_price -
+                                      new_discount_amount) * new_quantity)
+                sale.save()
+>>>>>>> a5cefbf8842aa918425902b757a440f645b197d3
             else:
                 # quantity or discount has increased
                 if self.product.inventory >= quantity_diff:
@@ -148,15 +171,20 @@ class SoldProduct(models.Model):
                     sale = self.sale
                     sale.total_quantity_sold += quantity_diff
 
-                    new_discount_amount = ((self.product.unit_price * new_discount) / 100)
-                    old_discount_amount = ((self.product.unit_price * old_discount) / 100)
+                    new_discount_amount = (
+                        (self.product.unit_price * new_discount) / 100)
+                    old_discount_amount = (
+                        (self.product.unit_price * old_discount) / 100)
                     # revenue without the old price and and old quantity
-                    sale.sale_revenue -= ((self.product.unit_price - old_discount_amount) * old_quantity)
+                    sale.sale_revenue -= ((self.product.unit_price -
+                                          old_discount_amount) * old_quantity)
                     # revenue_difference = abs(sale.sale_revenue - (self.product.unit_price - discount_amount) * new_quantity) ##this is the old method
-                    sale.sale_revenue += ((self.product.unit_price - new_discount_amount) * new_quantity)
+                    sale.sale_revenue += ((self.product.unit_price -
+                                          new_discount_amount) * new_quantity)
                     sale.save()
                 else:
-                    raise ValueError("Not enough inventory to fulfill this request.")
+                    raise ValueError(
+                        "Not enough inventory to fulfill this request.")
 
         # update other fields
         self.quantity = new_quantity
@@ -164,6 +192,7 @@ class SoldProduct(models.Model):
         super().save(*args, **kwargs)
 
         return self
+<<<<<<< HEAD
 
 class ReturnInwards(models.Model):
     sold_product = models.ForeignKey(SoldProduct, on_delete=models.CASCADE, related_name='return_inwards')
@@ -203,3 +232,5 @@ class ReturnInwards(models.Model):
                 raise ValueError("Return has already been authorized.")
         else:
             raise PermissionError("Authorization required from admin.")
+=======
+>>>>>>> a5cefbf8842aa918425902b757a440f645b197d3

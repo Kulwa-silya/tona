@@ -145,8 +145,14 @@ class _SingInState extends State<SingIn> {
       });
       await addAccessToken(res['access']);
       await addRefreshToken(res['refresh']);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainView()));
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MainView()),
+        (Route<dynamic> route) => false,
+      );
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => MainView()));
     }
   }
 
@@ -402,14 +408,14 @@ class _SingInState extends State<SingIn> {
                                 },
                               )),
 
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MainView()));
-                          },
-                          child: Text("ingia"))
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => MainView()));
+                      //     },
+                      //     child: Text("ingia"))
                     ],
                   ),
                 ),

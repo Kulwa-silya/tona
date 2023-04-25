@@ -140,7 +140,7 @@ class _AddCollectionState extends State<AddCollection> {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
                 builder: (BuildContext context) => ProductCat(
-                     
+                     Axtok: accesTok!,
                     )));
           },
           child: Padding(

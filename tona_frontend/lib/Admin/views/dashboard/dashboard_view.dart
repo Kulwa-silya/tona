@@ -167,14 +167,16 @@ class _DashBoardViewState extends State<DashBoardView> {
                             children: [
                               Responsive(
                                 mobile: TransactionsGridView(
+                                  axtok: accesTok!,
                                   crossAxisCount: _size.width < 650 ? 2 : 4,
                                   childAspectRatio:
                                       _size.width < 650 && _size.width > 350
                                           ? 1
                                           : 1,
                                 ),
-                                tablet: const TransactionsGridView(),
+                                tablet:  TransactionsGridView(axtok: accesTok!,),
                                 desktop: TransactionsGridView(
+                                  axtok: accesTok!,
                                   childAspectRatio:
                                       _size.width < 1400 ? 1.1 : 1.4,
                                 ),

@@ -15,7 +15,9 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductCat extends StatefulWidget {
-  const ProductCat({Key? key}) : super(key: key);
+   ProductCat({ this.Axtok, Key? key}) : super(key: key);
+
+  String? Axtok;
 
   @override
   State<ProductCat> createState() => _ProductCatState();

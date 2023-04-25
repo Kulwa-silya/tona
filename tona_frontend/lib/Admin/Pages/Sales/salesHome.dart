@@ -72,7 +72,7 @@ class _SalesHomeState extends State<SalesHome> {
   searchSales() async {
     final response = await http.get(
       Uri.parse(
-          'https://tona-production.up.railway.app/sales/sale/?search=$searchValue'),
+          '${globalUrl}/sales/sale/?search=$searchValue'),
       headers: {
         HttpHeaders.authorizationHeader: "JWT $accesTok",
         "Accept": "application/json",

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../shared/colors.dart';
 import '../shared/edge_insect.dart';
 import '../shared/text_styles.dart';
@@ -15,11 +16,13 @@ class WalletCard extends StatefulWidget {
     required this.text,
     required this.desc,
     required this.onBTap,
+    this.axxtok,
     required this.amount,
   }) : super(key: key);
 
   final IconData icon;
   final Widget onBTap;
+  String? axxtok;
   final String text;
   final String desc;
   final String amount;
@@ -33,9 +36,19 @@ class _WalletCardState extends State<WalletCard> {
 
   var endpoint1Data, endpoint2Data;
 
-  int? productcount;
+  int? productcount = 0;
 
-  var totalsales;
+  String? totalsales = "0.0";
+  String? accesTok;
+
+  Future getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? stringValue = prefs.getString('accesstoken');
+    setState(() {
+      accesTok = stringValue!;
+    });
+    return stringValue;
+  }
 
   fetchProductsCategory() async {
     final response = await http.get(
@@ -47,20 +60,24 @@ class _WalletCardState extends State<WalletCard> {
   }
 
   fetchAlldailySales() async {
-    final response = await http.get(
-      Uri.parse(
-          'https://tona-production.up.railway.app/sales/dailysales/?search=2023-04-07'),
-      headers: {
-        HttpHeaders.authorizationHeader:
-            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgxMDY3MTM5LCJqdGkiOiIyOTQyZTExODIxMDg0Nzg2OTg2NjJkNmFiY2JiODVkZSIsInVzZXJfaWQiOjF9.fA8yLhC3L8GgNgkh3xq9IclOqXTPx1ZAcQK4wHfSGZs",
-        "Accept": "application/json",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://tona-production.up.railway.app/sales/dailysales/?search=${DateTime.now().toString().substring(0, 10)}'),
+        headers: {
+          HttpHeaders.authorizationHeader: "JWT $accesTok",
+          "Accept": "application/json",
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
 
-    jsondat = jsonDecode(response.body);
-    print(jsondat);
-    return jsondat[0];
+      jsondat = jsonDecode(response.body);
+      print(jsondat);
+      print("muda ni: ${DateTime.now().toString().substring(0, 10)}");
+      return jsondat[0];
+    } catch (e) {
+      return null;
+    }
   }
 
   void fetchData() async {
@@ -68,13 +85,26 @@ class _WalletCardState extends State<WalletCard> {
     endpoint2Data = await fetchAlldailySales();
     setState(() {
       productcount = endpoint1Data.length;
-      totalsales = endpoint2Data['total_sales_revenue_on_day'];
+      try {
+        totalsales = endpoint2Data['total_sales_revenue_on_day'];
+      } catch (e) {
+        if (totalsales == "0.0") {
+          setState(() {
+            totalsales = "0.00";
+          });
+        }
+      }
     });
   }
 
   @override
   void initState() {
-    fetchData();
+    getAccessToken().then(
+      (value) {
+        fetchData();
+      },
+    );
+
     super.initState();
   }
 
@@ -88,7 +118,7 @@ class _WalletCardState extends State<WalletCard> {
         // future: fetchAlldailySales(),
         builder: (context, AsyncSnapshot snapshot) {
       // if (!snapshot.hasData) {
-      //   return Shimer();
+      // return Shimer();
       // }
       return GestureDetector(
         onTap: () {
@@ -131,7 +161,7 @@ class _WalletCardState extends State<WalletCard> {
                     )
                   : (widget.text == "Sales"
                       ? Text(
-                          totalsales.toString().toString(),
+                          totalsales!.toString().toString(),
                           style: kBodyTextStyle,
                         )
                       : Text(
