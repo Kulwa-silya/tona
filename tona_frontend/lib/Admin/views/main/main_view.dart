@@ -45,38 +45,38 @@ class _MainViewState extends State<MainView> {
 
   bool _inactive = false;
 
-  Future<void> deletePreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('accesstoken');
-    prefs.remove('refreshtoken');
-  }
+//   Future<void> deletePreference() async {
+//     final prefs = await SharedPreferences.getInstance();
+//     prefs.remove('accesstoken');
+//     prefs.remove('refreshtoken');
+//   }
 
-//check and logout
-  void _resetTimer() {
-    Timer _timer = Timer(Duration(minutes: 1200), _logOut);
+// //check and logout
+//   void _resetTimer() {
+//     Timer _timer = Timer(Duration(seconds: 3), _logOut);
 
-    if (_inactive) {
-      setState(() {
-        _inactive = false;
-        deletePreference();
-      });
-    }
-    // _timer.cancel();
-    _timer = Timer(Duration(minutes: 1200), _logOut);
-  }
+//     if (_inactive) {
+//       setState(() {
+//         _inactive = false;
+//         deletePreference();
+//       });
+//     }
+//     // _timer.cancel();
+//     _timer = Timer(Duration(seconds: 3), _logOut);
+//   }
 
-  void _logOut() {
-    setState(() {
-      _inactive = true;
-    });
-    // Perform the logout action here
-  }
+//   void _logOut() {
+//     setState(() {
+//       _inactive = true;
+//     });
+//     // Perform the logout action here
+//   }
 
 // cheks and log out ends
 
   @override
   void initState() {
-    _resetTimer();
+    // _resetTimer();
     getAccessToken();
     super.initState();
   }
@@ -91,9 +91,9 @@ class _MainViewState extends State<MainView> {
           //   MaterialPageRoute(builder: (context) => SingIn()),
           //   (Route<dynamic> route) => false,
           // ),
-          onTapDown: (_) => accesTok != null ? _resetTimer() : null,
-          onPanDown: (_) => accesTok != null ? _resetTimer() : null,
-          onScaleStart: (_) => accesTok != null ? _resetTimer() : null,
+          // onTapDown: (_) => accesTok != null ? _resetTimer() : null,
+          // onPanDown: (_) => accesTok != null ? _resetTimer() : null,
+          // onScaleStart: (_) => accesTok != null ? _resetTimer() : null,
           child: _inactive == true
               ? GestureDetector(
                   onTap: () {

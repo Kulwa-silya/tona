@@ -42,6 +42,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
   TextEditingController quantityC = new TextEditingController();
   TextEditingController discoutC = new TextEditingController();
   TextEditingController phoneC = new TextEditingController();
+  TextEditingController searchdropdown = new TextEditingController();
   bool loading = false;
 
   DateTime? gdate;
@@ -233,41 +234,49 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                     width: MediaQuery.of(context).size.width,
                                     color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                                     child: Center(
-                                      child: DropdownButton(
-                                        dropdownColor: ColorTheme.m_white,
-                                        style: kBodyRegularTextStyle,
-                                        hint: Text("${dropdownvalue2[0]['name']}"),
-                                        // underline: Container(
-                                        //   height: 2,
-                                        //   width: 200,
-                                        //   color: ColorTheme.m_blue,
-                                        // ),
-                                        // value: dropdownvalue,
-                                        icon: Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: ColorTheme.m_blue,
-                                        ),
-                                        items: items.map((item) {
-                                          return DropdownMenuItem(
-                                            value: item['id'],
-                                            child: Text(item['name']),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            // dropdownvalue = newValue;
-                                            pId = items.firstWhere((item) =>
-                                                item["id"] == newValue)["id"];
-
-                                            // dropdownvalue = items.firstWhere(
-                                            //     (item) =>
-                                            //         item["name"] ==
-                                            //         newValue)["name"];
-
-                                            print("pid ni:  $pId");
-                                            print("pid ni:  $dropdownvalue");
-                                          });
-                                        },
+                                      child: Column(
+                                        children: [
+                                          TextField(
+                                            controller: searchdropdown,
+                                            decoration: InputDecoration(
+                                              hintText: 'Search...',
+                                            ),
+                                            onChanged: (value) {
+                                              setState(
+                                                  () {}); // Trigger a rebuild to update the filtered items list
+                                            },
+                                          ),
+                                          DropdownButton(
+                                            dropdownColor: ColorTheme.m_white,
+                                            style: kBodyRegularTextStyle,
+                                            hint: Text(
+                                                "${dropdownvalue2[0]['name']}"),
+                                            icon: Icon(
+                                              Icons.keyboard_arrow_down,
+                                              color: ColorTheme.m_blue,
+                                            ),
+                                            items: items.where((item) {
+                                              // Filter items based on search query
+                                              String query = searchdropdown.text
+                                                  .toLowerCase();
+                                              return item['name']
+                                                  .toLowerCase()
+                                                  .contains(query);
+                                            }).map((item) {
+                                              return DropdownMenuItem(
+                                                value: item['id'],
+                                                child: Text(item['name']),
+                                              );
+                                            }).toList(),
+                                            onChanged: (newValue) {
+                                              setState(() {
+                                                pId = items.firstWhere((item) =>
+                                                    item["id"] ==
+                                                    newValue)["id"];
+                                              });
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
