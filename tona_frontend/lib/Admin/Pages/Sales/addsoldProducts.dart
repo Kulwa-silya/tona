@@ -12,6 +12,7 @@ import 'package:machafuapp/Admin/Pages/Sales/salesHome.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:machafuapp/Shared/gettingTokens.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../consts/colorTheme.dart';
@@ -76,6 +77,9 @@ class _AddSoldProdState extends State<AddSoldProd> {
   int? pId;
 
   int? selectedIndex;
+  String? _selectedItem;
+
+  List listprod = [];
 
   getProducts() async {
     final response = await http.get(
@@ -96,6 +100,9 @@ class _AddSoldProdState extends State<AddSoldProd> {
     });
 
     print("dataaa $items");
+    setState(() {
+      listprod = items.map((item) => item["name"]).toList();
+    });
     // print(items1);
     return items;
   }
@@ -236,40 +243,129 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                     width: MediaQuery.of(context).size.width,
                                     color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                                     child: Center(
-                                      child: DropdownButton(
-                                        dropdownColor: ColorTheme.m_white,
-                                        style: kBodyRegularTextStyle,
-                                        hint: Text(dropdownvalue),
-                                        icon: Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: ColorTheme.m_blue,
-                                        ),
-                                        items: items.map((item) {
-                                          return DropdownMenuItem(
-                                            value: item['id'],
-                                            child: Text(item['name']),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            pId = items.firstWhere((item) =>
-                                                item["id"] == newValue)["id"];
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(20.0),
+                                            child: Text(
+                                              'Select a country',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.blueGrey),
+                                            ),
+                                          ),
+                                          Container(
+                                            width: double.infinity,
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: 20),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                  blurRadius: 10,
+                                                  offset: Offset(0, 10),
+                                                ),
+                                              ],
+                                            ),
+                                            child: SearchField(
+                                                hint: 'Search',
+                                                searchInputDecoration:
+                                                    InputDecoration(
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      color: Colors
+                                                          .blueGrey.shade200,
+                                                      width: 1,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                      width: 2,
+                                                      color: Colors.blue
+                                                          .withOpacity(0.8),
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                                maxSuggestionsInViewPort: 6,
+                                                itemHeight: 50,
+                                                suggestionsDecoration:
+                                                    BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                onTap: (value) {
+                                                  setState(() {
+                                                    _selectedItem = value!;
+                                                  });
 
-                                            selectedIndex = items.indexWhere(
-                                                (item) =>
-                                                    item['id'] == newValue);
+                                                  print(value);
+                                                  print(items
+                                                      .map((item) =>
+                                                          item["name"])
+                                                      .toList());
+                                                },
+                                                suggestions:
+                                                    listprod as List<String>
 
-                                            dropdownvalue =
-                                                items[selectedIndex!]['name'];
-
-                                            print("pid ni:  $pId");
-                                            print("pid ni:  $items['name']");
-
-                                            print("pid ni:  $dropdownvalue ");
-                                          });
-                                        },
+                                                // .map((e) =>
+                                                //     SearchFieldListItem(e,
+                                                //         child: Text(e)))
+                                                // .toList(),
+                                                ),
+                                          ),
+                                        ],
                                       ),
                                     ),
+                                    // child: DropdownButton(
+                                    //   dropdownColor: ColorTheme.m_white,
+                                    //   style: kBodyRegularTextStyle,
+                                    //   hint: Text(dropdownvalue),
+                                    //   icon: Icon(
+                                    //     Icons.keyboard_arrow_down,
+                                    //     color: ColorTheme.m_blue,
+                                    //   ),
+                                    //   items: items.map((item) {
+                                    //     return DropdownMenuItem(
+                                    //       value: item['id'],
+                                    //       child: Text(item['name']),
+                                    //     );
+                                    //   }).toList(),
+                                    //   onChanged: (newValue) {
+                                    //     setState(() {
+                                    //       pId = items.firstWhere((item) =>
+                                    //           item["id"] == newValue)["id"];
+
+                                    //       selectedIndex = items.indexWhere(
+                                    //           (item) =>
+                                    //               item['id'] == newValue);
+
+                                    //       dropdownvalue =
+                                    //           items[selectedIndex!]['name'];
+
+                                    //       print("pid ni:  $pId");
+                                    //       print("pid ni:  $items['name']");
+
+                                    //       print("pid ni:  $dropdownvalue ");
+                                    //     });
+                                    //   },
+                                    // ),
                                   ),
                                 ),
                               ),
