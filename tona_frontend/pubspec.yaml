@@ -39,6 +39,7 @@ dependencies:
   shimmer: ^2.0.0
   # syncfusion_flutter_datepicker: ^21.1.37
   flutter_datetime_picker: ^1.5.1
+  dropdown_search: ^5.0.6
   flutter_slidable: ^2.0.0
 
   syncfusion_flutter_datepicker: ^19.2.47-beta

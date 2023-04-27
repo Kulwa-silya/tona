@@ -75,6 +75,8 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
   int? pId;
 
+  int? selectedIndex;
+
   getProducts() async {
     final response = await http.get(
       Uri.parse("https://tona-production.up.railway.app/store/products/"),
@@ -234,49 +236,38 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                     width: MediaQuery.of(context).size.width,
                                     color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                                     child: Center(
-                                      child: Column(
-                                        children: [
-                                          TextField(
-                                            controller: searchdropdown,
-                                            decoration: InputDecoration(
-                                              hintText: 'Search...',
-                                            ),
-                                            onChanged: (value) {
-                                              setState(
-                                                  () {}); // Trigger a rebuild to update the filtered items list
-                                            },
-                                          ),
-                                          DropdownButton(
-                                            dropdownColor: ColorTheme.m_white,
-                                            style: kBodyRegularTextStyle,
-                                            hint: Text(
-                                                "${dropdownvalue2[0]['name']}"),
-                                            icon: Icon(
-                                              Icons.keyboard_arrow_down,
-                                              color: ColorTheme.m_blue,
-                                            ),
-                                            items: items.where((item) {
-                                              // Filter items based on search query
-                                              String query = searchdropdown.text
-                                                  .toLowerCase();
-                                              return item['name']
-                                                  .toLowerCase()
-                                                  .contains(query);
-                                            }).map((item) {
-                                              return DropdownMenuItem(
-                                                value: item['id'],
-                                                child: Text(item['name']),
-                                              );
-                                            }).toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                pId = items.firstWhere((item) =>
-                                                    item["id"] ==
-                                                    newValue)["id"];
-                                              });
-                                            },
-                                          ),
-                                        ],
+                                      child: DropdownButton(
+                                        dropdownColor: ColorTheme.m_white,
+                                        style: kBodyRegularTextStyle,
+                                        hint: Text(dropdownvalue),
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color: ColorTheme.m_blue,
+                                        ),
+                                        items: items.map((item) {
+                                          return DropdownMenuItem(
+                                            value: item['id'],
+                                            child: Text(item['name']),
+                                          );
+                                        }).toList(),
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            pId = items.firstWhere((item) =>
+                                                item["id"] == newValue)["id"];
+
+                                            selectedIndex = items.indexWhere(
+                                                (item) =>
+                                                    item['id'] == newValue);
+
+                                            dropdownvalue =
+                                                items[selectedIndex!]['name'];
+
+                                            print("pid ni:  $pId");
+                                            print("pid ni:  $items['name']");
+
+                                            print("pid ni:  $dropdownvalue ");
+                                          });
+                                        },
                                       ),
                                     ),
                                   ),
