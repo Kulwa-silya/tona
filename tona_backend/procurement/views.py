@@ -9,18 +9,18 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
-
 from .models import *
 from store.models import Product
-# from .filters import
+from .filters import *
 # Create your views here.
 
 
 class SupplierViewSet(ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
-    # filterset_class = ProductFilter
+    filterset_class = SupplierFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
     permission_classes = [DjangoModelPermissions]
 
     queryset = Supplier.objects.all()
@@ -30,8 +30,11 @@ class SupplierViewSet(ModelViewSet):
 class PurchaseViewSet(ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
+    filterset_class = PurchaseFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
     permission_classes = [DjangoModelPermissions]
+
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
 
@@ -71,7 +74,7 @@ class AssociatedCostViewSet(ModelViewSet):
 
 class PurchasedProductViewSet(ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
-
+    filterset_class = PurchasedProductFilter
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     permission_classes = [DjangoModelPermissions]
     queryset = PurchasedProduct.objects.all()
@@ -82,6 +85,8 @@ class ReceiptViewSet(ModelViewSet):
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_class = ReceiptFilter
+
     permission_classes = [DjangoModelPermissions]
     queryset = Receipt.objects.all()
     serializer_class = ReceiptSerializer
