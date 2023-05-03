@@ -25,16 +25,19 @@ class AddPurchased extends StatefulWidget {
   int? pid;
   String? titl;
   String Axtok;
-  AddPurchased({required this.Axtok, this.pid, this.titl, Key? key}) : super(key: key);
+  AddPurchased({required this.Axtok, this.pid, this.titl, Key? key})
+      : super(key: key);
 
   @override
   State<AddPurchased> createState() => _AddPurchasedState();
 }
 
 class _AddPurchasedState extends State<AddPurchased> {
-  TextEditingController cnameC = new TextEditingController();
-  TextEditingController descC = new TextEditingController();
+  // TextEditingController cnameC = new TextEditingController();
+  TextEditingController amountC = new TextEditingController();
+  TextEditingController fullnameC = new TextEditingController();
   TextEditingController phoneC = new TextEditingController();
+  TextEditingController addressC = new TextEditingController();
 
   final formkey = GlobalKey<FormState>();
 
@@ -110,24 +113,45 @@ class _AddPurchasedState extends State<AddPurchased> {
   Future _purchasedadd() async {
     try {
       final res = await http
-          .post(Uri.parse("${globalUrl}procurement/purchasedproduct"),
+          .post(Uri.parse("${globalUrl}procurement/purchase/"),
               headers: {
-                HttpHeaders.authorizationHeader: "JWT $accesTok",
+                HttpHeaders.authorizationHeader:
+                    "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzMzY5OTgzLCJqdGkiOiI0MWI5MTMzNmFkY2M0NmU4OWU0ODNlMWMxZGI3ZjFhNCIsInVzZXJfaWQiOjF9.QmlWLBpnOjoCcMqiAlQNSXqCit1sMxS9TzWFmRfuZyg",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
               body: json.encode({
-                "customer_name": cnameC.text,
-                "phone_number": "+255${phoneC.text}",
-                "description": descC.text,
-                "date":
-                    gdate == null ? DateTime.now().toString() : gdate.toString()
+                // "customer_name": cnameC.text,
+                // "phone_number": "+255${phoneC.text}",
+                // "description": descC.text,
+                // "date":
+                //     gdate == null ? DateTime.now().toString() : gdate.toString(),
+
+                "date": gdate == null
+                    ? DateTime.now().toString().substring(0, 10)
+                    : gdate.toString().substring(0, 10),
+                "total_amount": amountC.text,
+                "payment_method": "CA",
+                "supplier": {
+                  "full_name": "Mushi",
+                  "phone_number": "+255764587746",
+                  "address": "Domdom"
+                },
+                "purchased_products": [
+                  {
+                    "id": 5,
+                    "unit_price": "6665.00",
+                    "quantity": 1,
+                    "product": 1
+                  }
+                ]
               }))
           .then((value) async {
         jsonre = jsonDecode(value.body);
         setState(() {
           id = jsonre['id'];
           print("id ni: $id");
+          print(gdate);
           success = false;
         });
         setState(() {
@@ -180,7 +204,9 @@ class _AddPurchasedState extends State<AddPurchased> {
           onTap: () {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                builder: (BuildContext context) => PurchasesHome(Axtok: widget.Axtok,)));
+                builder: (BuildContext context) => PurchasesHome(
+                      Axtok: widget.Axtok,
+                    )));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -234,7 +260,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (emailValue) {
                               if (emailValue!.isEmpty) {
-                                return "Fill in price";
+                                return "Fill in Full name ";
                               }
                               RegExp regExp = new RegExp(
                                   "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
@@ -242,15 +268,50 @@ class _AddPurchasedState extends State<AddPurchased> {
                               if (regExp.hasMatch(emailValue)) {
                                 return null;
                               }
-                              return "Invalid Customer Name Format";
+                              return "Invalid Name Format";
                             },
-                            controller: cnameC,
+                            controller: fullnameC,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.description_rounded,
+                              ),
+                              labelText: "Full Name ",
+                              hintText: "Ex: Cocacola,Simba Ciment",
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (emailValue) {
+                              if (emailValue!.isEmpty) {
+                                return "Fill in amount";
+                              }
+                              RegExp regExp = new RegExp(
+                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                              if (regExp.hasMatch(emailValue)) {
+                                return null;
+                              }
+                              return "Invalid Amount Format";
+                            },
+                            controller: amountC,
                             decoration: InputDecoration(
                               prefixIcon: Icon(
                                 Icons.adobe_sharp,
                               ),
-                              labelText: "Customer Name",
-                              hintText: "Ex: Norman Mushi",
+                              labelText: "Amount",
+                              hintText: "Ex: 10,000.00",
                               border: InputBorder.none,
                               filled: true,
                               fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
@@ -283,8 +344,8 @@ class _AddPurchasedState extends State<AddPurchased> {
                               prefixIcon: Icon(
                                 Icons.phone,
                               ),
-                              labelText: "Phone Name",
-                              hintText: "Ex: Electronics",
+                              labelText: "Phone No",
+                              hintText: "Ex: 76547...",
                               border: InputBorder.none,
                               filled: true,
                               fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
@@ -304,41 +365,6 @@ class _AddPurchasedState extends State<AddPurchased> {
                                       )),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(13),
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (emailValue) {
-                              if (emailValue!.isEmpty) {
-                                return "Fill in Description ";
-                              }
-                              RegExp regExp = new RegExp(
-                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                              if (regExp.hasMatch(emailValue)) {
-                                return null;
-                              }
-                              return "Invalid Description  Format";
-                            },
-                            controller: descC,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.description_rounded,
-                              ),
-                              labelText: "Description ",
-                              hintText: "Ex: Type, form, condition",
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                             ),
                           ),
                         ),
@@ -440,7 +466,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                                               showdropdown: true,
                                               accessTok: accesTok,
                                               salename:
-                                                  "Sale to ${cnameC.text} for $dayOfWeek ${gdate == null ? DateTime.now().toString().substring(0, 16) : gdate.toString().substring(0, 16)}",
+                                                  "Purchace from ${fullnameC.text} for $dayOfWeek ${gdate == null ? DateTime.now().toString().substring(0, 16) : gdate.toString().substring(0, 16)}",
                                             );
                                           });
                                     });
@@ -454,7 +480,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                                         content: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
-                                            "Sale added (${cnameC.text})",
+                                            "Sale added (${fullnameC.text})",
                                             style: TextStyle(
                                                 color: ColorTheme.m_blue,
                                                 fontWeight: FontWeight.bold),

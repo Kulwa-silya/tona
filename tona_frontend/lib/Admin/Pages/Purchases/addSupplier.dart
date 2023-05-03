@@ -114,8 +114,9 @@ class _AddSupplierState extends State<AddSupplier> {
                 'Content-Type': 'application/json; charset=UTF-8',
               },
               body: json.encode({
-                "Address": int.parse(AddressC.text),
-                "product": pId,
+                "full_name": AddressC.text,
+                "phone_number": "+255700000000",
+            "address": "TESTING"
                 
               }))
           .then((value) async {
@@ -266,7 +267,9 @@ class _AddSupplierState extends State<AddSupplier> {
                                 if (Value!.isEmpty) {
                                   return "Fill in Address quantity";
                                 }
-                                RegExp regExp = new RegExp(r'^[0-9]+$');
+                              RegExp regExp = new RegExp(
+                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
                                 if (regExp.hasMatch(Value)) {
                                   return null;
                                 }
@@ -278,7 +281,7 @@ class _AddSupplierState extends State<AddSupplier> {
                                   Icons.numbers,
                                 ),
                                 labelText: "Address",
-                                hintText: "Ex: Mushi, NSSF",
+                                hintText: "Ex: Sabasaba, NSSF",
                                 border: InputBorder.none,
                                 filled: true,
                                 fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,

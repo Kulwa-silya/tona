@@ -91,8 +91,10 @@ class _ViewPurchaseState extends State<ViewPurchase> {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AddSales()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PurchasesHome(
+                            Axtok: widget.accessTok!,
+                          )));
                 },
                 child: Center(
                   child: IconButton(
@@ -120,7 +122,9 @@ class _ViewPurchaseState extends State<ViewPurchase> {
           ],
           centerTitle: true,
           leading: backArrow(
-            towhere: PurchasesHome(Axtok: widget.accessTok!,),
+            towhere: PurchasesHome(
+              Axtok: widget.accessTok!,
+            ),
           )),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,

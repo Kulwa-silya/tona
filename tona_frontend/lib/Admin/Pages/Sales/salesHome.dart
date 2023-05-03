@@ -20,7 +20,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globalconst/globalUrl.dart';
 
 class SalesHome extends StatefulWidget {
-  const SalesHome({Key? key}) : super(key: key);
+  String Axtok;
+   SalesHome({required this.Axtok, Key? key}) : super(key: key);
 
   @override
   State<SalesHome> createState() => _SalesHomeState();
@@ -44,22 +45,12 @@ class _SalesHomeState extends State<SalesHome> {
 
   TextEditingController searchController = new TextEditingController();
 
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
-
-    return stringValue;
-  }
-
+ 
   fetchSalesCategory() async {
     final response = await http.get(
       Uri.parse('${globalUrl}sales/sale/'),
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.Axtok}",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -71,10 +62,9 @@ class _SalesHomeState extends State<SalesHome> {
 
   searchSales() async {
     final response = await http.get(
-      Uri.parse(
-          '${globalUrl}/sales/sale/?search=$searchValue'),
+      Uri.parse('${globalUrl}/sales/sale/?search=$searchValue'),
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.Axtok}",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -107,9 +97,9 @@ class _SalesHomeState extends State<SalesHome> {
 
   @override
   void initState() {
-    getAccessToken().then((value) {
+
       fetchSalesCategory();
-    });
+
     super.initState();
   }
 
@@ -129,7 +119,7 @@ class _SalesHomeState extends State<SalesHome> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => AddSales()));
+                    .push(MaterialPageRoute(builder: (context) => AddSales(axxtok: widget.Axtok,)));
               },
               child: Center(
                 child: Text("New Sale", style: kInfoTextStyle),
@@ -260,7 +250,7 @@ class _SalesHomeState extends State<SalesHome> {
                                                                   salename:
                                                                       "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
                                                                   accessTok:
-                                                                      accesTok)));
+                                                                      widget.Axtok)));
                                                 },
                                                 child: Padding(
                                                   padding:
@@ -385,7 +375,7 @@ class _SalesHomeState extends State<SalesHome> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         ViewSales(
-                                                          accessTok: accesTok,
+                                                          accessTok: widget.Axtok,
                                                           date: date,
                                                           salename:
                                                               "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",

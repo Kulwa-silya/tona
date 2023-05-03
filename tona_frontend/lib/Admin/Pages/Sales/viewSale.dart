@@ -83,7 +83,7 @@ class _ViewSalesState extends State<ViewSales> {
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AddSales()));
+                      MaterialPageRoute(builder: (context) => AddSales(axxtok: widget.accessTok,)));
                 },
                 child: Center(
                   child: IconButton(
@@ -112,7 +112,7 @@ class _ViewSalesState extends State<ViewSales> {
           ],
           centerTitle: true,
           leading: backArrow(
-            towhere: SalesHome(),
+            towhere: SalesHome(Axtok:widget.accessTok! ,),
           )),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,

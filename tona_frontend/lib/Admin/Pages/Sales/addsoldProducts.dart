@@ -81,6 +81,10 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
   List listprod = [];
 
+  List productIds = [];
+
+  var selectedProductId;
+
   getProducts() async {
     final response = await http.get(
       Uri.parse("https://tona-production.up.railway.app/store/products/"),
@@ -96,13 +100,12 @@ class _AddSoldProdState extends State<AddSoldProd> {
           "name": jsonProdData['results'][i]['title']
         });
         //  pId =jsonProdData['results'][i]['title'];
+        productIds.add(jsonProdData['results'][i]['id']);
       }
     });
 
     print("dataaa $items");
-    setState(() {
-      listprod = items.map((item) => item["name"]).toList();
-    });
+
     // print(items1);
     return items;
   }
@@ -120,7 +123,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
               },
               body: json.encode({
                 "quantity": int.parse(quantityC.text),
-                "product": pId,
+                "product": selectedProductId,
                 "discount": discoutC.text,
                 "sale": widget.saleId
               }))
@@ -237,135 +240,87 @@ class _AddSoldProdState extends State<AddSoldProd> {
                             : Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(16.0, 12, 16, 8),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(13),
+                                child: Center(
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
-                                    color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                                    child: Center(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(20.0),
-                                            child: Text(
-                                              'Select a country',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.blueGrey),
-                                            ),
-                                          ),
-                                          Container(
-                                            width: double.infinity,
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 20),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                  blurRadius: 10,
-                                                  offset: Offset(0, 10),
-                                                ),
-                                              ],
-                                            ),
-                                            child: SearchField(
-                                                hint: 'Search',
-                                                searchInputDecoration:
-                                                    InputDecoration(
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: Colors
-                                                          .blueGrey.shade200,
-                                                      width: 1,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      width: 2,
-                                                      color: Colors.blue
-                                                          .withOpacity(0.8),
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                ),
-                                                maxSuggestionsInViewPort: 6,
-                                                itemHeight: 50,
-                                                suggestionsDecoration:
-                                                    BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                onTap: (value) {
-                                                  setState(() {
-                                                    _selectedItem = value!;
-                                                  });
-
-                                                  print(value);
-                                                  print(items
-                                                      .map((item) =>
-                                                          item["name"])
-                                                      .toList());
-                                                },
-                                                suggestions:
-                                                    listprod as List<String>
-
-                                                // .map((e) =>
-                                                //     SearchFieldListItem(e,
-                                                //         child: Text(e)))
-                                                // .toList(),
-                                                ),
-                                          ),
-                                        ],
-                                      ),
+                                    margin: EdgeInsets.symmetric(horizontal: 0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(13),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          blurRadius: 10,
+                                          offset: Offset(0, 10),
+                                        ),
+                                      ],
                                     ),
-                                    // child: DropdownButton(
-                                    //   dropdownColor: ColorTheme.m_white,
-                                    //   style: kBodyRegularTextStyle,
-                                    //   hint: Text(dropdownvalue),
-                                    //   icon: Icon(
-                                    //     Icons.keyboard_arrow_down,
-                                    //     color: ColorTheme.m_blue,
-                                    //   ),
-                                    //   items: items.map((item) {
-                                    //     return DropdownMenuItem(
-                                    //       value: item['id'],
-                                    //       child: Text(item['name']),
-                                    //     );
-                                    //   }).toList(),
-                                    //   onChanged: (newValue) {
-                                    //     setState(() {
-                                    //       pId = items.firstWhere((item) =>
-                                    //           item["id"] == newValue)["id"];
+                                    child: SearchField(
+                                        hint: 'Search',
+                                        searchInputDecoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.blueGrey.shade200,
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: 2,
+                                              color: ColorTheme.m_blue
+                                                  .withOpacity(0.8),
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                        maxSuggestionsInViewPort: 6,
+                                        itemHeight: 50,
+                                        suggestionState:
+                                            SuggestionState.enabled,
+                                        suggestionsDecoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        // initialValue: items[1]['name'],
+                                        onTap: (value) {
+                                          setState(() {
+                                            _selectedItem = value!;
 
-                                    //       selectedIndex = items.indexWhere(
-                                    //           (item) =>
-                                    //               item['id'] == newValue);
+                                            int selectedIndex =
+                                                items.indexWhere((item) =>
+                                                    item["name"] == value);
+                                            if (selectedIndex != -1) {
+                                              // Make sure the selected index is valid
+                                              selectedProductId =
+                                                  productIds[selectedIndex - 1];
 
-                                    //       dropdownvalue =
-                                    //           items[selectedIndex!]['name'];
+                                              print(
+                                                  "Selected product Index: $selectedIndex");
+                                              print(
+                                                  "Selected product ID: $selectedProductId");
+                                            }
+                                          });
 
-                                    //       print("pid ni:  $pId");
-                                    //       print("pid ni:  $items['name']");
+                                          print("list of : ${productIds}");
 
-                                    //       print("pid ni:  $dropdownvalue ");
-                                    //     });
-                                    //   },
-                                    // ),
+                                          print(value);
+                                          print(items
+                                              .map((item) => item["name"])
+                                              .toList());
+                                        },
+                                        suggestions: items
+                                            .map<String>((item) =>
+                                                item["name"] as String)
+                                            .toList()
+                                        // .map((e) =>
+                                        //     SearchFieldListItem(e,
+                                        //         child: Text(e)))
+                                        // .toList(),
+                                        ),
                                   ),
                                 ),
                               ),

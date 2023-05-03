@@ -32,7 +32,7 @@ class TransactionsGridView extends StatelessWidget {
     amount: 'jumla 49',
   ),
   WalletCard(
-    onBTap: SalesHome(),
+    onBTap: SalesHome(Axtok: axtok,),
     icon: Icons.attach_money_outlined,
     desc: 'Mauzo yaliyofanyika kwa siku',
     text: 'Sales',

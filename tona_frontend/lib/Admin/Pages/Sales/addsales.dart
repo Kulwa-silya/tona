@@ -21,8 +21,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class AddSales extends StatefulWidget {
   int? pid;
-  String? titl;
-  AddSales({this.pid, this.titl, Key? key}) : super(key: key);
+  String? titl,axxtok;
+  AddSales({this.pid, required this.axxtok, this.titl, Key? key}) : super(key: key);
 
   @override
   State<AddSales> createState() => _AddSalesState();
@@ -191,7 +191,7 @@ class _AddSalesState extends State<AddSales> {
           onTap: () {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                builder: (BuildContext context) => SalesHome()));
+                builder: (BuildContext context) => SalesHome(Axtok: widget.axxtok!,)));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
