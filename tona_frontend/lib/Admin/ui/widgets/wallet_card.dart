@@ -36,9 +36,9 @@ class _WalletCardState extends State<WalletCard> {
 
   var endpoint1Data, endpoint2Data;
 
-  int? productcount = 0;
+  String? productcount = "loading...";
 
-  String? totalsales = "0.0";
+  String? totalsales = "loading...";
   String? accesTok;
 
   Future getAccessToken() async {
@@ -84,13 +84,13 @@ class _WalletCardState extends State<WalletCard> {
     endpoint1Data = await fetchProductsCategory();
     endpoint2Data = await fetchAlldailySales();
     setState(() {
-      productcount = endpoint1Data.length;
+      productcount = endpoint1Data.length.toString();
       try {
         totalsales = endpoint2Data['total_sales_revenue_on_day'];
       } catch (e) {
-        if (totalsales == "0.0") {
+        if (totalsales == "loading...") {
           setState(() {
-            totalsales = "0.00";
+            totalsales = "loading...";
           });
         }
       }
@@ -156,7 +156,7 @@ class _WalletCardState extends State<WalletCard> {
               widget.text == "Products"
                   ? Text(
                       // snapshot.data.length.toString(),
-                      productcount.toString(),
+                      productcount!,
                       style: kBodyTextStyle,
                     )
                   : (widget.text == "Sales"
