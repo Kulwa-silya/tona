@@ -23,14 +23,17 @@ class AddSoldProd extends StatefulWidget {
       required this.title,
       required this.accessTok,
       required this.saleId,
+      this.discount,
+      this.quntt,
       this.Pid,
       required this.showdropdown,
       Key? key})
       : super(key: key);
-  String? salename, title, accessTok;
+  String? salename, title, discount, accessTok;
+
   bool? showdropdown = true;
 
-  int? saleId, Pid;
+  int? saleId, Pid, quntt;
   @override
   State<AddSoldProd> createState() => _AddSoldProdState();
 
@@ -174,6 +177,13 @@ class _AddSoldProdState extends State<AddSoldProd> {
   void initState() {
     getProducts();
 
+    widget.quntt == null
+        ? quantityC.text = ""
+        : quantityC.text = widget.quntt.toString();
+    widget.discount == null
+        ? discoutC.text = ""
+        : discoutC.text = widget.discount!;
+
     print("${widget.gettingToken.getAccessToken()}");
     super.initState();
   }
@@ -260,7 +270,8 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                         searchInputDecoration: InputDecoration(
                                           enabledBorder: OutlineInputBorder(
                                             borderSide: BorderSide(
-                                              color: Colors.blueGrey.shade200,
+                                              color: ColorTheme
+                                                  .m_blue_mpauko_zaidi,
                                               width: 1,
                                             ),
                                             borderRadius:
@@ -370,7 +381,8 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                 if (emailValue!.isEmpty) {
                                   return "Fill in discount";
                                 }
-                                RegExp regExp = new RegExp(r'^[0-9]+$');
+                                RegExp regExp =
+                                    new RegExp(r'^\d+(\.\d{1,2})?$');
                                 if (regExp.hasMatch(emailValue)) {
                                   return null;
                                 }
@@ -457,7 +469,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                               : updateSoldProd();
                                           setState(() {
                                             success = true;
-                                            widget.showdropdown = true;
+                                            // widget.showdropdown = true;
                                             // successErr = true;
                                           });
                                           if (success == true)

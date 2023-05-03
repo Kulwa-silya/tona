@@ -209,15 +209,17 @@ class _mydialogState extends State<myDeletedialog> {
                         } else if (widget.whatpart == "soldproduct") {
                           deleteSoldProd();
                           Navigator.pop(context);
-
-                          // Navigator.of(context)
-                          //     .pushReplacement(MaterialPageRoute(
-                          //         builder: (context) => ViewSales(
-                          //               saleId: widget.pid,
-                          //               salename: widget.salename,
-                          //               date: widget.date,
-                          //               accessTok: accesTok,
-                          //             )));
+//  Navigator.of(context).pushReplacement(
+//                               MaterialPageRoute(
+//                                   builder: (context) => UserConfig()));
+                          Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(
+                                  builder: (context) => ViewSales(
+                                        saleId: widget.pid,
+                                        salename: widget.salename,
+                                        date: widget.date,
+                                        accessTok: accesTok,
+                                      )));
                         }
 
                         // await Navigator.pushAndRemoveUntil(

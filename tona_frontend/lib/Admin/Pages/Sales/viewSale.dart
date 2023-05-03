@@ -67,6 +67,10 @@ class _ViewSalesState extends State<ViewSales> {
     });
   }
 
+  void myFunction(BuildContext? context) {
+    // function body
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,8 +86,10 @@ class _ViewSalesState extends State<ViewSales> {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AddSales(axxtok: widget.accessTok,)));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => AddSales(
+                            axxtok: widget.accessTok,
+                          )));
                 },
                 child: Center(
                   child: IconButton(
@@ -112,7 +118,9 @@ class _ViewSalesState extends State<ViewSales> {
           ],
           centerTitle: true,
           leading: backArrow(
-            towhere: SalesHome(Axtok:widget.accessTok! ,),
+            towhere: SalesHome(
+              Axtok: widget.accessTok!,
+            ),
           )),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
@@ -166,7 +174,9 @@ class _ViewSalesState extends State<ViewSales> {
                                 children: [
                                   // A SlidableAction can have an icon and/or a label.
                                   SlidableAction(
-                                    onPressed: null,
+                                    onPressed: (context) {
+                                      deleteDialog(context, sid, pname);
+                                    },
                                     backgroundColor: Color(0xFFFE4A49),
                                     foregroundColor: Colors.white,
                                     icon: Icons.delete,
@@ -183,12 +193,12 @@ class _ViewSalesState extends State<ViewSales> {
                               ),
 
                               // The end action pane is the one at the right or the bottom side.
-                              endActionPane: const ActionPane(
+                              endActionPane: ActionPane(
                                 motion: ScrollMotion(),
                                 children: [
                                   SlidableAction(
                                     // An action can be bigger than the others.
-                                    flex: 2,
+                                    // flex: 2,
                                     onPressed: null,
                                     backgroundColor: Color(0xFF7BC043),
                                     foregroundColor: Colors.white,
@@ -196,11 +206,14 @@ class _ViewSalesState extends State<ViewSales> {
                                     label: 'Archive',
                                   ),
                                   SlidableAction(
-                                    onPressed: null,
+                                    onPressed: (context) {
+                                      myEditor(context, sid, quantity, discout);
+                                    },
+                                    flex: 2,
                                     backgroundColor: Color(0xFF0392CF),
                                     foregroundColor: Colors.white,
-                                    icon: Icons.save,
-                                    label: 'Save',
+                                    icon: Icons.edit_rounded,
+                                    label: 'Edit',
                                   ),
                                 ],
                               ),
@@ -360,28 +373,7 @@ class _ViewSalesState extends State<ViewSales> {
                                                           child: Row(
                                                             children: [
                                                               GestureDetector(
-                                                                onTap: () {
-                                                                  showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (context) {
-                                                                        return AddSoldProd(
-                                                                          saleId:
-                                                                              widget.saleId,
-                                                                          showdropdown:
-                                                                              false,
-                                                                          Pid:
-                                                                              sid,
-                                                                          accessTok:
-                                                                              widget.accessTok,
-                                                                          title:
-                                                                              "Edit Sold Product!",
-                                                                          salename:
-                                                                              widget.salename,
-                                                                        );
-                                                                      });
-                                                                },
+                                                                onTap: () {},
                                                                 child: Icon(
                                                                   Icons.edit,
                                                                   color:
@@ -394,24 +386,7 @@ class _ViewSalesState extends State<ViewSales> {
                                                                 width: 35,
                                                               ),
                                                               GestureDetector(
-                                                                onTap: () {
-                                                                  showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder: (_) => myDeletedialog(
-                                                                          pid:
-                                                                              sid,
-                                                                          whatpart:
-                                                                              "soldproduct",
-                                                                          salename: widget
-                                                                              .salename,
-                                                                          email:
-                                                                              pname,
-                                                                          date: widget
-                                                                              .date,
-                                                                          tit:
-                                                                              pname));
-                                                                },
+                                                                onTap: () {},
                                                                 child: Icon(
                                                                   Icons.delete,
                                                                   color:
@@ -441,6 +416,24 @@ class _ViewSalesState extends State<ViewSales> {
             }),
       ),
     );
+  }
+
+  Future<dynamic> myEditor(
+      BuildContext context, int sid, int qunt, String discount) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AddSoldProd(
+            saleId: widget.saleId,
+            quntt: qunt,
+            discount: discount,
+            showdropdown: false,
+            Pid: sid,
+            accessTok: widget.accessTok,
+            title: "Edit Sold Product!",
+            salename: widget.salename,
+          );
+        });
   }
 
   void deleteDialog(BuildContext context, int sid, String pname) {
