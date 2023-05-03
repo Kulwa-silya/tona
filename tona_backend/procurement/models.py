@@ -6,18 +6,21 @@ from django.db import models
 from store.models import Product
 from store.validators import validate_file_size
 from django.core.validators import MinValueValidator
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 # procurement
+
+
 class Supplier(models.Model):
     # kwani huyu ni user wa kwenye system au jina la supplier tu??
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    full_name = models.CharField(max_length=255)
+    phone_number = PhoneNumberField(
+        verbose_name="phone number")
     address = models.CharField(max_length=255)
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return self.full_name
 
 
 class PurchasedProduct(models.Model):
