@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:machafuapp/Admin/Pages/Products/Addcollection.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/productViewer.dart';
@@ -418,11 +419,50 @@ class _SalesHomeState extends State<SalesHome> {
                                                             width: 10,
                                                           ),
                                                           Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
-                                                              Text(
-                                                                cname,
-                                                                style:
-                                                                    kInfoTextStyle,
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    cname,
+                                                                    style:
+                                                                        kInfoTextStyle,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          20,
+                                                                      width: 20,
+                                                                      color: ColorTheme
+                                                                          .m_blue,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(4.0),
+                                                                        child:
+                                                                            Center(
+                                                                          child: Text(
+                                                                              data["total_quantity_sold"].toString(),
+                                                                              style: GoogleFonts.poppins(
+                                                                                fontWeight: FontWeight.normal,
+                                                                                fontSize: 10,
+                                                                                height: 1.5,
+                                                                                color: ColorTheme.m_white,
+                                                                              )),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                               Text(
                                                                 desc,
@@ -436,26 +476,35 @@ class _SalesHomeState extends State<SalesHome> {
                                                           ),
                                                         ],
                                                       ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Column(
-                                                            children: [
-                                                              Text(
-                                                                saleRevenue,
-                                                                style:
-                                                                    kSmallBoldTextStyle,
-                                                              ),
-                                                              Text(
-                                                                date,
-                                                                style:
-                                                                    kTinyRegularTextStyle,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                8.0, 0, 8, 0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Text(
+                                                                  saleRevenue,
+                                                                  style:
+                                                                      kSmallBoldTextStyle,
+                                                                ),
+                                                                Text(
+                                                                  date,
+                                                                  style:
+                                                                      kTinyRegularTextStyle,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
                                                       )
                                                     ],
                                                   ),

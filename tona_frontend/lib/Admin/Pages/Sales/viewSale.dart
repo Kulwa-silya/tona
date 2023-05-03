@@ -42,6 +42,10 @@ class _ViewSalesState extends State<ViewSales> {
 
   var _data;
 
+  var pname;
+
+  var productId;
+
   void doNothing(BuildContext context) {}
 
   getSoldProducts() async {
@@ -102,6 +106,7 @@ class _ViewSalesState extends State<ViewSales> {
                           builder: (context) {
                             return AddSoldProd(
                               saleId: widget.saleId,
+                              pname: pname,
                               showdropdown: true,
                               accessTok: widget.accessTok,
                               title: "Add Sold Product!",
@@ -145,7 +150,8 @@ class _ViewSalesState extends State<ViewSales> {
                               style: kInfoTextStyle,
                             ));
                           } else {
-                            String pname = snapshot.data[i]['product_title'];
+                            pname = snapshot.data[i]['product_title'];
+                            productId = snapshot.data[i]['product'];
                             String discout = snapshot.data[i]['discount'];
                             int quantity = snapshot.data[i]["quantity"];
                             int sid = snapshot.data[i]["id"];
@@ -204,10 +210,12 @@ class _ViewSalesState extends State<ViewSales> {
                                     foregroundColor: Colors.white,
                                     icon: Icons.archive,
                                     label: 'Archive',
+                                    
                                   ),
                                   SlidableAction(
                                     onPressed: (context) {
-                                      myEditor(context, sid, quantity, discout);
+                                      myEditor(context, sid, quantity, discout,
+                                          pname, productId);
                                     },
                                     flex: 2,
                                     backgroundColor: Color(0xFF0392CF),
@@ -324,37 +332,24 @@ class _ViewSalesState extends State<ViewSales> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.end,
                                                   children: [
-                                                    Row(
-                                                      children: [
-                                                        ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          child: Container(
-                                                            color: ColorTheme
-                                                                .m_blue_mpauko_zaidi,
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(4.0),
-                                                              child: Text(
-                                                                price
-                                                                    .toString(),
-                                                                style:
-                                                                    kSmallBoldTextStyle,
-                                                              ),
-                                                            ),
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      child: Container(
+                                                        color: ColorTheme
+                                                            .m_blue_mpauko_zaidi,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(4.0),
+                                                          child: Text(
+                                                            price.toString(),
+                                                            style:
+                                                                kSmallBoldTextStyle,
                                                           ),
                                                         ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text(
-                                                          "${double.parse(discout)}%",
-                                                          style:
-                                                              kTinyRegularTextStyle,
-                                                        ),
-                                                      ],
+                                                      ),
                                                     ),
                                                     SizedBox(
                                                       height: 12,
@@ -370,32 +365,10 @@ class _ViewSalesState extends State<ViewSales> {
                                                           padding:
                                                               const EdgeInsets
                                                                   .all(4.0),
-                                                          child: Row(
-                                                            children: [
-                                                              GestureDetector(
-                                                                onTap: () {},
-                                                                child: Icon(
-                                                                  Icons.edit,
-                                                                  color:
-                                                                      ColorTheme
-                                                                          .m_blue,
-                                                                  size: 20,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: 35,
-                                                              ),
-                                                              GestureDetector(
-                                                                onTap: () {},
-                                                                child: Icon(
-                                                                  Icons.delete,
-                                                                  color:
-                                                                      ColorTheme
-                                                                          .m_red,
-                                                                  size: 20,
-                                                                ),
-                                                              )
-                                                            ],
+                                                          child: Text(
+                                                            "${double.parse(discout)}%",
+                                                            style:
+                                                                kTinyRegularTextStyle,
                                                           ),
                                                         ),
                                                       ),
@@ -418,8 +391,8 @@ class _ViewSalesState extends State<ViewSales> {
     );
   }
 
-  Future<dynamic> myEditor(
-      BuildContext context, int sid, int qunt, String discount) {
+  Future<dynamic> myEditor(BuildContext context, int sid, int qunt,
+      String discount, String pname, int productId) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -428,6 +401,8 @@ class _ViewSalesState extends State<ViewSales> {
             quntt: qunt,
             discount: discount,
             showdropdown: false,
+            pname: pname,
+            productId: productId,
             Pid: sid,
             accessTok: widget.accessTok,
             title: "Edit Sold Product!",

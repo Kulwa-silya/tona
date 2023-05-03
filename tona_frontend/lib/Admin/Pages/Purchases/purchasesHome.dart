@@ -237,7 +237,7 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                           itemCount: snapshot.data.length,
                                           itemBuilder: (cnt, i) {
                                             int suppliername =
-                                                snapshot.data[i]['supplier'];
+                                                snapshot.data[i]['supbplier'];
                                             int puchaseId =
                                                 snapshot.data[i]['id'];
                                             String date =

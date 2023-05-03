@@ -12,6 +12,7 @@ import 'package:machafuapp/Admin/Pages/Sales/salesHome.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:machafuapp/Shared/gettingTokens.dart';
+import 'package:machafuapp/globalconst/globalUrl.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -21,19 +22,21 @@ class AddSoldProd extends StatefulWidget {
   AddSoldProd(
       {required this.salename,
       required this.title,
+      this.pname,
       required this.accessTok,
       required this.saleId,
       this.discount,
       this.quntt,
+      this.productId,
       this.Pid,
       required this.showdropdown,
       Key? key})
       : super(key: key);
-  String? salename, title, discount, accessTok;
+  String? salename, title, discount, accessTok, pname;
 
   bool? showdropdown = true;
 
-  int? saleId, Pid, quntt;
+  int? saleId, Pid, quntt, productId;
   @override
   State<AddSoldProd> createState() => _AddSoldProdState();
 
@@ -44,6 +47,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
   bool saveAttempt = false;
   final formkey = GlobalKey<FormState>();
   TextEditingController quantityC = new TextEditingController();
+  TextEditingController reasoanC = new TextEditingController();
   TextEditingController discoutC = new TextEditingController();
   TextEditingController phoneC = new TextEditingController();
   TextEditingController searchdropdown = new TextEditingController();
@@ -88,9 +92,15 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
   var selectedProductId;
 
+  int? quantity;
+
+  bool shoetextfield = false;
+
+  var count;
+
   getProducts() async {
     final response = await http.get(
-      Uri.parse("https://tona-production.up.railway.app/store/products/"),
+      Uri.parse("${globalUrl}store/products/"),
     );
     jsonProdData = jsonDecode(response.body);
     // print(jsonsearchData[0]['results']);
@@ -106,11 +116,38 @@ class _AddSoldProdState extends State<AddSoldProd> {
         productIds.add(jsonProdData['results'][i]['id']);
       }
     });
+  }
 
-    print("dataaa $items");
+  getProductsCount(int id) async {
+    final response = await http.get(
+      Uri.parse("${globalUrl}store/products/${id}"),
+    );
+    jsonProdData = jsonDecode(response.body);
 
-    // print(items1);
-    return items;
+    setState(() {
+      print("id ni $id");
+      count = jsonProdData['inventory'];
+
+      print("idadi ni: $count");
+    });
+
+    return count;
+  }
+
+  getProductsCount2() async {
+    final response = await http.get(
+      Uri.parse("${globalUrl}store/products/${widget.productId}"),
+    );
+    jsonProdData = jsonDecode(response.body);
+
+    setState(() {
+      // print("id ni $id");
+      count = jsonProdData['inventory'];
+
+      print("idadi ni: $count");
+    });
+
+    return count;
   }
 
   Future _addsoldProd() async {
@@ -177,14 +214,22 @@ class _AddSoldProdState extends State<AddSoldProd> {
   void initState() {
     getProducts();
 
+    getProductsCount2();
+
     widget.quntt == null
         ? quantityC.text = ""
         : quantityC.text = widget.quntt.toString();
+    widget.quntt == null ? quantity = null : quantity = widget.quntt;
+
+    // quantity = widget.quntt!;
+
     widget.discount == null
         ? discoutC.text = ""
         : discoutC.text = widget.discount!;
 
     print("${widget.gettingToken.getAccessToken()}");
+
+    print("qunt ni  $quantity ");
     super.initState();
   }
 
@@ -309,6 +354,9 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                               selectedProductId =
                                                   productIds[selectedIndex - 1];
 
+                                              getProductsCount(
+                                                  selectedProductId);
+
                                               print(
                                                   "Selected product Index: $selectedIndex");
                                               print(
@@ -344,10 +392,22 @@ class _AddSoldProdState extends State<AddSoldProd> {
                               keyboardType: TextInputType.number,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              onTap: () {
+                                getProductsCount2();
+                              },
                               validator: (Value) {
                                 if (Value!.isEmpty) {
                                   return "Fill in product quantity";
                                 }
+                                if (count == null) {
+                                  getProductsCount2();
+                                  return "Loading...";
+                                } else {
+                                  if (int.parse(Value) > count) {
+                                    return "There only $count available!";
+                                  }
+                                }
+
                                 RegExp regExp = new RegExp(r'^[0-9]+$');
                                 if (regExp.hasMatch(Value)) {
                                   return null;
@@ -355,6 +415,22 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                 return "Invalid Quantity Format";
                               },
                               controller: quantityC,
+                              onChanged: (val) {
+                                if (quantity == null) {
+                                  return null;
+                                } else {
+                                  if (int.tryParse(val) != null &&
+                                      int.parse(val) < quantity!) {
+                                    setState(() {
+                                      shoetextfield = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      shoetextfield = false;
+                                    });
+                                  }
+                                }
+                              },
                               decoration: InputDecoration(
                                 prefixIcon: Icon(
                                   Icons.numbers,
@@ -368,6 +444,42 @@ class _AddSoldProdState extends State<AddSoldProd> {
                             ),
                           ),
                         ),
+                        shoetextfield == true
+                            ? Padding(
+                                padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(13),
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.text,
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    validator: (emailValue) {
+                                      if (emailValue!.isEmpty) {
+                                        return "Fill in reason for return";
+                                      }
+                                      RegExp regExp = new RegExp(
+                                          "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                              "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                                      if (regExp.hasMatch(emailValue)) {
+                                        return null;
+                                      }
+                                      return "Invalid Reason Format";
+                                    },
+                                    controller: reasoanC,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(
+                                        Icons.adobe_sharp,
+                                      ),
+                                      labelText: "Reason",
+                                      hintText: "Ex: Reason for the return...",
+                                      border: InputBorder.none,
+                                      filled: true,
+                                      fillColor: ColorTheme.m_blue_mpauko_zaidi,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink(),
 
                         Padding(
                           padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
