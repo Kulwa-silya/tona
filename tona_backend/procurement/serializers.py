@@ -21,7 +21,7 @@ class PurchasedProductSerializer(serializers.ModelSerializer):
 
 class PurchaseSerializer(serializers.ModelSerializer):
     # total_amount = serializers.IntegerField(read_only=True)
-    supplier = SupplierSerializer()
+    # supplier = SupplierSerializer()
     purchased_products = PurchasedProductSerializer(many=True)
 
     class Meta:
@@ -31,14 +31,14 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Remove/Pop supplier and purchased_products_data from dict called validated_data
-        supplier_data = validated_data.pop('supplier')
+        # supplier_data = validated_data.pop('supplier')
         purchased_products_data = validated_data.pop(
             'purchased_products')
         # create purchase object
         purchase = Purchase.objects.create(**validated_data)
         # # create supplier instance / object
-        supplier = Supplier.objects.create(
-            full_name=supplier_data['full_name'], address=supplier_data['address'], phone_number=supplier_data['phone_number'])
+        # supplier = Supplier.objects.create(
+            # full_name=supplier_data['full_name'], address=supplier_data['address'], phone_number=supplier_data['phone_number'])
         # for data in supplier_data:
         #     # create purchased product instance
         #     supplier = Supplier.objects.create(
@@ -46,7 +46,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
         #     print("supplier", supplier)
 
         # assign supplier instance to the purchase instance
-        purchase.supplier = supplier
+        # purchase.supplier = supplier
         # create purchase instance
         print('my data==>', purchased_products_data)
 
@@ -80,4 +80,10 @@ class AssociatedCostSerializer(serializers.ModelSerializer):
 class ReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receipt
+        fields = ('__all__')
+
+
+class DailyPurchaseTotalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyPurchaseTotal
         fields = ('__all__')

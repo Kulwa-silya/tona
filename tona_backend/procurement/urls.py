@@ -9,5 +9,6 @@ router.register('purchase', views.PurchaseViewSet, basename='purchase')
 router.register('purchasedproduct', views.PurchasedProductViewSet, basename='purchasedproduct')
 router.register('receipt', views.ReceiptViewSet, basename='receipt')
 router.register('associatedcost', views.AssociatedCostViewSet, basename='associatedcost')
+router.register('dailypurchases', views.DailyPurchaseTotalViewSet, basename='dailypurchases')
 
 urlpatterns = router.urls
