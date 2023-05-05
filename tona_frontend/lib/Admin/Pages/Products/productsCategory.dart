@@ -15,7 +15,7 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductCat extends StatefulWidget {
-   ProductCat({ this.Axtok, Key? key}) : super(key: key);
+  ProductCat({this.Axtok, Key? key}) : super(key: key);
 
   String? Axtok;
 
@@ -26,7 +26,7 @@ class ProductCat extends StatefulWidget {
 class _ProductCatState extends State<ProductCat> {
   List<dynamic> jsondat = [];
 
-  String? accesTok;
+  // String? accesTok;
 
   bool showsearchResult = false;
   bool collectionoffstg = false;
@@ -40,18 +40,6 @@ class _ProductCatState extends State<ProductCat> {
   var titleG, pidG, countG;
 
   TextEditingController searchController = new TextEditingController();
-
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
-
-    print(" tokeni $accesTok");
-    return stringValue;
-  }
 
   fetchProductsCategory() async {
     final response = await http.get(
@@ -74,9 +62,8 @@ class _ProductCatState extends State<ProductCat> {
 
   @override
   void initState() {
-    getAccessToken().then((value) {
-      fetchProductsCategory();
-    });
+    fetchProductsCategory();
+
     // fetchProductsCategory();
     super.initState();
   }
@@ -321,6 +308,7 @@ class _ProductCatState extends State<ProductCat> {
                                                       Products(
                                                         id: pid,
                                                         title: title,
+                                                        Axxtok: widget.Axtok,
                                                       )));
                                         }),
                                         child: ClipRRect(

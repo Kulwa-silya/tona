@@ -96,6 +96,7 @@ class _AddPurchasedState extends State<AddPurchased> {
   String _value = "CA";
 
   getSupplier() async {
+    clearItems();
     final response = await http.get(
       Uri.parse("${globalUrl}procurement/supplier/"),
       headers: {
@@ -103,24 +104,35 @@ class _AddPurchasedState extends State<AddPurchased> {
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
-    );
-    jsonSupplierData = jsonDecode(response.body);
-    // print(jsonsearchData[0]['results']);
-    // items.add(jsonProdData[0]['results']);
-    setState(() {
-      // items.add({"id": 0, "name": "Select Product"});
-      for (int i = 0; i < jsonSupplierData.length; i++) {
-        items.add({
-          "id": jsonSupplierData[i]['id'],
-          "name": jsonSupplierData[i]['full_name']
-        });
-        //  pId =jsonProdData['results'][i]['title'];
-        supplierIds.add(jsonSupplierData[i]['id']);
-      }
+    ).then((value) {
+      jsonSupplierData = jsonDecode(value.body);
+      // print(jsonsearchData[0]['results']);
+      // items.add(jsonProdData[0]['results']);
+      setState(() {
+        // items.add({"id": 0, "name": "Select Product"});
+        print("datz $jsonSupplierData");
+        for (int i = 0; i < jsonSupplierData.length; i++) {
+          items.add({
+            "id": jsonSupplierData[i]['id'],
+            "name": jsonSupplierData[i]['full_name']
+          });
+          //  pId =jsonProdData['results'][i]['title'];
+          supplierIds.add(jsonSupplierData[i]['id']);
+        }
+      });
     });
   }
 
+  void clearItems() {
+    items.clear();
+  }
+
+  void clearProds() {
+    products.clear();
+  }
+
   getProducts() async {
+    clearProds();
     final response = await http.get(
       Uri.parse("${globalUrl}store/products/"),
     );
@@ -332,77 +344,89 @@ class _AddPurchasedState extends State<AddPurchased> {
                                 ),
                               ],
                             ),
-                            child: SearchField(
-                                hint: 'Search Supplier',
-                                searchInputDecoration: InputDecoration(
-                                  suffixIcon: GestureDetector(
-                                      onTap: () {
-                                        _showBottomSheet(AddSupplier());
-                                      },
-                                      child: Icon(Icons.add_rounded)),
-                                  // suffix: IconButton(
-                                  //   icon: Icon(Icons.add_rounded),
-                                  //   onPressed: () {
-                                  //     _showBottomSheet();
-                                  //   },
-                                  // ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: ColorTheme.m_blue_mpauko_zaidi,
-                                      width: 1,
+                            child: GestureDetector(
+                              onTap: (() {
+                                setState(() {
+                                  print("it is clicked");
+                                  getSupplier();
+                                });
+                              }),
+                              child: SearchField(
+                                  hint: 'Search Supplier',
+                                  searchInputDecoration: InputDecoration(
+                                    suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          _showBottomSheet(AddSupplier(
+                                            accessTok: widget.Axtok,
+                                          ));
+                                        },
+                                        child: Icon(Icons.add_rounded)),
+                                    // suffix: IconButton(
+                                    //   icon: Icon(Icons.add_rounded),
+                                    //   onPressed: () {
+                                    //     _showBottomSheet();
+                                    //   },
+                                    // ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: ColorTheme.m_blue_mpauko_zaidi,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                    borderRadius: BorderRadius.circular(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        width: 2,
+                                        color:
+                                            ColorTheme.m_blue.withOpacity(0.8),
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 2,
-                                      color: ColorTheme.m_blue.withOpacity(0.8),
-                                    ),
+                                  maxSuggestionsInViewPort: 6,
+                                  itemHeight: 50,
+                                  suggestionState: SuggestionState.enabled,
+                                  suggestionsDecoration: BoxDecoration(
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                                maxSuggestionsInViewPort: 6,
-                                itemHeight: 50,
-                                suggestionState: SuggestionState.enabled,
-                                suggestionsDecoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                // initialValue: items[1]['name'],
-                                onTap: (value) {
-                                  setState(() {
-                                    _selectedItem = value!;
+                                  // initialValue: items[1]['name'],
+                                  onTap: (value) {
+                                    // getSupplier();
+                                    setState(() {
+                                      _selectedItem = value!;
 
-                                    int selectedIndex = items.indexWhere(
-                                        (item) => item["name"] == value);
-                                    if (selectedIndex != -1) {
-                                      // Make sure the selected index is valid
-                                      selectedSupplierId =
-                                          supplierIds[selectedIndex];
+                                      int selectedIndex = items.indexWhere(
+                                          (item) => item["name"] == value);
+                                      if (selectedIndex != -1) {
+                                        // Make sure the selected index is valid
+                                        selectedSupplierId =
+                                            supplierIds[selectedIndex];
 
-                                      print(
-                                          "Selected product Index: $selectedIndex");
-                                      print(
-                                          "Selected product ID: $selectedSupplierId");
-                                    }
-                                  });
+                                        print(
+                                            "Selected product Index: $selectedIndex");
+                                        print(
+                                            "Selected product ID: $selectedSupplierId");
+                                      }
+                                    });
 
-                                  print("list of : ${supplierIds}");
+                                    print("list of : ${supplierIds}");
 
-                                  print(value);
-                                  print(items
-                                      .map((item) => item["name"])
-                                      .toList());
-                                },
-                                suggestions: items
-                                    .map<String>(
-                                        (item) => item["name"] as String)
-                                    .toList()
-                                // .map((e) =>
-                                //     SearchFieldListItem(e,
-                                //         child: Text(e)))
-                                // .toList(),
-                                ),
+                                    print(value);
+                                    print(items
+                                        .map((item) => item["name"])
+                                        .toList());
+                                  },
+                                  suggestions: items
+                                      .map<String>(
+                                          (item) => item["name"] as String)
+                                      .toList()
+                                  // .map((e) =>
+                                  //     SearchFieldListItem(e,
+                                  //         child: Text(e)))
+                                  // .toList(),
+                                  ),
+                            ),
                           ),
                         ),
                       ),
@@ -428,12 +452,15 @@ class _AddPurchasedState extends State<AddPurchased> {
                                         label: Text(
                                           'Cash',
                                           style: TextStyle(
-                                              color: ColorTheme
-                                                  .m_blue_mpauko_zaidi_zaidi),
+                                              color: _value == "CA"
+                                                  ? ColorTheme
+                                                      .m_blue_mpauko_zaidi_zaidi
+                                                  : ColorTheme.m_blue),
                                         ),
                                         onSelected: (val) {
                                           _handleValueChanged("CA");
                                         },
+                                        checkmarkColor: ColorTheme.m_white,
                                         selected: _value == "CA",
                                         selectedColor: ColorTheme.m_blue,
                                       ),
@@ -444,13 +471,17 @@ class _AddPurchasedState extends State<AddPurchased> {
                                         label: Text(
                                           'Check',
                                           style: TextStyle(
-                                              color: ColorTheme
-                                                  .m_blue_mpauko_zaidi_zaidi),
+                                              color: _value == "CH"
+                                                  ? ColorTheme
+                                                      .m_blue_mpauko_zaidi_zaidi
+                                                  : ColorTheme.m_blue),
                                         ),
                                         onSelected: (val) {
                                           _handleValueChanged("CH");
                                         },
                                         selected: _value == "CH",
+                                        showCheckmark: true,
+                                        checkmarkColor: ColorTheme.m_white,
                                         selectedColor: ColorTheme.m_blue,
                                       ),
                                       SizedBox(width: 10),
@@ -460,13 +491,16 @@ class _AddPurchasedState extends State<AddPurchased> {
                                         label: Text(
                                           'Credit',
                                           style: TextStyle(
-                                              color: ColorTheme
-                                                  .m_blue_mpauko_zaidi_zaidi),
+                                              color: _value == "CR"
+                                                  ? ColorTheme
+                                                      .m_blue_mpauko_zaidi_zaidi
+                                                  : ColorTheme.m_blue),
                                         ),
                                         onSelected: (val) {
                                           _handleValueChanged("CR");
                                         },
                                         selected: _value == "CR",
+                                        checkmarkColor: ColorTheme.m_white,
                                         selectedColor: ColorTheme.m_blue,
                                       ),
                                     ],
@@ -493,71 +527,78 @@ class _AddPurchasedState extends State<AddPurchased> {
                                 ),
                               ],
                             ),
-                            child: SearchField(
-                                hint: 'Search Products',
-                                searchInputDecoration: InputDecoration(
-                                  suffixIcon: GestureDetector(
-                                      onTap: () {
-                                        _showBottomSheet(Addproduct());
-                                      },
-                                      child: Icon(Icons.add_rounded)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: ColorTheme.m_blue_mpauko_zaidi,
-                                      width: 1,
+                            child: GestureDetector(
+                              onTap: () {
+                                getProducts();
+                              },
+                              child: SearchField(
+                                  hint: 'Search Products',
+                                  searchInputDecoration: InputDecoration(
+                                    suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          _showBottomSheet(ProductCat(Axtok: widget.Axtok,));
+                                        },
+                                        child: Icon(Icons.add_rounded)),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: ColorTheme.m_blue_mpauko_zaidi,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                    borderRadius: BorderRadius.circular(15),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        width: 2,
+                                        color:
+                                            ColorTheme.m_blue.withOpacity(0.8),
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      width: 2,
-                                      color: ColorTheme.m_blue.withOpacity(0.8),
-                                    ),
+                                  maxSuggestionsInViewPort: 6,
+                                  itemHeight: 50,
+                                  suggestionState: SuggestionState.enabled,
+                                  suggestionsDecoration: BoxDecoration(
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                                maxSuggestionsInViewPort: 6,
-                                itemHeight: 50,
-                                suggestionState: SuggestionState.enabled,
-                                suggestionsDecoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                // initialValue: items[1]['name'],
-                                onTap: (value) {
-                                  setState(() {
-                                    _selectedItem = value!;
+                                  // initialValue: items[1]['name'],
+                                  onTap: (value) {
+                                    getProducts();
+                                    setState(() {
+                                      _selectedItem = value!;
 
-                                    int selectedIndex = products.indexWhere(
-                                        (item) => item["name"] == value);
-                                    if (selectedIndex != -1) {
-                                      // Make sure the selected index is valid
-                                      selectedProductId =
-                                          productIds[selectedIndex];
+                                      int selectedIndex = products.indexWhere(
+                                          (item) => item["name"] == value);
+                                      if (selectedIndex != -1) {
+                                        // Make sure the selected index is valid
+                                        selectedProductId =
+                                            productIds[selectedIndex];
 
-                                      print(
-                                          "Selected product Index: $selectedIndex");
-                                      print(
-                                          "Selected product ID: $selectedProductId");
-                                    }
-                                  });
+                                        print(
+                                            "Selected product Index: $selectedIndex");
+                                        print(
+                                            "Selected product ID: $selectedProductId");
+                                      }
+                                    });
 
-                                  print("list of : ${productIds}");
+                                    print("list of : ${productIds}");
 
-                                  print(value);
-                                  print(products
-                                      .map((item) => item["name"])
-                                      .toList());
-                                },
-                                suggestions: products
-                                    .map<String>(
-                                        (item) => item["name"] as String)
-                                    .toList()
-                                // .map((e) =>
-                                //     SearchFieldListItem(e,
-                                //         child: Text(e)))
-                                // .toList(),
-                                ),
+                                    print(value);
+                                    print(products
+                                        .map((item) => item["name"])
+                                        .toList());
+                                  },
+                                  suggestions: products
+                                      .map<String>(
+                                          (item) => item["name"] as String)
+                                      .toList()
+                                  // .map((e) =>
+                                  //     SearchFieldListItem(e,
+                                  //         child: Text(e)))
+                                  // .toList(),
+                                  ),
+                            ),
                           ),
                         ),
                       ),

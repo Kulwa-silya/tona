@@ -18,7 +18,8 @@ import '../../ui/shared/loading.dart';
 class Products extends StatefulWidget {
   int? id;
   String? title;
-  Products({this.id, this.title, Key? key}) : super(key: key);
+  String? Axxtok;
+  Products({ this.Axxtok, this.id, this.title, Key? key}) : super(key: key);
 
   @override
   State<Products> createState() => _ProductsState();
@@ -45,7 +46,7 @@ class _ProductsState extends State<Products> {
 
   List _foundProducts = [];
 
-  String? accesTok;
+  // String? accesTok;
 
   bool showsearchResult = false;
 
@@ -66,7 +67,7 @@ class _ProductsState extends State<Products> {
 
   fetchProducts() async {
     http.Response res =
-        await productProvider.fetchProducts(widget.id!, accesTok!);
+        await productProvider.fetchProducts(widget.id!, widget.Axxtok!);
 
     setState(() {
       final proddata = ProductsAll.fromJson(json.decode(res.body));
@@ -96,17 +97,7 @@ class _ProductsState extends State<Products> {
     super.dispose();
   }
 
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
 
-    print(" tokeni $accesTok");
-    return stringValue;
-  }
 
 //seachspecific products in a certain collection
   searchspeProducts() async {
@@ -121,11 +112,11 @@ class _ProductsState extends State<Products> {
 
   void initState() {
     setState(() {
-      getAccessToken().then((value) {
+    
         isloading = true;
         fetchProducts();
         isloading = false;
-      });
+      
     });
 
     super.initState();
@@ -137,7 +128,7 @@ class _ProductsState extends State<Products> {
       appBar: AppBar(
         leading: backArrow(
             towhere: ProductCat(
-          Axtok: accesTok!,
+          Axtok: widget.Axxtok!,
         )),
         title: Text(
           widget.title.toString(),
@@ -476,7 +467,7 @@ class _ProductsState extends State<Products> {
                                                                   .collection
                                                                   .toString(),
                                                               accesstok:
-                                                                  accesTok,
+                                                                  widget.Axxtok,
                                                               image: img,
                                                               imageId: imgId,
                                                               id: e.id,

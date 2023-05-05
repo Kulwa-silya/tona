@@ -21,7 +21,7 @@ class AddSupplier extends StatefulWidget {
   AddSupplier(
       {this.salename,
       this.title,
-      this.accessTok,
+      required this.accessTok,
       this.saleId,
       this.Pid,
       this.showdropdown,
@@ -87,10 +87,11 @@ class _AddSupplierState extends State<AddSupplier> {
               },
               body: json.encode({
                 "full_name": nameC.text,
-                "phone_number": phoneC.text,
+                "phone_number": "+255${phoneC.text}",
                 "address": AddressC.text
               }))
           .then((value) async {
+        print(" resss ni ${jsonDecode(value.body)} ");
         setState(() {
           success = false;
           showsnack = true;

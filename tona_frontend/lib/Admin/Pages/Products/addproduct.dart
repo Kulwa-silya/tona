@@ -15,7 +15,8 @@ import '../../consts/colorTheme.dart';
 class Addproduct extends StatefulWidget {
   int? pid;
   String? titl;
-  Addproduct({this.pid, this.titl, Key? key}) : super(key: key);
+  String? axxTok;
+  Addproduct({this.pid,this.axxTok, this.titl, Key? key}) : super(key: key);
 
   @override
   State<Addproduct> createState() => _AddproductState();
