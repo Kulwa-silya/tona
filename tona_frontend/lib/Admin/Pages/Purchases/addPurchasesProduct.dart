@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
 import 'package:machafuapp/Admin/Pages/Purchases/purchasesHome.dart';
@@ -16,10 +17,13 @@ import 'package:machafuapp/Admin/Shared/CustomDateTimePicker.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:machafuapp/globalconst/globalUrl.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+import 'addSupplier.dart';
 
 class AddPurchased extends StatefulWidget {
   int? pid;
@@ -36,6 +40,7 @@ class _AddPurchasedState extends State<AddPurchased> {
   // TextEditingController cnameC = new TextEditingController();
   TextEditingController amountC = new TextEditingController();
   TextEditingController fullnameC = new TextEditingController();
+  TextEditingController quantityC = new TextEditingController();
   TextEditingController phoneC = new TextEditingController();
   TextEditingController addressC = new TextEditingController();
 
@@ -43,17 +48,10 @@ class _AddPurchasedState extends State<AddPurchased> {
 
   bool loading = false;
 
-  String dropdownvalue = 'Select Category     ';
-
   // List of items in our dropdown menu
-  var items = [
-    'Select Category     ',
-    'Cat 1',
-    'Cat 2',
-    'Cat 3',
-    'Cat 4',
-    'Cat 5',
-  ];
+  List<Map<String, dynamic>> items = [];
+
+  List<Map<String, dynamic>> products = [];
 
   bool success = false;
 
@@ -82,21 +80,70 @@ class _AddPurchasedState extends State<AddPurchased> {
 
   bool showsnack = false;
 
-  getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
+  int? selectedSupplierId, selectedProductId;
 
-    print(" tokeni $accesTok");
-    return stringValue;
+  String? _selectedItem;
+
+  List supplierIds = [];
+  List productIds = [];
+
+  var jsonSupplierData;
+
+  var jsonProdData;
+
+  bool _isSelected = false;
+
+  String _value = "CA";
+
+  getSupplier() async {
+    final response = await http.get(
+      Uri.parse("${globalUrl}procurement/supplier/"),
+      headers: {
+        HttpHeaders.authorizationHeader: "JWT ${widget.Axtok}",
+        "Accept": "application/json",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    jsonSupplierData = jsonDecode(response.body);
+    // print(jsonsearchData[0]['results']);
+    // items.add(jsonProdData[0]['results']);
+    setState(() {
+      // items.add({"id": 0, "name": "Select Product"});
+      for (int i = 0; i < jsonSupplierData.length; i++) {
+        items.add({
+          "id": jsonSupplierData[i]['id'],
+          "name": jsonSupplierData[i]['full_name']
+        });
+        //  pId =jsonProdData['results'][i]['title'];
+        supplierIds.add(jsonSupplierData[i]['id']);
+      }
+    });
+  }
+
+  getProducts() async {
+    final response = await http.get(
+      Uri.parse("${globalUrl}store/products/"),
+    );
+    jsonProdData = jsonDecode(response.body);
+    // print(jsonsearchData[0]['results']);
+    // items.add(jsonProdData[0]['results']);
+    setState(() {
+      // items.add({"id": 0, "name": "Select Product"});
+      for (int i = 0; i < jsonProdData["count"]; i++) {
+        products.add({
+          "id": jsonProdData['results'][i]['id'],
+          "name": jsonProdData['results'][i]['title']
+        });
+        //  pId =jsonProdData['results'][i]['title'];
+        productIds.add(jsonProdData['results'][i]['id']);
+      }
+    });
   }
 
   @override
   void initState() {
-    getAccessToken();
+    getSupplier();
+    getProducts();
 
     phoneC.addListener(() {
       final text = phoneC.text;
@@ -108,6 +155,29 @@ class _AddPurchasedState extends State<AddPurchased> {
       }
     });
     super.initState();
+  }
+
+  void _showBottomSheet(Widget wid) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return ClipRRect(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+          child: Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              // You can customize the appearance of the bottom sheet here
+              child: wid),
+        );
+      },
+    );
+  }
+
+  void _handleValueChanged(String newValue) {
+    setState(() {
+      _value = newValue;
+    });
   }
 
   Future _purchasedadd() async {
@@ -131,18 +201,13 @@ class _AddPurchasedState extends State<AddPurchased> {
                     ? DateTime.now().toString().substring(0, 10)
                     : gdate.toString().substring(0, 10),
                 "total_amount": amountC.text,
-                "payment_method": "CA",
-                "supplier": {
-                  "full_name": "Mushi",
-                  "phone_number": "+255764587746",
-                  "address": "Domdom"
-                },
+                "payment_method": _value,
+                "supplier": selectedSupplierId,
                 "purchased_products": [
                   {
-                    "id": 5,
-                    "unit_price": "6665.00",
-                    "quantity": 1,
-                    "product": 1
+                    "unit_price": amountC.text,
+                    "quantity": int.parse(quantityC.text),
+                    "product": selectedProductId
                   }
                 ]
               }))
@@ -251,40 +316,251 @@ class _AddPurchasedState extends State<AddPurchased> {
                       SizedBox(height: 20),
 
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(13),
-                          child: TextFormField(
-                            keyboardType: TextInputType.text,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                            validator: (emailValue) {
-                              if (emailValue!.isEmpty) {
-                                return "Fill in Full name ";
-                              }
-                              RegExp regExp = new RegExp(
-                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                              if (regExp.hasMatch(emailValue)) {
-                                return null;
-                              }
-                              return "Invalid Name Format";
-                            },
-                            controller: fullnameC,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.description_rounded,
-                              ),
-                              labelText: "Full Name ",
-                              hintText: "Ex: Cocacola,Simba Ciment",
-                              border: InputBorder.none,
-                              filled: true,
-                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                        padding: const EdgeInsets.fromLTRB(16.0, 12, 16, 8),
+                        child: Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(horizontal: 0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(13),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 10),
+                                ),
+                              ],
                             ),
+                            child: SearchField(
+                                hint: 'Search Supplier',
+                                searchInputDecoration: InputDecoration(
+                                  suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _showBottomSheet(AddSupplier());
+                                      },
+                                      child: Icon(Icons.add_rounded)),
+                                  // suffix: IconButton(
+                                  //   icon: Icon(Icons.add_rounded),
+                                  //   onPressed: () {
+                                  //     _showBottomSheet();
+                                  //   },
+                                  // ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: ColorTheme.m_blue_mpauko_zaidi,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: ColorTheme.m_blue.withOpacity(0.8),
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                maxSuggestionsInViewPort: 6,
+                                itemHeight: 50,
+                                suggestionState: SuggestionState.enabled,
+                                suggestionsDecoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                // initialValue: items[1]['name'],
+                                onTap: (value) {
+                                  setState(() {
+                                    _selectedItem = value!;
+
+                                    int selectedIndex = items.indexWhere(
+                                        (item) => item["name"] == value);
+                                    if (selectedIndex != -1) {
+                                      // Make sure the selected index is valid
+                                      selectedSupplierId =
+                                          supplierIds[selectedIndex];
+
+                                      print(
+                                          "Selected product Index: $selectedIndex");
+                                      print(
+                                          "Selected product ID: $selectedSupplierId");
+                                    }
+                                  });
+
+                                  print("list of : ${supplierIds}");
+
+                                  print(value);
+                                  print(items
+                                      .map((item) => item["name"])
+                                      .toList());
+                                },
+                                suggestions: items
+                                    .map<String>(
+                                        (item) => item["name"] as String)
+                                    .toList()
+                                // .map((e) =>
+                                //     SearchFieldListItem(e,
+                                //         child: Text(e)))
+                                // .toList(),
+                                ),
                           ),
                         ),
                       ),
+                      _selectedItem != null
+                          ? Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 8, 4, 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Mode of payment",
+                                    style: kInfoRegularTextStyle,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
 
+                                    // alignment: WrapAlignment.start,
+                                    // spacing: 8.0,
+                                    children: [
+                                      FilterChip(
+                                        backgroundColor:
+                                            ColorTheme.m_blue_mpauko_zaidi,
+                                        label: Text(
+                                          'Cash',
+                                          style: TextStyle(
+                                              color: ColorTheme
+                                                  .m_blue_mpauko_zaidi_zaidi),
+                                        ),
+                                        onSelected: (val) {
+                                          _handleValueChanged("CA");
+                                        },
+                                        selected: _value == "CA",
+                                        selectedColor: ColorTheme.m_blue,
+                                      ),
+                                      SizedBox(width: 10),
+                                      FilterChip(
+                                        backgroundColor:
+                                            ColorTheme.m_blue_mpauko_zaidi,
+                                        label: Text(
+                                          'Check',
+                                          style: TextStyle(
+                                              color: ColorTheme
+                                                  .m_blue_mpauko_zaidi_zaidi),
+                                        ),
+                                        onSelected: (val) {
+                                          _handleValueChanged("CH");
+                                        },
+                                        selected: _value == "CH",
+                                        selectedColor: ColorTheme.m_blue,
+                                      ),
+                                      SizedBox(width: 10),
+                                      FilterChip(
+                                        backgroundColor:
+                                            ColorTheme.m_blue_mpauko_zaidi,
+                                        label: Text(
+                                          'Credit',
+                                          style: TextStyle(
+                                              color: ColorTheme
+                                                  .m_blue_mpauko_zaidi_zaidi),
+                                        ),
+                                        onSelected: (val) {
+                                          _handleValueChanged("CR");
+                                        },
+                                        selected: _value == "CR",
+                                        selectedColor: ColorTheme.m_blue,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          : SizedBox.shrink(),
+
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 12, 16, 8),
+                        child: Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.symmetric(horizontal: 0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(13),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 10),
+                                ),
+                              ],
+                            ),
+                            child: SearchField(
+                                hint: 'Search Products',
+                                searchInputDecoration: InputDecoration(
+                                  suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _showBottomSheet(Addproduct());
+                                      },
+                                      child: Icon(Icons.add_rounded)),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: ColorTheme.m_blue_mpauko_zaidi,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: ColorTheme.m_blue.withOpacity(0.8),
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                maxSuggestionsInViewPort: 6,
+                                itemHeight: 50,
+                                suggestionState: SuggestionState.enabled,
+                                suggestionsDecoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                // initialValue: items[1]['name'],
+                                onTap: (value) {
+                                  setState(() {
+                                    _selectedItem = value!;
+
+                                    int selectedIndex = products.indexWhere(
+                                        (item) => item["name"] == value);
+                                    if (selectedIndex != -1) {
+                                      // Make sure the selected index is valid
+                                      selectedProductId =
+                                          productIds[selectedIndex];
+
+                                      print(
+                                          "Selected product Index: $selectedIndex");
+                                      print(
+                                          "Selected product ID: $selectedProductId");
+                                    }
+                                  });
+
+                                  print("list of : ${productIds}");
+
+                                  print(value);
+                                  print(products
+                                      .map((item) => item["name"])
+                                      .toList());
+                                },
+                                suggestions: products
+                                    .map<String>(
+                                        (item) => item["name"] as String)
+                                    .toList()
+                                // .map((e) =>
+                                //     SearchFieldListItem(e,
+                                //         child: Text(e)))
+                                // .toList(),
+                                ),
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
                         child: ClipRRect(
@@ -310,7 +586,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                               prefixIcon: Icon(
                                 Icons.adobe_sharp,
                               ),
-                              labelText: "Amount",
+                              labelText: "Unit Price",
                               hintText: "Ex: 10,000.00",
                               border: InputBorder.none,
                               filled: true,
@@ -331,40 +607,24 @@ class _AddPurchasedState extends State<AddPurchased> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (emailValue) {
                               if (emailValue!.isEmpty) {
-                                return "Fill in Phone number";
+                                return "Fill in quantity";
                               }
                               RegExp regExp = new RegExp(r'^[0-9]+$');
                               if (regExp.hasMatch(emailValue)) {
                                 return null;
                               }
-                              return "Invalid Phone Number Format";
+                              return "Invalid quantity Format";
                             },
-                            controller: phoneC,
+                            controller: quantityC,
                             decoration: InputDecoration(
                               prefixIcon: Icon(
-                                Icons.phone,
+                                Icons.numbers,
                               ),
-                              labelText: "Phone No",
-                              hintText: "Ex: 76547...",
+                              labelText: "Quantity",
+                              hintText: "Ex: 7",
                               border: InputBorder.none,
                               filled: true,
                               fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                              prefix: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                      color: ColorTheme.m_blue_mpauko_zaidi,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          "+255",
-                                          style: kInfoRegularTextStyle,
-                                        ),
-                                      )),
-                                ),
-                              ),
                             ),
                           ),
                         ),
@@ -411,20 +671,6 @@ class _AddPurchasedState extends State<AddPurchased> {
                               ),
                             ),
                           )),
-                      // Container(
-                      //   child: SfDateRangePicker(
-                      //     initialSelectedRange: PickerDateRange(
-                      //       DateTime.now().subtract(Duration(days: 5)),
-                      //       DateTime.now().add(Duration(days: 5)),
-                      //     ),
-                      //     selectionMode: DateRangePickerSelectionMode.range,
-                      //     // dateFormat: 'dd/MM/yyyy',
-                      //     onSelectionChanged:
-                      //         (DateRangePickerSelectionChangedArgs args) {
-                      //       // Handle the selection change event here
-                      //     },
-                      //   ),
-                      // ),
 
                       success == true
                           ? circularLoader()
@@ -456,20 +702,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                                   if (formkey.currentState!.validate()) {
                                     formkey.currentState!.save();
 
-                                    _purchasedadd().then((value) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return AddSoldProd(
-                                              saleId: id,
-                                              title: "Add  Product!",
-                                              showdropdown: true,
-                                              accessTok: accesTok,
-                                              salename:
-                                                  "Purchace from ${fullnameC.text} for $dayOfWeek ${gdate == null ? DateTime.now().toString().substring(0, 16) : gdate.toString().substring(0, 16)}",
-                                            );
-                                          });
-                                    });
+                                    _purchasedadd();
                                     setState(() {
                                       success = true;
                                       // successErr = true;

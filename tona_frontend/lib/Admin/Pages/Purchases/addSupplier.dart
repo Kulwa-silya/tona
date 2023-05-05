@@ -19,12 +19,12 @@ import '../../consts/colorTheme.dart';
 
 class AddSupplier extends StatefulWidget {
   AddSupplier(
-      {required this.salename,
-      required this.title,
-      required this.accessTok,
-      required this.saleId,
+      {this.salename,
+      this.title,
+      this.accessTok,
+      this.saleId,
       this.Pid,
-      required this.showdropdown,
+      this.showdropdown,
       Key? key})
       : super(key: key);
   String? salename, title, accessTok;
@@ -41,6 +41,8 @@ class _AddSupplierState extends State<AddSupplier> {
   bool saveAttempt = false;
   final formkey = GlobalKey<FormState>();
   TextEditingController AddressC = new TextEditingController();
+  TextEditingController phoneC = new TextEditingController();
+  TextEditingController nameC = new TextEditingController();
 
   bool loading = false;
 
@@ -74,50 +76,19 @@ class _AddSupplierState extends State<AddSupplier> {
 
   int? pId;
 
-  getUsers() async {
-    final response = await http.get(
-      Uri.parse("https://tona-production.up.railway.app/store/products/"),
-      headers: {
-        HttpHeaders.authorizationHeader: "JWT  ${widget.accessTok}",
-        "Accept": "application/json",
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-    jsonProdData = jsonDecode(response.body);
-    // print(jsonsearchData[0]['results']);
-    // items.add(jsonProdData[0]['results']);
-    setState(() {
-      items.add({"id": 0, "name": "Select Product"});
-      for (int i = 0; i < jsonProdData["count"]; i++) {
-        items.add({
-          "id": jsonProdData['results'][i]['id'],
-          "name": jsonProdData['results'][i]['title']
-        });
-        //  pId =jsonProdData['results'][i]['title'];
-      }
-    });
-
-    print("dataaa $items");
-    // print(items1);
-    return items;
-  }
-
   Future _addSupplier() async {
     try {
       final res = await http
-          .post(
-              Uri.parse(
-                  "${globalUrl}procurement/supplier/"),
+          .post(Uri.parse("${globalUrl}procurement/supplier/"),
               headers: {
                 HttpHeaders.authorizationHeader: "JWT  ${widget.accessTok}",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
               body: json.encode({
-                "full_name": AddressC.text,
-                "phone_number": "+255700000000",
-            "address": "TESTING"
-                
+                "full_name": nameC.text,
+                "phone_number": phoneC.text,
+                "address": AddressC.text
               }))
           .then((value) async {
         setState(() {
@@ -137,62 +108,26 @@ class _AddSupplierState extends State<AddSupplier> {
     print(success);
   }
 
-
   @override
   void initState() {
-    getUsers();
-
     print("${widget.gettingToken.getAccessToken()}");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0)), //this right here
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15), topRight: Radius.circular(15)),
       child: Container(
+        // height: 900,
         child: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 2),
                 child: Center(
-                  child: Text("${widget.title}", style: kHeading3TextStyle),
-                ),
-              ),
-              SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 8),
-                        child: Center(
-                          child: Text("On", style: kInfoRegularTextStyle),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(3.0, 0, 8, 8),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            color: ColorTheme.m_blue_mpauko_zaidi,
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Center(
-                                child: Text("${widget.salename}",
-                                    style: kBodyRegularTextStyle),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: Text("New Supplier", style: kHeading3TextStyle),
                 ),
               ),
               Column(
@@ -203,73 +138,56 @@ class _AddSupplierState extends State<AddSupplier> {
                     key: formkey,
                     child: Column(
                       children: [
-                        widget.showdropdown == false
-                            ? SizedBox.shrink()
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16.0, 12, 16, 8),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(13),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                                    child: Center(
-                                      child: DropdownButton(
-                                        dropdownColor: ColorTheme.m_white,
-                                        style: kBodyRegularTextStyle,
-                                        hint: Text("$dropdownvalue"),
-                                        // underline: Container(
-                                        //   height: 2,
-                                        //   width: 200,
-                                        //   color: ColorTheme.m_blue,
-                                        // ),
-                                        // value: dropdownvalue,
-                                        icon: Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: ColorTheme.m_blue,
-                                        ),
-                                        items: items.map((item) {
-                                          return DropdownMenuItem(
-                                            value: item['id'],
-                                            child: Text(item['name']),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            // dropdownvalue = newValue;
-                                            pId = items.firstWhere((item) =>
-                                                item["id"] == newValue)["id"];
-
-                                            // dropdownvalue = items.firstWhere(
-                                            //     (item) =>
-                                            //         item["name"] ==
-                                            //         newValue)["name"];
-
-                                            print("pid ni:  $pId");
-                                            print("pid ni:  $dropdownvalue");
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(13),
+                            child: TextFormField(
+                              keyboardType: TextInputType.name,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (Value) {
+                                if (Value!.isEmpty) {
+                                  return "Fill in full name";
+                                }
+                                RegExp regExp = new RegExp(
+                                    "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                                if (regExp.hasMatch(Value)) {
+                                  return null;
+                                }
+                                return "Invalid name Format";
+                              },
+                              controller: nameC,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.numbers,
                                 ),
+                                labelText: "Full name",
+                                hintText: "Ex: Cocacola,Pepsi",
+                                border: InputBorder.none,
+                                filled: true,
+                                fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                               ),
+                            ),
+                          ),
+                        ),
 
                         Padding(
                           padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(13),
                             child: TextFormField(
-                              keyboardType: TextInputType.number,
+                              keyboardType: TextInputType.text,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               validator: (Value) {
                                 if (Value!.isEmpty) {
                                   return "Fill in Address quantity";
                                 }
-                              RegExp regExp = new RegExp(
-                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                                RegExp regExp = new RegExp(
+                                    "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
                                 if (regExp.hasMatch(Value)) {
                                   return null;
                                 }
@@ -290,7 +208,55 @@ class _AddSupplierState extends State<AddSupplier> {
                           ),
                         ),
 
-                     
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(13),
+                            child: TextFormField(
+                              keyboardType: TextInputType.phone,
+                              maxLength: 9,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              validator: (emailValue) {
+                                if (emailValue!.isEmpty) {
+                                  return "Fill in Phone number";
+                                }
+                                RegExp regExp = new RegExp(r'^[0-9]+$');
+                                if (regExp.hasMatch(emailValue)) {
+                                  return null;
+                                }
+                                return "Invalid Phone Number Format";
+                              },
+                              controller: phoneC,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.phone,
+                                ),
+                                labelText: "Phone Name",
+                                hintText: "Ex: Electronics",
+                                border: InputBorder.none,
+                                filled: true,
+                                fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                                prefix: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                        color: ColorTheme.m_blue_mpauko_zaidi,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Text(
+                                            "+255",
+                                            style: kInfoRegularTextStyle,
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
 
                         success == true
                             ? circularLoader()
@@ -334,8 +300,7 @@ class _AddSupplierState extends State<AddSupplier> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            
-                                                 'Add',
+                                            'Add',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w200),
                                           )
@@ -485,6 +450,7 @@ class _AddSupplierState extends State<AddSupplier> {
                   ),
                 ],
               ),
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
             ],
           ),
         ),

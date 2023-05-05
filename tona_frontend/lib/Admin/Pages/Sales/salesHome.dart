@@ -249,7 +249,7 @@ class _SalesHomeState extends State<SalesHome> {
                                                                   saleId: sId,
                                                                   date: date,
                                                                   salename:
-                                                                      "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                                      "Sale to ${cname} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 1)}",
                                                                   accessTok: widget
                                                                       .Axtok)));
                                                 },
@@ -380,7 +380,7 @@ class _SalesHomeState extends State<SalesHome> {
                                                               widget.Axtok,
                                                           date: date,
                                                           salename:
-                                                              "Sale to ${cname} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                              "Sale to ${cname} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 19)}",
                                                           saleId: sid,
                                                         )));
                                           }),

@@ -135,7 +135,10 @@ class _ProductsState extends State<Products> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: backArrow(towhere: ProductCat(Axtok: accesTok!,)),
+        leading: backArrow(
+            towhere: ProductCat(
+          Axtok: accesTok!,
+        )),
         title: Text(
           widget.title.toString(),
           style: TextStyle(color: ColorTheme.m_blue),

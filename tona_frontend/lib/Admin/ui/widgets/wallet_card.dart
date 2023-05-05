@@ -56,6 +56,11 @@ class _WalletCardState extends State<WalletCard> {
     );
     jsondat = jsonDecode(response.body);
     print(jsondat);
+    if (productcount=="loading...") {
+          setState(() {
+            productcount = "0";
+          });
+        }
     return jsondat['results'];
   }
 
@@ -76,6 +81,7 @@ class _WalletCardState extends State<WalletCard> {
       print("muda ni: ${DateTime.now().toString().substring(0, 10)}");
       return jsondat[0];
     } catch (e) {
+      
       return null;
     }
   }
@@ -90,7 +96,7 @@ class _WalletCardState extends State<WalletCard> {
       } catch (e) {
         if (totalsales == "loading...") {
           setState(() {
-            totalsales = "loading...";
+            totalsales = "0.00";
           });
         }
       }

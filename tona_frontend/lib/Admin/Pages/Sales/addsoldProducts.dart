@@ -106,7 +106,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
     // print(jsonsearchData[0]['results']);
     // items.add(jsonProdData[0]['results']);
     setState(() {
-      items.add({"id": 0, "name": "Select Product"});
+      // items.add({"id": 0, "name": "Select Product"});
       for (int i = 0; i < jsonProdData["count"]; i++) {
         items.add({
           "id": jsonProdData['results'][i]['id'],
@@ -187,9 +187,32 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
   Future updateSoldProd() async {
     final response = await http
-        .patch(
-            Uri.parse(
-                "https://tona-production.up.railway.app/sales/soldproduct/${widget.Pid}/"),
+        .patch(Uri.parse("${globalUrl}sales/soldproduct/${widget.Pid}/"),
+            headers: {
+              HttpHeaders.authorizationHeader: "JWT ${widget.accessTok}",
+              "Accept": "application/json",
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: json.encode({
+              "quantity": int.parse(quantityC.text),
+              "discount": discoutC.text,
+              if (shoetextfield) "return_reason": reasoanC.text,
+              // "return_reason": reasoanC.text
+            }))
+        .then((value) async {
+      setState(() {
+        success = false;
+        showsnack = true;
+      });
+      print(value);
+    });
+
+    print("res ni $response");
+  }
+
+  Future returnIwards() async {
+    final response = await http
+        .patch(Uri.parse("${globalUrl}sales/soldproduct/${widget.Pid}"),
             headers: {
               HttpHeaders.authorizationHeader: "JWT ${widget.accessTok}",
               "Accept": "application/json",
@@ -311,7 +334,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                       ],
                                     ),
                                     child: SearchField(
-                                        hint: 'Search',
+                                        hint: 'Search Products',
                                         searchInputDecoration: InputDecoration(
                                           enabledBorder: OutlineInputBorder(
                                             borderSide: BorderSide(
@@ -352,7 +375,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                             if (selectedIndex != -1) {
                                               // Make sure the selected index is valid
                                               selectedProductId =
-                                                  productIds[selectedIndex - 1];
+                                                  productIds[selectedIndex];
 
                                               getProductsCount(
                                                   selectedProductId);
@@ -393,14 +416,14 @@ class _AddSoldProdState extends State<AddSoldProd> {
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               onTap: () {
-                                getProductsCount2();
+                                // getProductsCount2();
                               },
                               validator: (Value) {
                                 if (Value!.isEmpty) {
                                   return "Fill in product quantity";
                                 }
                                 if (count == null) {
-                                  getProductsCount2();
+                                  // getProductsCount2();
                                   return "Loading...";
                                 } else {
                                   if (int.parse(Value) > count) {

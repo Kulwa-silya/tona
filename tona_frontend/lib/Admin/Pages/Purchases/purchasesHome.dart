@@ -389,17 +389,16 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                     // int count = data['total_quantity_sold'];
                                     // String date = data['date'];
 
-                                    String? name =
-                                        data['supplier']['full_name'];
+                                    int? name = data['supplier'];
                                     // String? lname =
                                     //     data['supplier']['user']['last_name'];
-                                    String? phone =
-                                        data['supplier']['phone_number'];
+                                    // String? phone =
+                                    //     data['supplier']['phone_number'];
                                     int? puchaseId = data['id'];
                                     String date = data["date"];
                                     // String desc =
                                     //     snapshot.data[i]["description"];
-                                    String unitprice = data["total_amount"];
+                                    // String unitprice = data["total_amount"];
 
                                     // int? quantity = data["quantity"];
 
@@ -416,7 +415,7 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                               widget.Axtok,
                                                           date: date,
                                                           purchasename:
-                                                              "Purchase from ${name} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 4)}",
+                                                              "Purchase from ${name.toString()} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 4)}",
                                                           purchaseId: puchaseId,
                                                         )));
                                           }),
@@ -460,12 +459,12 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                                     .start,
                                                             children: [
                                                               Text(
-                                                                "$name",
+                                                                "${name.toString()}",
                                                                 style:
                                                                     kInfoTextStyle,
                                                               ),
                                                               Text(
-                                                                "$phone",
+                                                                "${name.toString()}",
                                                                 style:
                                                                     kBodyRegularTextStyle,
                                                                 overflow:
@@ -484,7 +483,7 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                           Column(
                                                             children: [
                                                               Text(
-                                                                unitprice,
+                                                                name.toString(),
                                                                 style:
                                                                     kSmallBoldTextStyle,
                                                               ),
