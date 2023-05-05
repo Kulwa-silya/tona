@@ -122,23 +122,13 @@ class SoldProduct(models.Model):
                 raise ValueError("you can't reduce quantity and increase discount.")
 
             if old_quantity > new_quantity:
-                return_inwards = ReturnInwards(sold_product=self, quantity_returned=quantity_diff, return_reason=validated_data['return_reason'])
-                return_inwards.save()
-                return self
-                # quantity or discount has decreased
-                # self.product.inventory += quantity_diff
-                # self.product.save()/
-
-                # sale = self.sale
-                # sale.total_quantity_sold -= quantity_diff
-
-                # new_discount_amount = ((self.product.unit_price * new_discount) / 100)
-                # old_discount_amount = ((self.product.unit_price * old_discount) / 100)
-                # # revenue without the old price and and old quantity
-                # sale.sale_revenue -= ((self.product.unit_price - old_discount_amount) * old_quantity)
-                # # revenue_difference = abs(sale.sale_revenue - (self.product.unit_price - discount_amount) * new_quantity) ##this is the old method
-                # sale.sale_revenue += ((self.product.unit_price - new_discount_amount) * new_quantity)
-                # sale.save()
+                if self.return_inwards.filter(is_authorized=False):
+                    raise ValueError("you can't add another return when there's another unauthorised.")
+                else:
+                    return_inwards = ReturnInwards(sold_product=self, quantity_returned=quantity_diff, return_reason=validated_data['return_reason'])
+                    return_inwards.save()
+                    return self
+                
             else:
                 # quantity or discount has increased
                 if self.product.inventory >= quantity_diff:
