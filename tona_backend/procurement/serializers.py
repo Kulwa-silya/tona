@@ -26,8 +26,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Purchase
-        fields = ['id', 'date', 'total_amount',
-                  'payment_method', 'supplier', 'purchased_products']
+        fields = ['id', 'date', 'payment_method', 'supplier', 'purchased_products']
 
     def create(self, validated_data):
         # Remove/Pop supplier and purchased_products_data from dict called validated_data
