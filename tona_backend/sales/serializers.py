@@ -11,7 +11,7 @@ class SoldProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SoldProduct
-        fields = ['id','sale','quantity','product','product_title','original_price','discount']
+        fields = ['id','sale','quantity','product','product_title','original_price','discount','return_inwards_authorised']
 
     def to_internal_value(self, data):
         data = data.copy()  # Create a copy of the data dictionary
@@ -20,6 +20,17 @@ class SoldProductSerializer(serializers.ModelSerializer):
         if return_reason is not None:
             data['return_reason'] = return_reason
         return super(SoldProductSerializer, self).to_internal_value(data)
+    
+    return_inwards_authorised = serializers.SerializerMethodField(
+        method_name='return_status')
+    
+    def return_status(self, soldProduct:SoldProduct):
+        unathorised_return_inwards_list = soldProduct.return_inwards.filter(is_authorized=False)
+        if len(unathorised_return_inwards_list) > 0:
+            unauthorised_return_id = unathorised_return_inwards_list[0].id
+            return {"status":False, "unauthorised_return_id":unauthorised_return_id}
+        else:
+            return {"status":True, "unauthorised_return_id":None}
 
 
 class SaleSerializer(serializers.ModelSerializer):
