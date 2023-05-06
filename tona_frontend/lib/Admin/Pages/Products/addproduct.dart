@@ -6,17 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:machafuapp/Admin/Pages/Products/Addcollection.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
+import 'package:searchfield/searchfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../globalconst/globalUrl.dart';
 import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
 
 class Addproduct extends StatefulWidget {
   int? pid;
   String? titl;
+  bool hideBack = false;
   String? axxTok;
-  Addproduct({this.pid,this.axxTok, this.titl, Key? key}) : super(key: key);
+  Addproduct(
+      {this.pid, this.axxTok, required this.hideBack, this.titl, Key? key})
+      : super(key: key);
 
   @override
   State<Addproduct> createState() => _AddproductState();
@@ -35,16 +41,6 @@ class _AddproductState extends State<Addproduct> {
   bool loading = false;
 
   String dropdownvalue = 'Select Category     ';
-
-  // List of items in our dropdown menu
-  var items = [
-    'Select Category     ',
-    'Cat 1',
-    'Cat 2',
-    'Cat 3',
-    'Cat 4',
-    'Cat 5',
-  ];
 
   bool success = false;
 
@@ -69,6 +65,15 @@ class _AddproductState extends State<Addproduct> {
 
   bool _isImageSelected = false;
 
+  var _selectedItem;
+
+  var selectedCollectionId;
+  List<Map<String, dynamic>> items = [];
+
+  List collectionIds = [];
+
+  var jsonSupplierData;
+
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
@@ -81,9 +86,41 @@ class _AddproductState extends State<Addproduct> {
     return stringValue;
   }
 
+  void clearItems() {
+    items.clear();
+  }
+
+  getCollections() async {
+    clearItems();
+    final response = await http.get(
+      Uri.parse("${globalUrl}store/collections/"),
+      headers: {
+        HttpHeaders.authorizationHeader: "JWT ${widget.axxTok}",
+        "Accept": "application/json",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).then((value) {
+      jsonSupplierData = jsonDecode(value.body);
+      // print(jsonsearchData[0]['results']);
+      // items.add(jsonProdData[0]['results']);
+      setState(() {
+        // items.add({"id": 0, "name": "Select Product"});
+        print("datz $jsonSupplierData");
+        for (int i = 0; i < jsonSupplierData.length; i++) {
+          items.add({
+            "id": jsonSupplierData[i]['id'],
+            "name": jsonSupplierData[i]['title']
+          });
+          //  pId =jsonProdData['results'][i]['title'];
+          collectionIds.add(jsonSupplierData[i]['id']);
+        }
+      });
+    });
+  }
+
   @override
   void initState() {
-    getAccessToken();
+    getCollections();
     super.initState();
   }
 
@@ -105,6 +142,27 @@ class _AddproductState extends State<Addproduct> {
     }
   }
 
+  void _showBottomSheet(Widget wid) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return ClipRRect(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+          child: Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              // You can customize the appearance of the bottom sheet here
+              child: wid),
+        );
+      },
+    ).then((value) async {
+      setState(() async {
+        await getCollections();
+      });
+    });
+  }
+
   void _productadd() async {
     try {
       final res = await http
@@ -112,7 +170,7 @@ class _AddproductState extends State<Addproduct> {
               Uri.parse(
                   "https://tona-production.up.railway.app/store/products/"),
               headers: {
-                HttpHeaders.authorizationHeader: "JWT $accesTok",
+                HttpHeaders.authorizationHeader: "JWT ${widget.axxTok}",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -121,7 +179,7 @@ class _AddproductState extends State<Addproduct> {
                 "description": descC.text,
                 "inventory": int.parse(inveC.text),
                 "unit_price": unitPC.text,
-                "collection": widget.pid,
+                "collection": selectedCollectionId,
                 "images": null
               }))
           .then((value) async {
@@ -138,7 +196,7 @@ class _AddproductState extends State<Addproduct> {
               'POST',
               Uri.parse(
                   'https://tona-production.up.railway.app/store/products/$id/images/'));
-          request.headers['Authorization'] = 'JWT $accesTok';
+          request.headers['Authorization'] = 'JWT ${widget.axxTok}';
           request.files.add(
               await http.MultipartFile.fromPath('image', pickedFile!.path));
           var response = await request.send();
@@ -178,21 +236,23 @@ class _AddproductState extends State<Addproduct> {
                       title: widget.titl,
                     )));
           },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                    color: ColorTheme.m_blue,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        size: 10,
-                        color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                      ),
-                    ))),
-          ),
+          child: widget.hideBack == true
+              ? SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                          color: ColorTheme.m_blue,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 10,
+                              color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                            ),
+                          ))),
+                ),
         ),
         elevation: 0,
         backgroundColor: Colors.white,
@@ -210,13 +270,7 @@ class _AddproductState extends State<Addproduct> {
                   child: Column(
                     children: [
                       Center(
-                        child: Text(
-                          "New Product",
-                          style: TextStyle(
-                              color: ColorTheme.m_blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                        child: Text("New Product", style: kHeading2TextStyle),
                       ),
                       SizedBox(height: 20),
 
@@ -250,6 +304,81 @@ class _AddproductState extends State<Addproduct> {
 // }
 
                       Text(imgName),
+
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 8),
+                        child: SearchField(
+                            hint: 'Search Collection',
+                            searchInputDecoration: InputDecoration(
+                              suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    _showBottomSheet(AddCollection(
+                                      hideBack: true,
+                                    ));
+                                  },
+                                  child: Icon(Icons.add_rounded)),
+                              // suffix: IconButton(
+                              //   icon: Icon(Icons.add_rounded),
+                              //   onPressed: () {
+                              //     _showBottomSheet();
+                              //   },
+                              // ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: ColorTheme.m_blue_mpauko_zaidi,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2,
+                                  color: ColorTheme.m_blue.withOpacity(0.8),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            maxSuggestionsInViewPort: 6,
+                            itemHeight: 50,
+                            suggestionState: SuggestionState.enabled,
+                            suggestionsDecoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            // initialValue: items[1]['name'],
+                            onTap: (value) {
+                              // getSupplier();
+                              setState(() {
+                                _selectedItem = value!;
+
+                                int selectedIndex = items.indexWhere(
+                                    (item) => item["name"] == value);
+                                if (selectedIndex != -1) {
+                                  // Make sure the selected index is valid
+                                  selectedCollectionId =
+                                      collectionIds[selectedIndex];
+
+                                  print(
+                                      "Selected product Index: $selectedIndex");
+                                  print(
+                                      "Selected product ID: $selectedCollectionId");
+                                }
+                              });
+
+                              print("list of : ${collectionIds}");
+
+                              print(value);
+                              print(items.map((item) => item["name"]).toList());
+                            },
+                            suggestions: items
+                                .map<String>((item) => item["name"] as String)
+                                .toList()
+                            // .map((e) =>
+                            //     SearchFieldListItem(e,
+                            //         child: Text(e)))
+                            // .toList(),
+                            ),
+                      ),
 
                       mytextField(
                           contro: titleC,

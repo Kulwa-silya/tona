@@ -19,7 +19,7 @@ class Products extends StatefulWidget {
   int? id;
   String? title;
   String? Axxtok;
-  Products({ this.Axxtok, this.id, this.title, Key? key}) : super(key: key);
+  Products({this.Axxtok, this.id, this.title, Key? key}) : super(key: key);
 
   @override
   State<Products> createState() => _ProductsState();
@@ -97,8 +97,6 @@ class _ProductsState extends State<Products> {
     super.dispose();
   }
 
-
-
 //seachspecific products in a certain collection
   searchspeProducts() async {
     final response = await http.get(
@@ -112,11 +110,9 @@ class _ProductsState extends State<Products> {
 
   void initState() {
     setState(() {
-    
-        isloading = true;
-        fetchProducts();
-        isloading = false;
-      
+      isloading = true;
+      fetchProducts();
+      isloading = false;
     });
 
     super.initState();
@@ -148,8 +144,11 @@ class _ProductsState extends State<Products> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        Addproduct(pid: widget.id, titl: widget.title)));
+                    builder: (context) => Addproduct(
+                          pid: widget.id,
+                          titl: widget.title,
+                          hideBack: false,
+                        )));
               },
               child: Center(
                 child: Text(

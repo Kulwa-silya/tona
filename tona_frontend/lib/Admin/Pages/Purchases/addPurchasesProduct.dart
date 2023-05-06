@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
@@ -174,16 +175,19 @@ class _AddPurchasedState extends State<AddPurchased> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return ClipRRect(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-          child: Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              // You can customize the appearance of the bottom sheet here
-              child: wid),
-        );
+        return Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            // You can customize the appearance of the bottom sheet here
+            child: wid);
       },
-    );
+    ).then((value) async {
+      print("its closed");
+
+      setState(() async {
+        await getProducts();
+        await getSupplier();
+      });
+    });
   }
 
   void _handleValueChanged(String newValue) {
@@ -197,8 +201,7 @@ class _AddPurchasedState extends State<AddPurchased> {
       final res = await http
           .post(Uri.parse("${globalUrl}procurement/purchase/"),
               headers: {
-                HttpHeaders.authorizationHeader:
-                    "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgzMzY5OTgzLCJqdGkiOiI0MWI5MTMzNmFkY2M0NmU4OWU0ODNlMWMxZGI3ZjFhNCIsInVzZXJfaWQiOjF9.QmlWLBpnOjoCcMqiAlQNSXqCit1sMxS9TzWFmRfuZyg",
+                HttpHeaders.authorizationHeader: "JWT ${widget.Axtok}",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -317,13 +320,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                   child: Column(
                     children: [
                       Center(
-                        child: Text(
-                          "New Purchase",
-                          style: TextStyle(
-                              color: ColorTheme.m_blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                        child: Text("New Purchase", style: kHeading2TextStyle),
                       ),
                       SizedBox(height: 20),
 
@@ -352,80 +349,83 @@ class _AddPurchasedState extends State<AddPurchased> {
                                 });
                               }),
                               child: SearchField(
-                                  hint: 'Search Supplier',
-                                  searchInputDecoration: InputDecoration(
-                                    suffixIcon: GestureDetector(
-                                        onTap: () {
-                                          _showBottomSheet(AddSupplier(
+                                hint: 'Search Supplier',
+                                searchInputDecoration: InputDecoration(
+                                  suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _showBottomSheet(Container(
+                                          child: AddSupplier(
                                             accessTok: widget.Axtok,
-                                          ));
-                                        },
-                                        child: Icon(Icons.add_rounded)),
-                                    // suffix: IconButton(
-                                    //   icon: Icon(Icons.add_rounded),
-                                    //   onPressed: () {
-                                    //     _showBottomSheet();
-                                    //   },
-                                    // ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ColorTheme.m_blue_mpauko_zaidi,
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
+                                          ),
+                                        ));
+                                      },
+                                      child: Icon(Icons.add_rounded)),
+                                  // suffix: IconButton(
+                                  //   icon: Icon(Icons.add_rounded),
+                                  //   onPressed: () {
+                                  //     _showBottomSheet();
+                                  //   },
+                                  // ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: ColorTheme.m_blue_mpauko_zaidi,
+                                      width: 1,
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 2,
-                                        color:
-                                            ColorTheme.m_blue.withOpacity(0.8),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                  maxSuggestionsInViewPort: 6,
-                                  itemHeight: 50,
-                                  suggestionState: SuggestionState.enabled,
-                                  suggestionsDecoration: BoxDecoration(
-                                    color: Colors.white,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: ColorTheme.m_blue.withOpacity(0.8),
+                                    ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  // initialValue: items[1]['name'],
-                                  onTap: (value) {
-                                    // getSupplier();
-                                    setState(() {
-                                      _selectedItem = value!;
+                                ),
+                                maxSuggestionsInViewPort: 6,
+                                itemHeight: 50,
+                                searchStyle: kInfoRegularTextStyle,
+                                suggestionState: SuggestionState.enabled,
+                                suggestionsDecoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                // initialValue: items[1]['name'],
+                                onTap: (value) {
+                                  // getSupplier();
+                                  setState(() {
+                                    _selectedItem = value!;
 
-                                      int selectedIndex = items.indexWhere(
-                                          (item) => item["name"] == value);
-                                      if (selectedIndex != -1) {
-                                        // Make sure the selected index is valid
-                                        selectedSupplierId =
-                                            supplierIds[selectedIndex];
+                                    int selectedIndex = items.indexWhere(
+                                        (item) => item["name"] == value);
+                                    if (selectedIndex != -1) {
+                                      // Make sure the selected index is valid
+                                      selectedSupplierId =
+                                          supplierIds[selectedIndex];
 
-                                        print(
-                                            "Selected product Index: $selectedIndex");
-                                        print(
-                                            "Selected product ID: $selectedSupplierId");
-                                      }
-                                    });
+                                      print(
+                                          "Selected product Index: $selectedIndex");
+                                      print(
+                                          "Selected product ID: $selectedSupplierId");
+                                    }
+                                  });
 
-                                    print("list of : ${supplierIds}");
+                                  print("list of : ${supplierIds}");
 
-                                    print(value);
-                                    print(items
-                                        .map((item) => item["name"])
-                                        .toList());
-                                  },
-                                  suggestions: items
-                                      .map<String>(
-                                          (item) => item["name"] as String)
-                                      .toList()
-                                  // .map((e) =>
-                                  //     SearchFieldListItem(e,
-                                  //         child: Text(e)))
-                                  // .toList(),
-                                  ),
+                                  print(value);
+                                  print(items
+                                      .map((item) => item["name"])
+                                      .toList());
+                                },
+                                suggestions: items
+                                    .map<String>(
+                                        (item) => item["name"] as String)
+                                    .toList(),
+                                suggestionStyle: kInfoRegularTextStyle,
+                                // .map((e) =>
+                                //     SearchFieldListItem(e,
+                                //         child: Text(e)))
+                                // .toList(),
+                              ),
                             ),
                           ),
                         ),
@@ -532,72 +532,76 @@ class _AddPurchasedState extends State<AddPurchased> {
                                 getProducts();
                               },
                               child: SearchField(
-                                  hint: 'Search Products',
-                                  searchInputDecoration: InputDecoration(
-                                    suffixIcon: GestureDetector(
-                                        onTap: () {
-                                          _showBottomSheet(ProductCat(Axtok: widget.Axtok,));
-                                        },
-                                        child: Icon(Icons.add_rounded)),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: ColorTheme.m_blue_mpauko_zaidi,
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
+                                hint: 'Search Products',
+                                searchStyle: kInfoRegularTextStyle,
+                                searchInputDecoration: InputDecoration(
+                                  suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        _showBottomSheet(Addproduct(
+                                          hideBack: true,
+                                          axxTok: widget.Axtok,
+                                        ));
+                                      },
+                                      child: Icon(Icons.add_rounded)),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: ColorTheme.m_blue_mpauko_zaidi,
+                                      width: 1,
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: 2,
-                                        color:
-                                            ColorTheme.m_blue.withOpacity(0.8),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                  maxSuggestionsInViewPort: 6,
-                                  itemHeight: 50,
-                                  suggestionState: SuggestionState.enabled,
-                                  suggestionsDecoration: BoxDecoration(
-                                    color: Colors.white,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2,
+                                      color: ColorTheme.m_blue.withOpacity(0.8),
+                                    ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  // initialValue: items[1]['name'],
-                                  onTap: (value) {
-                                    getProducts();
-                                    setState(() {
-                                      _selectedItem = value!;
+                                ),
+                                maxSuggestionsInViewPort: 6,
+                                itemHeight: 50,
+                                suggestionState: SuggestionState.enabled,
+                                suggestionsDecoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                // initialValue: items[1]['name'],
+                                onTap: (value) {
+                                  // getProducts();
+                                  setState(() {
+                                    _selectedItem = value!;
 
-                                      int selectedIndex = products.indexWhere(
-                                          (item) => item["name"] == value);
-                                      if (selectedIndex != -1) {
-                                        // Make sure the selected index is valid
-                                        selectedProductId =
-                                            productIds[selectedIndex];
+                                    int selectedIndex = products.indexWhere(
+                                        (item) => item["name"] == value);
+                                    if (selectedIndex != -1) {
+                                      // Make sure the selected index is valid
+                                      selectedProductId =
+                                          productIds[selectedIndex];
 
-                                        print(
-                                            "Selected product Index: $selectedIndex");
-                                        print(
-                                            "Selected product ID: $selectedProductId");
-                                      }
-                                    });
+                                      print(
+                                          "Selected product Index: $selectedIndex");
+                                      print(
+                                          "Selected product ID: $selectedProductId");
+                                    }
+                                  });
 
-                                    print("list of : ${productIds}");
+                                  print("list of : ${productIds}");
 
-                                    print(value);
-                                    print(products
-                                        .map((item) => item["name"])
-                                        .toList());
-                                  },
-                                  suggestions: products
-                                      .map<String>(
-                                          (item) => item["name"] as String)
-                                      .toList()
-                                  // .map((e) =>
-                                  //     SearchFieldListItem(e,
-                                  //         child: Text(e)))
-                                  // .toList(),
-                                  ),
+                                  print(value);
+                                  print(products
+                                      .map((item) => item["name"])
+                                      .toList());
+                                },
+                                suggestions: products
+                                    .map<String>(
+                                        (item) => item["name"] as String)
+                                    .toList(),
+                                suggestionStyle: kInfoRegularTextStyle,
+                                // .map((e) =>
+                                //     SearchFieldListItem(e,
+                                //         child: Text(e)))
+                                // .toList(),
+                              ),
                             ),
                           ),
                         ),
@@ -607,16 +611,14 @@ class _AddPurchasedState extends State<AddPurchased> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(13),
                           child: TextFormField(
-                            keyboardType: TextInputType.text,
+                            keyboardType: TextInputType.number,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (emailValue) {
                               if (emailValue!.isEmpty) {
                                 return "Fill in amount";
                               }
-                              RegExp regExp = new RegExp(
-                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                              RegExp regExp = new RegExp(r'^[0-9]+$');
                               if (regExp.hasMatch(emailValue)) {
                                 return null;
                               }
@@ -629,6 +631,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                               ),
                               labelText: "Unit Price",
                               hintText: "Ex: 10,000.00",
+                              hintStyle: kInfoRegularTextStyle,
                               border: InputBorder.none,
                               filled: true,
                               fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
@@ -642,8 +645,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(13),
                           child: TextFormField(
-                            keyboardType: TextInputType.phone,
-                            maxLength: 9,
+                            keyboardType: TextInputType.number,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (emailValue) {
@@ -662,6 +664,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                                 Icons.numbers,
                               ),
                               labelText: "Quantity",
+                              hintStyle: kInfoRegularTextStyle,
                               hintText: "Ex: 7",
                               border: InputBorder.none,
                               filled: true,

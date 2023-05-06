@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Products/productsCategory.dart';
+import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Shared/myTextFormField.dart';
 import '../../consts/colorTheme.dart';
@@ -15,7 +16,9 @@ import '../../consts/colorTheme.dart';
 class AddCollection extends StatefulWidget {
   int? pid;
   String? titl;
-  AddCollection({this.pid, this.titl, Key? key}) : super(key: key);
+  bool hideBack = false;
+  AddCollection({this.pid, this.titl, required this.hideBack, Key? key})
+      : super(key: key);
 
   @override
   State<AddCollection> createState() => _AddCollectionState();
@@ -140,24 +143,26 @@ class _AddCollectionState extends State<AddCollection> {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
                 builder: (BuildContext context) => ProductCat(
-                     Axtok: accesTok!,
+                      Axtok: accesTok!,
                     )));
           },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                    color: ColorTheme.m_blue,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        size: 10,
-                        color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                      ),
-                    ))),
-          ),
+          child: widget.hideBack == true
+              ? SizedBox.shrink()
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                          color: ColorTheme.m_blue,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 10,
+                              color: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                            ),
+                          ))),
+                ),
         ),
         elevation: 0,
         backgroundColor: Colors.white,
@@ -175,13 +180,8 @@ class _AddCollectionState extends State<AddCollection> {
                   child: Column(
                     children: [
                       Center(
-                        child: Text(
-                          "New Collection",
-                          style: TextStyle(
-                              color: ColorTheme.m_blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
+                        child:
+                            Text("New Collection", style: kHeading2TextStyle),
                       ),
                       SizedBox(height: 20),
 
@@ -224,9 +224,14 @@ class _AddCollectionState extends State<AddCollection> {
                           filled: true,
                         ),
                       ),
-
+                      SizedBox(
+                        height: 15,
+                      ),
                       success == true
-                          ? CircularProgressIndicator()
+                          ? CircularProgressIndicator(
+                              strokeWidth: 1,
+                              color: ColorTheme.m_blue,
+                            )
                           : Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 60.0, vertical: 25.0),

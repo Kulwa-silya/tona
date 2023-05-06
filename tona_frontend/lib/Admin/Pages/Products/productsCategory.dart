@@ -81,8 +81,10 @@ class _ProductCatState extends State<ProductCat> {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => AddCollection()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => AddCollection(
+                          hideBack: false,
+                        )));
               },
               child: Center(
                 child: Text(

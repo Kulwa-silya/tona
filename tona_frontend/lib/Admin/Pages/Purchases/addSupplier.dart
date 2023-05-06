@@ -117,343 +117,341 @@ class _AddSupplierState extends State<AddSupplier> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-      child: Container(
-        // height: 900,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 21, 8, 2),
-                child: Center(
-                  child: Text("New Supplier", style: kHeading3TextStyle),
-                ),
+    return Container(
+      // height: 900,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 31, 8, 2),
+              child: Center(
+                child: Text("New Supplier", style: kHeading2TextStyle),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Form(
-                    key: formkey,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(13),
-                            child: TextFormField(
-                              keyboardType: TextInputType.name,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (Value) {
-                                if (Value!.isEmpty) {
-                                  return "Fill in full name";
-                                }
-                                RegExp regExp = new RegExp(
-                                    "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                                if (regExp.hasMatch(Value)) {
-                                  return null;
-                                }
-                                return "Invalid name Format";
-                              },
-                              controller: nameC,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.numbers,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Form(
+                  key: formkey,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            keyboardType: TextInputType.name,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (Value) {
+                              if (Value!.isEmpty) {
+                                return "Fill in full name";
+                              }
+                              RegExp regExp = new RegExp(
+                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                              if (regExp.hasMatch(Value)) {
+                                return null;
+                              }
+                              return "Invalid name Format";
+                            },
+                            controller: nameC,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.numbers,
+                              ),
+                              labelText: "Full name",
+                              hintText: "Ex: Cocacola,Pepsi",
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (Value) {
+                              if (Value!.isEmpty) {
+                                return "Fill in Address quantity";
+                              }
+                              RegExp regExp = new RegExp(
+                                  "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                                      "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
+                              if (regExp.hasMatch(Value)) {
+                                return null;
+                              }
+                              return "Invalid Address Format";
+                            },
+                            controller: AddressC,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.numbers,
+                              ),
+                              labelText: "Address",
+                              hintText: "Ex: Sabasaba, NSSF",
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: TextFormField(
+                            keyboardType: TextInputType.phone,
+                            maxLength: 9,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (emailValue) {
+                              if (emailValue!.isEmpty) {
+                                return "Fill in Phone number";
+                              }
+                              RegExp regExp = new RegExp(r'^[0-9]+$');
+                              if (regExp.hasMatch(emailValue)) {
+                                return null;
+                              }
+                              return "Invalid Phone Number Format";
+                            },
+                            controller: phoneC,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(
+                                Icons.phone,
+                              ),
+                              labelText: "Phone Name",
+                              hintText: "Ex: Electronics",
+                              border: InputBorder.none,
+                              filled: true,
+                              fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
+                              prefix: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Container(
+                                      color: ColorTheme.m_blue_mpauko_zaidi,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          "+255",
+                                          style: kInfoRegularTextStyle,
+                                        ),
+                                      )),
                                 ),
-                                labelText: "Full name",
-                                hintText: "Ex: Cocacola,Pepsi",
-                                border: InputBorder.none,
-                                filled: true,
-                                fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
                               ),
                             ),
                           ),
                         ),
+                      ),
 
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(13),
-                            child: TextFormField(
-                              keyboardType: TextInputType.text,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (Value) {
-                                if (Value!.isEmpty) {
-                                  return "Fill in Address quantity";
-                                }
-                                RegExp regExp = new RegExp(
-                                    "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
-                                        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}");
-                                if (regExp.hasMatch(Value)) {
-                                  return null;
-                                }
-                                return "Invalid Address Format";
-                              },
-                              controller: AddressC,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.numbers,
-                                ),
-                                labelText: "Address",
-                                hintText: "Ex: Sabasaba, NSSF",
-                                border: InputBorder.none,
-                                filled: true,
-                                fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(16, 6, 16, 6),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(13),
-                            child: TextFormField(
-                              keyboardType: TextInputType.phone,
-                              maxLength: 9,
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              validator: (emailValue) {
-                                if (emailValue!.isEmpty) {
-                                  return "Fill in Phone number";
-                                }
-                                RegExp regExp = new RegExp(r'^[0-9]+$');
-                                if (regExp.hasMatch(emailValue)) {
-                                  return null;
-                                }
-                                return "Invalid Phone Number Format";
-                              },
-                              controller: phoneC,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(
-                                  Icons.phone,
-                                ),
-                                labelText: "Phone Name",
-                                hintText: "Ex: Electronics",
-                                border: InputBorder.none,
-                                filled: true,
-                                fillColor: ColorTheme.m_blue_mpauko_zaidi_zaidi,
-                                prefix: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(4.0, 0, 5, 0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Container(
-                                        color: ColorTheme.m_blue_mpauko_zaidi,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Text(
-                                            "+255",
-                                            style: kInfoRegularTextStyle,
-                                          ),
-                                        )),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        success == true
-                            ? circularLoader()
-                            : Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Text(
-                                            'Cancel',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w200),
-                                          )
-                                        ],
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        primary: ColorTheme.m_red,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
-                                      ),
-                                      onPressed: () async {
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          widget.showdropdown = true;
-                                        });
-                                      },
+                      success == true
+                          ? circularLoader()
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                          'Close',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w200),
+                                        )
+                                      ],
                                     ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: ColorTheme.m_red,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                    ),
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                      setState(() {
+                                        widget.showdropdown = true;
+                                      });
+                                    },
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Add',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w200),
-                                          )
-                                        ],
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        primary: ColorTheme.m_blue,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0)),
-                                      ),
-                                      onPressed: () async {
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Add',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w200),
+                                        )
+                                      ],
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      primary: ColorTheme.m_blue,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                    ),
+                                    onPressed: () async {
+                                      setState(() {
+                                        saveAttempt = true;
+                                      });
+
+                                      if (formkey.currentState!.validate()) {
+                                        formkey.currentState!.save();
+
+                                        _addSupplier();
+
                                         setState(() {
-                                          saveAttempt = true;
+                                          success = true;
+                                          // widget.showdropdown = true;
+                                          // successErr = true;
                                         });
+                                        if (success == true)
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "added (${productname})",
+                                                style: TextStyle(
+                                                    color: ColorTheme.m_blue,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            backgroundColor:
+                                                ColorTheme.m_blue_mpauko_zaidi,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            elevation: 30,
+                                            duration:
+                                                Duration(milliseconds: 2000),
+                                            padding: EdgeInsets.all(3),
+                                            action: SnackBarAction(
+                                              label: 'Dismiss',
+                                              disabledTextColor: Colors.white,
+                                              textColor: ColorTheme.m_blue,
+                                              onPressed: () {
+                                                ScaffoldMessenger.of(context)
+                                                    .hideCurrentSnackBar();
+                                                //Do whatever you want
+                                              },
+                                            ),
+                                          ));
 
-                                        if (formkey.currentState!.validate()) {
-                                          formkey.currentState!.save();
-
-                                          _addSupplier();
-
-                                          setState(() {
-                                            success = true;
-                                            // widget.showdropdown = true;
-                                            // successErr = true;
-                                          });
-                                          if (success == true)
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "added (${productname})",
-                                                  style: TextStyle(
-                                                      color: ColorTheme.m_blue,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
+                                        if (successErr == true) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "Opps!, parhaps check your internet connection",
+                                                style: TextStyle(
+                                                    color: ColorTheme.m_white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
-                                              backgroundColor: ColorTheme
-                                                  .m_blue_mpauko_zaidi,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0)),
-                                              elevation: 30,
-                                              duration:
-                                                  Duration(milliseconds: 2000),
-                                              padding: EdgeInsets.all(3),
-                                              action: SnackBarAction(
-                                                label: 'Dismiss',
-                                                disabledTextColor: Colors.white,
-                                                textColor: ColorTheme.m_blue,
-                                                onPressed: () {
-                                                  ScaffoldMessenger.of(context)
-                                                      .hideCurrentSnackBar();
-                                                  //Do whatever you want
-                                                },
-                                              ),
-                                            ));
-
-                                          if (successErr == true) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "Opps!, parhaps check your internet connection",
-                                                  style: TextStyle(
-                                                      color: ColorTheme.m_white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 103, 13, 7),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0)),
-                                              elevation: 30,
-                                              duration:
-                                                  Duration(milliseconds: 2000),
-                                              padding: EdgeInsets.all(3),
-                                              action: SnackBarAction(
-                                                label: 'Dismiss',
-                                                disabledTextColor: Colors.white,
-                                                textColor: ColorTheme.m_white,
-                                                onPressed: () {
-                                                  ScaffoldMessenger.of(context)
-                                                      .hideCurrentSnackBar();
-                                                  //Do whatever you want
-                                                },
-                                              ),
-                                            ));
-                                          }
-                                          // _useradd();
-                                        } else {
-                                          if (successErr == true) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "Opps!, parhaps check your internet connection",
-                                                  style: TextStyle(
-                                                      color: ColorTheme.m_white,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 103, 13, 7),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0)),
-                                              elevation: 30,
-                                              duration:
-                                                  Duration(milliseconds: 2000),
-                                              padding: EdgeInsets.all(3),
-                                              action: SnackBarAction(
-                                                label: 'Dismiss',
-                                                disabledTextColor: Colors.white,
-                                                textColor: ColorTheme.m_white,
-                                                onPressed: () {
-                                                  ScaffoldMessenger.of(context)
-                                                      .hideCurrentSnackBar();
-                                                  //Do whatever you want
-                                                },
-                                              ),
-                                            ));
-                                          }
+                                            ),
+                                            backgroundColor:
+                                                Color.fromARGB(255, 103, 13, 7),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            elevation: 30,
+                                            duration:
+                                                Duration(milliseconds: 2000),
+                                            padding: EdgeInsets.all(3),
+                                            action: SnackBarAction(
+                                              label: 'Dismiss',
+                                              disabledTextColor: Colors.white,
+                                              textColor: ColorTheme.m_white,
+                                              onPressed: () {
+                                                ScaffoldMessenger.of(context)
+                                                    .hideCurrentSnackBar();
+                                                //Do whatever you want
+                                              },
+                                            ),
+                                          ));
                                         }
-                                      },
-                                    ),
+                                        // _useradd();
+                                      } else {
+                                        if (successErr == true) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "Opps!, parhaps check your internet connection",
+                                                style: TextStyle(
+                                                    color: ColorTheme.m_white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            backgroundColor:
+                                                Color.fromARGB(255, 103, 13, 7),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            elevation: 30,
+                                            duration:
+                                                Duration(milliseconds: 2000),
+                                            padding: EdgeInsets.all(3),
+                                            action: SnackBarAction(
+                                              label: 'Dismiss',
+                                              disabledTextColor: Colors.white,
+                                              textColor: ColorTheme.m_white,
+                                              onPressed: () {
+                                                ScaffoldMessenger.of(context)
+                                                    .hideCurrentSnackBar();
+                                                //Do whatever you want
+                                              },
+                                            ),
+                                          ));
+                                        }
+                                      }
+                                    },
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            ),
 
-                        // success ==false ?
-                      ],
-                    ),
+                      // success ==false ?
+                    ],
                   ),
-                ],
-              ),
-              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
-            ],
-          ),
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+          ],
         ),
       ),
     );

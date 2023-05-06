@@ -227,10 +227,7 @@ class _AddSalesState extends State<AddSales> {
                       Center(
                         child: Text(
                           "New Sale",
-                          style: TextStyle(
-                              color: ColorTheme.m_blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                          style: kHeading2TextStyle
                         ),
                       ),
                       SizedBox(height: 20),
