@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../globalconst/globalUrl.dart';
 import '../shared/colors.dart';
+import 'package:intl/intl.dart';
 import '../shared/edge_insect.dart';
 import '../shared/text_styles.dart';
 
@@ -34,11 +36,12 @@ class WalletCard extends StatefulWidget {
 class _WalletCardState extends State<WalletCard> {
   var jsondat;
 
-  var endpoint1Data, endpoint2Data;
+  var endpoint1Data, endpoint2Data, endpoint3Data;
 
   String? productcount = "loading...";
 
   String? totalsales = "loading...";
+  String? totalpurchases = "loading...";
   String? accesTok;
 
   Future getAccessToken() async {
@@ -56,11 +59,11 @@ class _WalletCardState extends State<WalletCard> {
     );
     jsondat = jsonDecode(response.body);
     print(jsondat);
-    if (productcount=="loading...") {
-          setState(() {
-            productcount = "0";
-          });
-        }
+    if (productcount == "loading...") {
+      setState(() {
+        productcount = "0";
+      });
+    }
     return jsondat['results'];
   }
 
@@ -81,7 +84,59 @@ class _WalletCardState extends State<WalletCard> {
       print("muda ni: ${DateTime.now().toString().substring(0, 10)}");
       return jsondat[0];
     } catch (e) {
-      
+      return null;
+    }
+  }
+
+  // fetchAlldailyPurchases() async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('${globalUrl}procurement/dailypurchases/'),
+  //       headers: {
+  //         HttpHeaders.authorizationHeader: "JWT $accesTok",
+  //         "Accept": "application/json",
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //     );
+
+  //     jsondat = jsonDecode(response.body);
+  //     print(jsondat);
+
+  //     return jsondat;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
+
+  Future<Map<String, dynamic>?> fetchAlldailyPurchases() async {
+    try {
+      final response = await http.get(
+        Uri.parse('${globalUrl}procurement/dailypurchases/'),
+        headers: {
+          HttpHeaders.authorizationHeader: "JWT $accesTok",
+          "Accept": "application/json",
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = jsonDecode(response.body);
+
+        // Get today's date in the format "yyyy-MM-dd"
+        String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+        // Find the item in jsonData that matches today's date
+        Map<String, dynamic>? todayData = jsonData.firstWhere(
+          (item) => item['date'] == today,
+          orElse: () => null,
+        );
+        print("today's purchase $todayData");
+
+        return todayData; // Return the data for today's date
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }
@@ -97,6 +152,20 @@ class _WalletCardState extends State<WalletCard> {
         if (totalsales == "loading...") {
           setState(() {
             totalsales = "0.00";
+          });
+        }
+      }
+    });
+
+    endpoint3Data = await fetchAlldailyPurchases();
+
+    setState(() {
+      try {
+        totalpurchases = endpoint3Data['total_cost'];
+      } catch (e) {
+        if (totalpurchases == "loading...") {
+          setState(() {
+            totalpurchases = "0.00";
           });
         }
       }
@@ -159,21 +228,30 @@ class _WalletCardState extends State<WalletCard> {
                 widget.desc,
                 style: kSmallRegularTextStyle.copyWith(color: kBlackColor),
               ),
-              widget.text == "Products"
-                  ? Text(
-                      // snapshot.data.length.toString(),
+              (() {
+                switch (widget.text) {
+                  case "Products":
+                    return Text(
                       productcount!,
                       style: kBodyTextStyle,
-                    )
-                  : (widget.text == "Sales"
-                      ? Text(
-                          totalsales!.toString().toString(),
-                          style: kBodyTextStyle,
-                        )
-                      : Text(
-                          widget.amount,
-                          style: kBodyTextStyle,
-                        ))
+                    );
+                  case "Sales":
+                    return Text(
+                      totalsales!.toString(),
+                      style: kBodyTextStyle,
+                    );
+                  case "Purchases":
+                    return Text(
+                      totalpurchases!.toString(),
+                      style: kBodyTextStyle,
+                    );
+                  default:
+                    return Text(
+                      widget.amount,
+                      style: kBodyTextStyle,
+                    );
+                }
+              })(),
             ],
           ),
         ),

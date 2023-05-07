@@ -223,6 +223,7 @@ class _SingInState extends State<SingIn> {
                           child: TextFormField(
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
+                            keyboardType: TextInputType.number,
                             validator: (emailValue) {
                               if (emailValue!.isEmpty) {
                                 return "Phone required";

@@ -179,8 +179,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: Icon(Icons.holiday_village),
-      // nextScreen: accesTok == null ? SingIn() : MainView(),
-      nextScreen: SingIn(),
+      nextScreen: accesTok == null ? SingIn() : MainView(),
+      // nextScreen: SingIn(),
       splashTransition: SplashTransition.scaleTransition,
       duration: 500,
       splashIconSize: 500,

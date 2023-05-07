@@ -44,7 +44,12 @@ class _SalesHomeState extends State<SalesHome> {
 
   var titleG, pidG, countG;
 
+  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
   TextEditingController searchController = new TextEditingController();
+
+  var _data;
 
   fetchSalesCategory() async {
     final response = await http.get(
@@ -58,6 +63,14 @@ class _SalesHomeState extends State<SalesHome> {
     jsondat = jsonDecode(response.body);
 
     return jsondat;
+  }
+
+  Future<void> _handleRefresh() async {
+    // Fetch new data or update content
+    await Future.delayed(Duration(seconds: 2)); // Simulate async fetch
+    setState(() {
+      _data = fetchSalesCategory(); // Update data
+    });
   }
 
   searchSales() async {
@@ -129,67 +142,72 @@ class _SalesHomeState extends State<SalesHome> {
           )
         ],
       ),
-      body: FutureBuilder(
-          future: fetchSalesCategory(),
-          builder: (context, AsyncSnapshot snapsht) {
-            if (!snapsht.hasData) {
-              return Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 1,
-                  color: ColorTheme.m_blue,
-                ),
-              );
-            } else {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(13),
-                      child: Container(
-                        height: 55,
-                        color: ColorTheme.m_white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextField(
-                            controller: searchController,
-                            onChanged: (value) {
-                              setState(() {
-                                searchValue = value;
-                                searchSales();
-                              });
-                            },
-                            onTap: () {
-                              setState(() {
-                                showsearchResult = true;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Search Sales',
-                              labelStyle:
-                                  TextStyle(fontWeight: FontWeight.w300),
-                              suffixIcon: GestureDetector(
-                                // onTap: () {
-                                //   searchProducts();
-                                // },
-                                child: Icon(
-                                  Icons.search,
-                                  color: ColorTheme.m_blue,
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        strokeWidth: 1,
+        key: _refreshIndicatorKey,
+        child: FutureBuilder(
+            future: fetchSalesCategory(),
+            builder: (context, AsyncSnapshot snapsht) {
+              if (!snapsht.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1,
+                    color: ColorTheme.m_blue,
+                  ),
+                );
+              } else {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(13),
+                        child: Container(
+                          height: 55,
+                          color: ColorTheme.m_white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              controller: searchController,
+                              onChanged: (value) {
+                                setState(() {
+                                  searchValue = value;
+                                  searchSales();
+                                });
+                              },
+                              onTap: () {
+                                setState(() {
+                                  showsearchResult = true;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                labelText: 'Search Sales',
+                                labelStyle:
+                                    TextStyle(fontWeight: FontWeight.w300),
+                                suffixIcon: GestureDetector(
+                                  // onTap: () {
+                                  //   searchProducts();
+                                  // },
+                                  child: Icon(
+                                    Icons.search,
+                                    color: ColorTheme.m_blue,
+                                  ),
                                 ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(10.0),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  ),
+                                  borderSide: BorderSide(
+                                    color: ColorTheme.m_blue,
+                                  ),
                                 ),
-                                borderSide: BorderSide(
-                                  color: ColorTheme.m_blue,
-                                ),
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: ColorTheme.m_blue),
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
+                                border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: ColorTheme.m_blue),
+                                  borderRadius: const BorderRadius.all(
+                                    const Radius.circular(10.0),
+                                  ),
                                 ),
                               ),
                             ),
@@ -197,331 +215,333 @@ class _SalesHomeState extends State<SalesHome> {
                         ),
                       ),
                     ),
-                  ),
-                  showsearchResult == true
-                      ? Expanded(
-                          child: FutureBuilder(
-                              future: searchSales(),
-                              builder: (context, AsyncSnapshot snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Text("Loading Please wait");
-                                } else {
-                                  if (snapshot.data.length <= 0) {
-                                    return Text(
-                                      searchController.text.isEmpty
-                                          ? "Insert your query"
-                                          : "No such product",
-                                      style: kBodyTextStyle,
+                    showsearchResult == true
+                        ? Expanded(
+                            child: FutureBuilder(
+                                future: searchSales(),
+                                builder: (context, AsyncSnapshot snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text("Loading Please wait");
+                                  } else {
+                                    if (snapshot.data.length <= 0) {
+                                      return Text(
+                                        searchController.text.isEmpty
+                                            ? "Insert your query"
+                                            : "No such product",
+                                        style: kBodyTextStyle,
+                                      );
+                                    }
+                                    return Container(
+                                      height: 200,
+                                      color: ColorTheme.m_white,
+                                      child: ListView.builder(
+                                          physics: BouncingScrollPhysics(),
+                                          itemCount: snapshot.data.length,
+                                          itemBuilder: (cnt, i) {
+                                            String cname = snapshot.data[i]
+                                                ['customer_name'];
+                                            int sId = snapshot.data[i]['id'];
+                                            String date =
+                                                snapshot.data[i]["date"];
+                                            String desc =
+                                                snapshot.data[i]["description"];
+                                            String saleRevenue = snapshot
+                                                .data[i]["sale_revenue"];
+                                            // String img;
+                                            // int imgId;
+                                            // try {
+                                            //   img = snapshot.data[i]["images"][0]
+                                            //       ["image"];
+                                            // } catch (e) {
+                                            //   img = "assets/images/image_1.png";
+                                            //   imgId = 0;
+                                            // }
+
+                                            return Builder(builder: (context) {
+                                              return GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ViewSales(
+                                                                    saleId: sId,
+                                                                    date: date,
+                                                                    salename:
+                                                                        "Sale to ${cname} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 1)}",
+                                                                    accessTok:
+                                                                        widget
+                                                                            .Axtok)));
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                            .fromLTRB(
+                                                        16.0, 4, 16, 4),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              13),
+                                                      child: Container(
+                                                          color: ColorTheme
+                                                              .m_blue_mpauko_zaidi_zaidi,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              9),
+                                                                      child: Container(
+                                                                          width:
+                                                                              50,
+                                                                          height:
+                                                                              50,
+                                                                          child:
+                                                                              myImageView(img: "assets/images/image_1.png")),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          cname,
+                                                                          style:
+                                                                              kBodyRegularTextStyle,
+                                                                        ),
+                                                                        Text(
+                                                                          desc,
+                                                                          style:
+                                                                              kTinyRegularTextStyle,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
+                                                                  children: [
+                                                                    Column(
+                                                                      children: [
+                                                                        Text(
+                                                                          saleRevenue,
+                                                                          style:
+                                                                              kSmallBoldTextStyle,
+                                                                        ),
+                                                                        Text(
+                                                                          date,
+                                                                          style:
+                                                                              kTinyRegularTextStyle,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                              ],
+                                                            ),
+                                                          )),
+                                                    ),
+                                                  ));
+                                            });
+                                          }),
                                     );
                                   }
-                                  return Container(
-                                    height: 200,
-                                    color: ColorTheme.m_white,
-                                    child: ListView.builder(
-                                        itemCount: snapshot.data.length,
-                                        itemBuilder: (cnt, i) {
-                                          String cname =
-                                              snapshot.data[i]['customer_name'];
-                                          int sId = snapshot.data[i]['id'];
-                                          String date =
-                                              snapshot.data[i]["date"];
-                                          String desc =
-                                              snapshot.data[i]["description"];
-                                          String saleRevenue =
-                                              snapshot.data[i]["sale_revenue"];
-                                          // String img;
-                                          // int imgId;
-                                          // try {
-                                          //   img = snapshot.data[i]["images"][0]
-                                          //       ["image"];
-                                          // } catch (e) {
-                                          //   img = "assets/images/image_1.png";
-                                          //   imgId = 0;
-                                          // }
+                                }),
+                          )
+                        :
+                        // SizedBox.shrink(),
+                        Expanded(
+                            child: ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                itemCount: snapsht.data.length,
+                                itemBuilder: (context, int i) {
+                                  if (jsondat.isEmpty) {
+                                    return CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                      color: ColorTheme.m_blue,
+                                    );
+                                  } else {
+                                    try {
+                                      data = jsondat[i];
+                                      // pid = data['id'];
+                                      // title = data['title'];
+                                      // count = data['products_count'];
+                                      int sid = data['id'];
+                                      String cname = data['customer_name'];
+                                      String desc = data['description'];
+                                      String saleRevenue = data['sale_revenue'];
+                                      int count = data['total_quantity_sold'];
+                                      String date = data['date'];
 
-                                          return Builder(builder: (context) {
-                                            return GestureDetector(
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ViewSales(
-                                                                  saleId: sId,
-                                                                  date: date,
-                                                                  salename:
-                                                                      "Sale to ${cname} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 1)}",
-                                                                  accessTok: widget
-                                                                      .Axtok)));
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          16.0, 4, 16, 4),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            13),
-                                                    child: Container(
-                                                        color: ColorTheme
-                                                            .m_blue_mpauko_zaidi_zaidi,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  ClipRRect(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(9),
-                                                                    child: Container(
-                                                                        width:
-                                                                            50,
-                                                                        height:
-                                                                            50,
-                                                                        child: myImageView(
-                                                                            img:
-                                                                                "assets/images/image_1.png")),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        cname,
-                                                                        style:
-                                                                            kBodyRegularTextStyle,
-                                                                      ),
-                                                                      Text(
-                                                                        desc,
-                                                                        style:
-                                                                            kTinyRegularTextStyle,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .end,
-                                                                children: [
-                                                                  Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        saleRevenue,
-                                                                        style:
-                                                                            kSmallBoldTextStyle,
-                                                                      ),
-                                                                      Text(
-                                                                        date,
-                                                                        style:
-                                                                            kTinyRegularTextStyle,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              )
-                                                            ],
-                                                          ),
-                                                        )),
-                                                  ),
-                                                ));
-                                          });
-                                        }),
-                                  );
-                                }
-                              }),
-                        )
-                      :
-                      // SizedBox.shrink(),
-                      Expanded(
-                          child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
-                              itemCount: snapsht.data.length,
-                              itemBuilder: (context, int i) {
-                                if (jsondat.isEmpty) {
-                                  return CircularProgressIndicator(
-                                    strokeWidth: 1,
-                                    color: ColorTheme.m_blue,
-                                  );
-                                } else {
-                                  try {
-                                    data = jsondat[i];
-                                    // pid = data['id'];
-                                    // title = data['title'];
-                                    // count = data['products_count'];
-                                    int sid = data['id'];
-                                    String cname = data['customer_name'];
-                                    String desc = data['description'];
-                                    String saleRevenue = data['sale_revenue'];
-                                    int count = data['total_quantity_sold'];
-                                    String date = data['date'];
-
-                                    return Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          16.0, 8, 16, 8),
-                                      child: GestureDetector(
-                                          onTap: (() {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ViewSales(
-                                                          accessTok:
-                                                              widget.Axtok,
-                                                          date: date,
-                                                          salename:
-                                                              "Sale to ${cname} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 19)}",
-                                                          saleId: sid,
-                                                        )));
-                                          }),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(13),
-                                            child: Container(
-                                                color: ColorTheme
-                                                    .m_blue_mpauko_zaidi_zaidi,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        9),
-                                                            child: Container(
-                                                                width: 50,
-                                                                height: 50,
-                                                                child: myImageView(
-                                                                    img:
-                                                                        "assets/images/image_1.png")),
-                                                          ),
-                                                          SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  Text(
-                                                                    cname,
-                                                                    style:
-                                                                        kInfoTextStyle,
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 10,
-                                                                  ),
-                                                                  ClipRRect(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(8),
-                                                                    child:
-                                                                        Container(
-                                                                      height:
-                                                                          20,
-                                                                      width: 20,
-                                                                      color: ColorTheme
-                                                                          .m_blue,
-                                                                      child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(4.0),
-                                                                        child:
-                                                                            Center(
-                                                                          child: Text(
-                                                                              data["total_quantity_sold"].toString(),
-                                                                              style: GoogleFonts.poppins(
-                                                                                fontWeight: FontWeight.normal,
-                                                                                fontSize: 10,
-                                                                                height: 1.5,
-                                                                                color: ColorTheme.m_white,
-                                                                              )),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              Text(
-                                                                desc,
-                                                                style:
-                                                                    kBodyRegularTextStyle,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .fromLTRB(
-                                                                8.0, 0, 8, 0),
-                                                        child: Row(
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            16.0, 8, 16, 8),
+                                        child: GestureDetector(
+                                            onTap: (() {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ViewSales(
+                                                            accessTok:
+                                                                widget.Axtok,
+                                                            date: date,
+                                                            salename:
+                                                                "Sale to ${cname} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 19)}",
+                                                            saleId: sid,
+                                                          )));
+                                            }),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                              child: Container(
+                                                  color: ColorTheme
+                                                      .m_blue_mpauko_zaidi_zaidi,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
-                                                                  .end,
+                                                                  .start,
                                                           children: [
+                                                            ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          9),
+                                                              child: Container(
+                                                                  width: 50,
+                                                                  height: 50,
+                                                                  child: myImageView(
+                                                                      img:
+                                                                          "assets/images/image_1.png")),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 10,
+                                                            ),
                                                             Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
-                                                                      .end,
+                                                                      .start,
                                                               children: [
-                                                                Text(
-                                                                  saleRevenue,
-                                                                  style:
-                                                                      kSmallBoldTextStyle,
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      cname,
+                                                                      style:
+                                                                          kInfoTextStyle,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              8),
+                                                                      child:
+                                                                          Container(
+                                                                        height:
+                                                                            20,
+                                                                        width:
+                                                                            20,
+                                                                        color: ColorTheme
+                                                                            .m_blue,
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(4.0),
+                                                                          child:
+                                                                              Center(
+                                                                            child: Text(data["total_quantity_sold"].toString(),
+                                                                                style: GoogleFonts.poppins(
+                                                                                  fontWeight: FontWeight.normal,
+                                                                                  fontSize: 10,
+                                                                                  height: 1.5,
+                                                                                  color: ColorTheme.m_white,
+                                                                                )),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                                 Text(
-                                                                  date,
+                                                                  desc,
                                                                   style:
-                                                                      kTinyRegularTextStyle,
+                                                                      kBodyRegularTextStyle,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
                                                                 ),
                                                               ],
                                                             ),
                                                           ],
                                                         ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )),
-                                          )),
-                                    );
-                                  } catch (e) {
-                                    print("erra ni $e");
-                                    return circularLoader();
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .fromLTRB(
+                                                                  8.0, 0, 8, 0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .end,
+                                                                children: [
+                                                                  Text(
+                                                                    saleRevenue,
+                                                                    style:
+                                                                        kSmallBoldTextStyle,
+                                                                  ),
+                                                                  Text(
+                                                                    date,
+                                                                    style:
+                                                                        kTinyRegularTextStyle,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )),
+                                            )),
+                                      );
+                                    } catch (e) {
+                                      print("erra ni $e");
+                                      return circularLoader();
+                                    }
                                   }
-                                }
-                              }),
-                        ),
-                ],
-              );
-            }
-          }),
+                                }),
+                          ),
+                  ],
+                );
+              }
+            }),
+      ),
     );
   }
 }
