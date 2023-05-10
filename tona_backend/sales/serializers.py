@@ -47,8 +47,7 @@ class DailySalesSerializer(serializers.ModelSerializer):
         fields = ['id','date','total_sales_revenue_on_day','total_quantity_sold_on_day']
 
 class ReturnInwardsSerializer(serializers.ModelSerializer):
-    authorizer_name = serializers.ReadOnlyField(source='authorized_by.first_name')
     sold_product_name = serializers.ReadOnlyField(source='sold_product.product.title')
     class Meta:
         model = ReturnInwards
-        fields = ['id','sold_product','sold_product_name','date','quantity_returned','return_reason','is_authorized','authorized_by','authorizer_name']
+        fields = ['id','sold_product','sold_product_name','date','quantity_returned','return_reason','is_authorized','authorized_by']

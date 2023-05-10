@@ -161,8 +161,7 @@ class ReturnInwards(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     return_reason = models.TextField(max_length=500, null=True, blank=True)
     is_authorized = models.BooleanField(default=False)
-    authorized_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    authorized_by = models.TextField(max_length=500, null=True, blank=True)
 
     def authorize_return(self, user_id,*args, **kwargs):
         User = get_user_model()
@@ -187,7 +186,7 @@ class ReturnInwards(models.Model):
                 sale.sale_revenue -= sold_product.product.unit_price * self.quantity_returned
                 sale.save()
                 self.is_authorized = True
-                self.authorized_by = user
+                self.authorized_by = f"{user.first_name} {user.last_name}"
                 self.save()
             else:
                 raise ValueError("Return has already been authorized.")
