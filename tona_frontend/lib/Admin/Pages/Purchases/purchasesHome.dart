@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:machafuapp/Admin/Pages/Products/Addcollection.dart';
 import 'package:machafuapp/Admin/Pages/Products/addproduct.dart';
 import 'package:machafuapp/Admin/Pages/Products/productViewer.dart';
@@ -12,6 +13,7 @@ import 'package:machafuapp/Admin/Pages/Sales/viewSale.dart';
 import 'package:machafuapp/Admin/Shared/backarrow.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
+import 'package:machafuapp/Admin/ui/shared/spacing.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +33,7 @@ class PurchasesHome extends StatefulWidget {
 class _PurchasesHomeHomeState extends State<PurchasesHome> {
   var jsondat;
 
-  String? accesTok;
+  // String? accesTok;
 
   bool showsearchResult = false;
   bool collectionoffstg = false;
@@ -67,9 +69,8 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
   searchSales() async {
     final response = await http.get(
       Uri.parse('${globalUrl}sales/sale/?search=$searchValue'),
-      
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.Axtok}",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -124,7 +125,10 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
       appBar: AppBar(
         backgroundColor: ColorTheme.m_white,
         elevation: 0,
-        leading: backArrow(towhere: MainView()),
+        leading: backArrow(
+            towhere: MainView(
+          Axtok: widget.Axtok,
+        )),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -265,15 +269,14 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                   onTap: () {
                                                     Navigator.of(context).push(
                                                         MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                ViewSales(
-                                                                    saleId:
-                                                                        puchaseId,
-                                                                    date: date,
-                                                                    salename:
-                                                                        "Purchase from ${suppliername.toString()} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
-                                                                    accessTok:
-                                                                        accesTok)));
+                                                            builder: (context) => ViewSales(
+                                                                saleId:
+                                                                    puchaseId,
+                                                                date: date,
+                                                                salename:
+                                                                    "Purchase from ${suppliername.toString()} for $dayOfWeek ${date == null ? DateTime.now().toString().substring(0, 16) : date.toString().substring(0, 16)}",
+                                                                accessTok: widget
+                                                                    .Axtok)));
                                                   },
                                                   child: Padding(
                                                     padding: const EdgeInsets
@@ -390,16 +393,15 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                     // int count = data['total_quantity_sold'];
                                     // String date = data['date'];
 
-                                    int? name = data['supplier'];
+                                    String name = data['supplier_full_name'];
                                     // String? lname =
                                     //     data['supplier']['user']['last_name'];
-                                    // String? phone =
-                                    //     data['supplier']['phone_number'];
+                                    String? phone =
+                                        data['supplier_phone_number'];
                                     int? puchaseId = data['id'];
                                     String date = data["date"];
-                                    // String desc =
-                                    //     snapshot.data[i]["description"];
-                                    // String unitprice = data["total_amount"];
+                                    String address = data['supplier_address'];
+                                    int totolamount = data["total_amount"];
 
                                     // int? quantity = data["quantity"];
 
@@ -459,13 +461,47 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                                 CrossAxisAlignment
                                                                     .start,
                                                             children: [
-                                                              Text(
-                                                                "${name.toString()}",
-                                                                style:
-                                                                    kInfoTextStyle,
+                                                              Row(
+                                                                children: [
+                                                                  Text(
+                                                                    "${name}",
+                                                                    style:
+                                                                        kInfoTextStyle,
+                                                                  ),
+                                                                  horizontalSpaceSmall,
+                                                                  ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          20,
+                                                                      width: 20,
+                                                                      color: ColorTheme
+                                                                          .m_blue,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(2.0),
+                                                                        child:
+                                                                            Center(
+                                                                          child: Text(
+                                                                              data["purchased_products"].length.toString(),
+                                                                              style: GoogleFonts.poppins(
+                                                                                fontWeight: FontWeight.normal,
+                                                                                fontSize: 10,
+                                                                                height: 1.5,
+                                                                                color: ColorTheme.m_white,
+                                                                              )),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                               Text(
-                                                                "${name.toString()}",
+                                                                "${phone}",
                                                                 style:
                                                                     kBodyRegularTextStyle,
                                                                 overflow:
@@ -482,9 +518,13 @@ class _PurchasesHomeHomeState extends State<PurchasesHome> {
                                                                 .end,
                                                         children: [
                                                           Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
                                                             children: [
                                                               Text(
-                                                                name.toString(),
+                                                                totolamount
+                                                                    .toString(),
                                                                 style:
                                                                     kSmallBoldTextStyle,
                                                               ),

@@ -12,21 +12,22 @@ import '../dashboard/dashboard_view.dart';
 import 'main_viewmodel.dart';
 
 class MainView extends StatefulWidget {
-  const MainView({Key? key}) : super(key: key);
+  String Axtok;
+   MainView({required this.Axtok, Key? key}) : super(key: key);
 
   @override
   State<MainView> createState() => _MainViewState();
 }
 
 class _MainViewState extends State<MainView> {
-  late String accesTok;
+   String? accesTokG;
 
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return String
     String? stringValue = prefs.getString('accesstoken');
     setState(() {
-      accesTok = stringValue!;
+      accesTokG = stringValue!;
     });
 
     return stringValue;
@@ -34,10 +35,9 @@ class _MainViewState extends State<MainView> {
 
   Future fetchProducts() async {
     final response = await http.get(
-        Uri.parse(
-            'https://tona-production.up.railway.app/store/products/'),
+        Uri.parse('https://tona-production.up.railway.app/store/products/'),
         headers: {
-          HttpHeaders.authorizationHeader: "JWT $accesTok",
+          HttpHeaders.authorizationHeader: "JWT $accesTokG",
         });
 
     return response;
@@ -106,18 +106,22 @@ class _MainViewState extends State<MainView> {
                   child: Scaffold(body: Center(child: Text("your logged out"))))
               : Scaffold(
                   key: model.scaffoldKey,
-                  drawer: const SideMenu(),
+                  drawer: SideMenu(
+                    acctok: widget.Axtok!,
+                  ),
                   body: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (Responsive.isDesktop(context))
-                        const Expanded(
-                          child: SideMenu(),
+                        Expanded(
+                          child: SideMenu(
+                            acctok: accesTokG!,
+                          ),
                         ),
                       horizontalSpaceRegular,
-                      const Expanded(
+                       Expanded(
                         flex: 5,
-                        child: DashBoardView(),
+                        child: DashBoardView(axxtok: widget.Axtok,),
                       ),
                       horizontalSpaceSmall,
                     ],

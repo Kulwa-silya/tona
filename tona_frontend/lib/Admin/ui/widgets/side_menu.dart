@@ -2,17 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/Pages/Expenditure_and_Expenses/ExpenditureExpenses.dart';
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
 import 'package:machafuapp/Admin/Pages/Report/report.dart';
+import 'package:machafuapp/Admin/Pages/Sales/returnInward.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 
 import '../../Pages/Users/view.dart';
 import '../shared/colors.dart';
 import '../shared/text_styles.dart';
 
-class SideMenu extends StatelessWidget {
-  const SideMenu({
+class SideMenu extends StatefulWidget {
+  String acctok;
+   SideMenu({
+    required this.acctok,
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<SideMenu> createState() => _SideMenuState();
+}
+
+class _SideMenuState extends State<SideMenu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -41,13 +49,13 @@ class SideMenu extends StatelessWidget {
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => MainView()));
+                  builder: (BuildContext context) => MainView(Axtok: widget.acctok)));
 
               //option 2
 
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => MainView()),
+                MaterialPageRoute(builder: (context) => MainView(Axtok: widget.acctok,)),
                 (Route<dynamic> route) => false,
               );
             },
@@ -58,7 +66,7 @@ class SideMenu extends StatelessWidget {
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                  builder: (BuildContext context) => UserConfig()));
+                  builder: (BuildContext context) => UserConfig(acctok: widget.acctok,)));
             },
           ),
           DrawerListTile(
@@ -71,12 +79,21 @@ class SideMenu extends StatelessWidget {
             },
           ),
           DrawerListTile(
+            title: "Return Inwards",
+            icon: Icons.calculate,
+            press: () {
+              Navigator.pop(context);
+              Navigator.of(context).pushReplacement(new MaterialPageRoute(
+                  builder: (BuildContext context) => ReturnInwardsHome(Axtok: widget.acctok,)));
+            },
+          ),
+          DrawerListTile(
             title: "Expenses & Expe",
             icon: Icons.calculate,
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                  builder: (BuildContext context) => ExpenditureExpenses()));
+                  builder: (BuildContext context) => ExpenditureExpenses(axxtok: widget.acctok,)));
             },
           ),
           DrawerListTile(

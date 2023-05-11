@@ -6,13 +6,14 @@ import 'package:machafuapp/Admin/Shared/backarrow.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 
 class Viewer extends StatefulWidget {
-  String? image, title, desc, uprice, tit;
+  String? image, title, desc, uprice, tit,axtok;
   int? inventory, collId;
 
   Viewer(
       {required this.image,
       this.title,
       this.desc,
+      required this.axtok,
       required this.collId,
       required this.tit,
       this.inventory,
@@ -40,6 +41,7 @@ class _ViewerState extends State<Viewer> {
                   child: backArrow(
                     towhere: Products(
                       id: widget.collId,
+                      Axxtok: widget.axtok,
                       title: widget.tit,
                     ),
                   ))

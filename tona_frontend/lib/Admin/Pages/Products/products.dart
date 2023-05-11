@@ -263,6 +263,7 @@ class _ProductsState extends State<Products> {
                                                             ['title'],
                                                         collId: 12,
                                                         tit: "tit",
+                                                        axtok: widget.Axxtok,
                                                         inventory:
                                                             snapshot.data[i]
                                                                 ['inventory'],
@@ -360,6 +361,7 @@ class _ProductsState extends State<Products> {
                                                               title: e.title,
                                                               collId: widget.id,
                                                               tit: widget.title,
+                                                              axtok: widget.Axxtok,
                                                               inventory:
                                                                   e.inventory,
                                                               desc:
@@ -466,7 +468,7 @@ class _ProductsState extends State<Products> {
                                                                   .collection
                                                                   .toString(),
                                                               accesstok:
-                                                                  widget.Axxtok,
+                                                                  widget.Axxtok!,
                                                               image: img,
                                                               imageId: imgId,
                                                               id: e.id,
@@ -491,6 +493,8 @@ class _ProductsState extends State<Products> {
                                                                     pid: e.id,
                                                                     email:
                                                                         "null",
+                                                                        acctok: widget.Axxtok!,
+                                                                        salename: "null",
                                                                     tit:
                                                                         e.title,
                                                                     whatpart:

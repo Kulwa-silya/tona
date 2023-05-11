@@ -629,7 +629,7 @@ class _AddPurchasedState extends State<AddPurchased> {
                               prefixIcon: Icon(
                                 Icons.adobe_sharp,
                               ),
-                              labelText: "Unit Price",
+                              labelText: "Buying Price",
                               hintText: "Ex: 10,000.00",
                               hintStyle: kInfoRegularTextStyle,
                               border: InputBorder.none,

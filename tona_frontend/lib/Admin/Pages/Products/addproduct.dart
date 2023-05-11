@@ -46,7 +46,7 @@ class _AddproductState extends State<Addproduct> {
 
   bool successErr = false;
 
-  String? accesTok;
+  // String? accesTok;
 
   String? imgPath;
   String imgName = "Image not sesected";
@@ -74,17 +74,17 @@ class _AddproductState extends State<Addproduct> {
 
   var jsonSupplierData;
 
-  getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
+  // getAccessToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String? stringValue = prefs.getString('accesstoken');
+  //   setState(() {
+  //     accesTok = stringValue!;
+  //   });
 
-    print(" tokeni $accesTok");
-    return stringValue;
-  }
+  //   print(" tokeni $accesTok");
+  //   return stringValue;
+  // }
 
   void clearItems() {
     items.clear();
@@ -313,6 +313,7 @@ class _AddproductState extends State<Addproduct> {
                               suffixIcon: GestureDetector(
                                   onTap: () {
                                     _showBottomSheet(AddCollection(
+                                      acctok: widget.axxTok!,
                                       hideBack: true,
                                     ));
                                   },

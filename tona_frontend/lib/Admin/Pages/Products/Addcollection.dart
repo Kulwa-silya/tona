@@ -16,8 +16,9 @@ import '../../consts/colorTheme.dart';
 class AddCollection extends StatefulWidget {
   int? pid;
   String? titl;
+  String? acctok;
   bool hideBack = false;
-  AddCollection({this.pid, this.titl, required this.hideBack, Key? key})
+  AddCollection({this.pid, this.titl,  this.acctok, required this.hideBack, Key? key})
       : super(key: key);
 
   @override
@@ -52,7 +53,7 @@ class _AddCollectionState extends State<AddCollection> {
 
   bool successErr = false;
 
-  String? accesTok;
+  // String? accesTok;
 
   String? imgPath;
   String imgName = "Image not sesected";
@@ -71,21 +72,21 @@ class _AddCollectionState extends State<AddCollection> {
 
   bool _isImageSelected = false;
 
-  getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
+  // getAccessToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String? stringValue = prefs.getString('accesstoken');
+  //   setState(() {
+  //     accesTok = stringValue!;
+  //   });
 
-    print(" tokeni $accesTok");
-    return stringValue;
-  }
+  //   print(" tokeni $accesTok");
+  //   return stringValue;
+  // }
 
   @override
   void initState() {
-    getAccessToken();
+    // getAccessToken();
     super.initState();
   }
 
@@ -110,7 +111,7 @@ class _AddCollectionState extends State<AddCollection> {
               Uri.parse(
                   "https://tona-production.up.railway.app/store/collections/"),
               headers: {
-                HttpHeaders.authorizationHeader: "JWT $accesTok",
+                HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -143,7 +144,7 @@ class _AddCollectionState extends State<AddCollection> {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
                 builder: (BuildContext context) => ProductCat(
-                      Axtok: accesTok!,
+                      Axtok: widget.acctok!,
                     )));
           },
           child: widget.hideBack == true

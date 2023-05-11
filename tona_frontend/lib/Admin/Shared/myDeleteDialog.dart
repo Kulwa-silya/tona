@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:machafuapp/Admin/Pages/Products/products.dart';
+import 'package:machafuapp/Admin/Pages/Purchases/Viewpurchases.dart';
 import 'package:machafuapp/Admin/Pages/Sales/viewSale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Pages/Users/view.dart';
@@ -13,7 +14,9 @@ import 'myTextFormField.dart';
 class myDeletedialog extends StatefulWidget {
   int? pid, collId;
 
-  String? tit, email, collname, whatpart, salename, date;
+  String? tit, email, collname, whatpart, date;
+
+  String acctok, salename;
 
   bool? isloading;
 
@@ -22,12 +25,13 @@ class myDeletedialog extends StatefulWidget {
       required this.pid,
       this.isloading,
       this.collId,
+      required this.acctok,
       required this.whatpart,
-      this.salename,
+      required this.salename,
       this.date,
       this.collname,
-      required this.email,
-      required this.tit})
+      this.email,
+      this.tit})
       : super(key: key);
 
   @override
@@ -42,26 +46,26 @@ class _mydialogState extends State<myDeletedialog> {
 
   bool saveAttempt = false;
 
-  String? accesTok;
+  // String? accesTok;
 
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
+  // Future getAccessToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String? stringValue = prefs.getString('accesstoken');
+  //   setState(() {
+  //     accesTok = stringValue!;
+  //   });
 
-    print(" tokeni $accesTok");
-    return stringValue;
-  }
+  //   print(" tokeni $accesTok");
+  //   return stringValue;
+  // }
 
   deleteProducts() async {
     final response = await http.delete(
       Uri.parse(
           "https://tona-production.up.railway.app/store/products/${widget.pid}/"),
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -75,7 +79,7 @@ class _mydialogState extends State<myDeletedialog> {
       Uri.parse(
           "https://tona-production.up.railway.app/tona_users/users/${widget.pid}/"),
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -89,7 +93,21 @@ class _mydialogState extends State<myDeletedialog> {
       Uri.parse(
           "https://tona-production.up.railway.app/sales/soldproduct/${widget.pid}/"),
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
+        "Accept": "application/json",
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).then((value) => {print("success")});
+
+    print(response);
+  }
+
+  deletePurchasedProd() async {
+    final response = await http.delete(
+      Uri.parse(
+          "https://tona-production.up.railway.app/procurement/purchase/${widget.pid}/"),
+      headers: {
+        HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
         "Accept": "application/json",
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -100,7 +118,7 @@ class _mydialogState extends State<myDeletedialog> {
 
   @override
   void initState() {
-    getAccessToken();
+    // getAccessToken();
     super.initState();
   }
 
@@ -191,35 +209,54 @@ class _mydialogState extends State<myDeletedialog> {
                           saveAttempt = true;
                         });
 
-                        if (widget.whatpart == "product") {
-                          deleteProducts();
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                                  builder: (context) => Products(
-                                        id: widget.collId,
-                                        title: widget.collname,
-                                      )));
-                        } else if (widget.whatpart == "user") {
-                          deleteUser();
-                          Navigator.pop(context);
+                        switch (widget.whatpart) {
+                          case "product":
+                            deleteProducts();
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                              builder: (context) => Products(
+                                id: widget.collId,
+                                title: widget.collname,
+                              ),
+                            ));
+                            break;
+                          case "user":
+                            deleteUser();
+                            Navigator.pop(context);
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                              builder: (context) => UserConfig(
+                                acctok: widget.acctok,
+                              ),
+                            ));
+                            break;
+                          case "soldproduct":
+                            deleteSoldProd();
+                            Navigator.pop(context);
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                              builder: (context) => ViewSales(
+                                saleId: widget.pid,
+                                salename: widget.salename,
+                                date: widget.date,
+                                accessTok: widget.acctok,
+                              ),
+                            ));
+                            break;
 
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => UserConfig()));
-                        } else if (widget.whatpart == "soldproduct") {
-                          deleteSoldProd();
-                          Navigator.pop(context);
-//  Navigator.of(context).pushReplacement(
-//                               MaterialPageRoute(
-//                                   builder: (context) => UserConfig()));
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                                  builder: (context) => ViewSales(
-                                        saleId: widget.pid,
-                                        salename: widget.salename,
-                                        date: widget.date,
-                                        accessTok: accesTok,
-                                      )));
+                          case "purchasedproduct":
+                            deleteSoldProd();
+                            Navigator.pop(context);
+                            Navigator.of(context)
+                                .pushReplacement(MaterialPageRoute(
+                              builder: (context) => ViewPurchase(
+                                purchaseId: widget.pid,
+                                purchasename: widget.salename,
+                                date: widget.date,
+                                accessTok: widget.acctok,
+                              ),
+                            ));
+                            break;
                         }
 
                         // await Navigator.pushAndRemoveUntil(

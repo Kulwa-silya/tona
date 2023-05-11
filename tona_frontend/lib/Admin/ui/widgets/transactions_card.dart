@@ -19,7 +19,6 @@ class TransactionsCard extends StatefulWidget {
 class _TransactionsCardState extends State<TransactionsCard> {
   UserProvider userProvider = UserProvider();
 
-  MainView accsstheTok = MainView();
 
   List userList = [];
 

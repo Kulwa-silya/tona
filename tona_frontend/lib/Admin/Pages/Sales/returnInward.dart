@@ -20,15 +20,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../globalconst/globalUrl.dart';
 
-class SalesHome extends StatefulWidget {
+class ReturnInwardsHome extends StatefulWidget {
   String Axtok;
-  SalesHome({required this.Axtok, Key? key}) : super(key: key);
+  ReturnInwardsHome({required this.Axtok, Key? key}) : super(key: key);
 
   @override
-  State<SalesHome> createState() => _SalesHomeState();
+  State<ReturnInwardsHome> createState() => _SalesHomeState();
 }
 
-class _SalesHomeState extends State<SalesHome> {
+class _SalesHomeState extends State<ReturnInwardsHome> {
   var jsondat;
 
   String? accesTok;
@@ -51,9 +51,9 @@ class _SalesHomeState extends State<SalesHome> {
 
   var _data;
 
-  fetchSalesCategory() async {
+  fetchReturnInwards() async {
     final response = await http.get(
-      Uri.parse('${globalUrl}sales/sale/'),
+      Uri.parse('${globalUrl}sales/return_inwards/'),
       headers: {
         HttpHeaders.authorizationHeader: "JWT ${widget.Axtok}",
         "Accept": "application/json",
@@ -69,11 +69,11 @@ class _SalesHomeState extends State<SalesHome> {
     // Fetch new data or update content
     await Future.delayed(Duration(seconds: 2)); // Simulate async fetch
     setState(() {
-      _data = fetchSalesCategory(); // Update data
+      _data = fetchReturnInwards(); // Update data
     });
   }
 
-  searchSales() async {
+  searchReturn() async {
     final response = await http.get(
       Uri.parse('${globalUrl}sales/sale/?search=$searchValue'),
       headers: {
@@ -110,7 +110,7 @@ class _SalesHomeState extends State<SalesHome> {
 
   @override
   void initState() {
-    fetchSalesCategory();
+    fetchReturnInwards();
 
     super.initState();
   }
@@ -125,29 +125,13 @@ class _SalesHomeState extends State<SalesHome> {
         backgroundColor: ColorTheme.m_white,
         elevation: 0,
         leading: backArrow(towhere: MainView(Axtok: widget.Axtok,)),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AddSales(
-                          axxtok: widget.Axtok,
-                        )));
-              },
-              child: Center(
-                child: Text("New Sale", style: kInfoTextStyle),
-              ),
-            ),
-          )
-        ],
       ),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
         strokeWidth: 1,
         key: _refreshIndicatorKey,
         child: FutureBuilder(
-            future: fetchSalesCategory(),
+            future: fetchReturnInwards(),
             builder: (context, AsyncSnapshot snapsht) {
               if (!snapsht.hasData) {
                 return Center(
@@ -173,7 +157,7 @@ class _SalesHomeState extends State<SalesHome> {
                               onChanged: (value) {
                                 setState(() {
                                   searchValue = value;
-                                  searchSales();
+                                  searchReturn();
                                 });
                               },
                               onTap: () {
@@ -182,7 +166,7 @@ class _SalesHomeState extends State<SalesHome> {
                                 });
                               },
                               decoration: InputDecoration(
-                                labelText: 'Search Sales',
+                                labelText: 'Search Returns',
                                 labelStyle:
                                     TextStyle(fontWeight: FontWeight.w300),
                                 suffixIcon: GestureDetector(
@@ -218,7 +202,7 @@ class _SalesHomeState extends State<SalesHome> {
                     showsearchResult == true
                         ? Expanded(
                             child: FutureBuilder(
-                                future: searchSales(),
+                                future: searchReturn(),
                                 builder: (context, AsyncSnapshot snapshot) {
                                   if (!snapshot.hasData) {
                                     return Text("Loading Please wait");
@@ -378,11 +362,12 @@ class _SalesHomeState extends State<SalesHome> {
                                       // pid = data['id'];
                                       // title = data['title'];
                                       // count = data['products_count'];
-                                      int sid = data['id'];
-                                      String cname = data['customer_name'];
-                                      String desc = data['description'];
-                                      String saleRevenue = data['sale_revenue'];
-                                      int count = data['total_quantity_sold'];
+                                      int rid = data['id'];
+
+                                      String reaturnReason =
+                                          data['return_reason'];
+                                      int quantity = data['quantity_returned'];
+                                      bool isAuthorised = data['is_authorized'];
                                       String date = data['date'];
 
                                       return Padding(
@@ -398,8 +383,8 @@ class _SalesHomeState extends State<SalesHome> {
                                                                 widget.Axtok,
                                                             date: date,
                                                             salename:
-                                                                "Sale to ${cname} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 19)}",
-                                                            saleId: sid,
+                                                                "Return from ${reaturnReason} for ${date == null ? DateTime.now().toString().substring(0, 19) : date.toString().substring(0, 19)}",
+                                                            saleId: rid,
                                                           )));
                                             }),
                                             child: ClipRRect(
@@ -445,7 +430,7 @@ class _SalesHomeState extends State<SalesHome> {
                                                                 Row(
                                                                   children: [
                                                                     Text(
-                                                                      cname,
+                                                                      reaturnReason,
                                                                       style:
                                                                           kInfoTextStyle,
                                                                     ),
@@ -484,7 +469,7 @@ class _SalesHomeState extends State<SalesHome> {
                                                                   ],
                                                                 ),
                                                                 Text(
-                                                                  desc,
+                                                                  date,
                                                                   style:
                                                                       kBodyRegularTextStyle,
                                                                   overflow:
@@ -511,7 +496,8 @@ class _SalesHomeState extends State<SalesHome> {
                                                                         .end,
                                                                 children: [
                                                                   Text(
-                                                                    saleRevenue,
+                                                                    quantity
+                                                                        .toString(),
                                                                     style:
                                                                         kSmallBoldTextStyle,
                                                                   ),

@@ -14,7 +14,8 @@ import '../Admin/Models/sqlite/tokenModel.dart';
 import '../Admin/consts/colorTheme.dart';
 
 class SingIn extends StatefulWidget {
-  SingIn({Key? key}) : super(key: key);
+   String? accesTok;
+  SingIn({this.accesTok, Key? key}) : super(key: key);
 
   @override
   State<SingIn> createState() => _SingInState();
@@ -38,7 +39,7 @@ class _SingInState extends State<SingIn> {
 
   final formkey = GlobalKey<FormState>();
 
-  String? accesTok;
+ 
 
   bool success = false;
   void clearText() {
@@ -143,12 +144,16 @@ class _SingInState extends State<SingIn> {
       setState(() {
         success = false;
       });
+setState(() {
+  widget.accesTok = res['access'];
+});
+      
       await addAccessToken(res['access']);
       await addRefreshToken(res['refresh']);
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => MainView()),
+        MaterialPageRoute(builder: (context) => MainView(Axtok: widget.accesTok!,)),
         (Route<dynamic> route) => false,
       );
       // Navigator.push(

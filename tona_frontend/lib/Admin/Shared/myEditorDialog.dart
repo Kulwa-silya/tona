@@ -21,7 +21,7 @@ class myEditordialog extends StatefulWidget {
   int? imageId, collId;
   String? heading, collname;
   String? widget, image, whatpart;
-  String? accesstok;
+  String accesstok;
 
   myEditordialog(
       {Key? key,
@@ -34,7 +34,7 @@ class myEditordialog extends StatefulWidget {
       this.image,
       this.collId,
       this.imageId,
-      this.accesstok,
+      required this.accesstok,
       required this.islod,
       required this.widget,
       this.data3,
@@ -72,7 +72,7 @@ class _mydialogState extends State<myEditordialog> {
 
   final picker = ImagePicker();
 
-  String? accesTok;
+  // String? accesTok;
 
   bool showtextfields = false;
   bool showtextauthfields = false;
@@ -89,17 +89,17 @@ class _mydialogState extends State<myEditordialog> {
     }
   }
 
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
+  // Future getAccessToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String? stringValue = prefs.getString('accesstoken');
+  //   setState(() {
+  //     accesTok = stringValue!;
+  //   });
 
-    print(" tokeni $accesTok");
-    return stringValue;
-  }
+  //   print(" tokeni $accesTok");
+  //   return stringValue;
+  // }
 
   updateProducts() async {
     final responseprod = await http
@@ -107,7 +107,7 @@ class _mydialogState extends State<myEditordialog> {
             Uri.parse(
                 "https://tona-production.up.railway.app/store/products/${widget.id}/"),
             headers: {
-              HttpHeaders.authorizationHeader: "JWT $accesTok",
+              HttpHeaders.authorizationHeader: "JWT ${widget.accesstok}",
               "Accept": "application/json",
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -149,7 +149,7 @@ class _mydialogState extends State<myEditordialog> {
             Uri.parse(
                 "https://tona-production.up.railway.app/auth/users/${widget.id}/"),
             headers: {
-              HttpHeaders.authorizationHeader: "JWT $accesTok",
+              HttpHeaders.authorizationHeader: "JWT ${widget.accesstok}",
               "Accept": "application/json",
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -199,7 +199,7 @@ class _mydialogState extends State<myEditordialog> {
   @override
   void initState() {
     print(widget.imageId);
-    getAccessToken();
+    // getAccessToken();
     title = new TextEditingController(text: widget.data1);
     desc = new TextEditingController(text: widget.data2);
     inventory = new TextEditingController(text: widget.data3);
@@ -638,7 +638,7 @@ class _mydialogState extends State<myEditordialog> {
                                           Navigator.of(context).pushReplacement(
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      UserConfig()));
+                                                      UserConfig(acctok: widget.accesstok,)));
                                         } else if (widget.whatpart ==
                                             "product") {
                                           await updateProducts();

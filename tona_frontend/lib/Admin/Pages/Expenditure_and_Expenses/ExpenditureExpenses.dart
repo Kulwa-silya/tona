@@ -5,7 +5,8 @@ import '../../consts/colorTheme.dart';
 import '../../views/main/main_view.dart';
 
 class ExpenditureExpenses extends StatefulWidget {
-  const ExpenditureExpenses({Key? key}) : super(key: key);
+  String axxtok;
+   ExpenditureExpenses({required this.axxtok, Key? key}) : super(key: key);
 
   @override
   State<ExpenditureExpenses> createState() => _ExpenditureExpensesState();
@@ -21,7 +22,7 @@ class _ExpenditureExpensesState extends State<ExpenditureExpenses> {
           onTap: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => MainView()),
+              MaterialPageRoute(builder: (context) => MainView(Axtok: widget.axxtok,)),
               (Route<dynamic> route) => false,
             );
           },

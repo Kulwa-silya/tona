@@ -7,10 +7,10 @@ import '../shared/edge_insect.dart';
 import '../shared/text_styles.dart';
 
 class TransactionRow extends StatefulWidget {
-  const TransactionRow({Key? key, required this.title, required this.cardText})
+   TransactionRow({Key? key,required this.acctok, required this.title, required this.cardText})
       : super(key: key);
 
-  final String title;
+  final String title,acctok;
   final String cardText;
 
   @override
@@ -33,7 +33,7 @@ class _TransactionRowState extends State<TransactionRow> {
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => UserConfig(
-        
+        acctok: widget.acctok,
                     )));
           },
           child: Container(

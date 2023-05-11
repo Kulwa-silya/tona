@@ -20,7 +20,7 @@ import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 
 class ViewSales extends StatefulWidget {
   int? saleId;
-  String? accessTok, salename;
+  String accessTok, salename;
   String? date;
   ViewSales(
       {required this.saleId,
@@ -416,6 +416,7 @@ class _ViewSalesState extends State<ViewSales> {
         context: context,
         builder: (_) => myDeletedialog(
             pid: sid,
+            acctok: widget.accessTok,
             whatpart: "soldproduct",
             salename: widget.salename,
             email: pname,

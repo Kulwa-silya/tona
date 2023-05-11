@@ -15,9 +15,9 @@ import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductCat extends StatefulWidget {
-  ProductCat({this.Axtok, Key? key}) : super(key: key);
+  ProductCat({required this.Axtok, Key? key}) : super(key: key);
 
-  String? Axtok;
+  String Axtok;
 
   @override
   State<ProductCat> createState() => _ProductCatState();
@@ -75,7 +75,7 @@ class _ProductCatState extends State<ProductCat> {
       appBar: AppBar(
         backgroundColor: ColorTheme.m_white,
         elevation: 0,
-        leading: backArrow(towhere: MainView()),
+        leading: backArrow(towhere: MainView(Axtok: widget.Axtok,)),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -211,6 +211,7 @@ class _ProductCatState extends State<ProductCat> {
                                                                 title: snapshot
                                                                         .data[i]
                                                                     ['title'],
+                                                                    axtok: widget.Axtok,
                                                                 collId: pidG,
                                                                 tit: titleG,
                                                                 inventory: snapshot

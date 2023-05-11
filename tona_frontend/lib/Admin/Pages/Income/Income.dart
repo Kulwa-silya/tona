@@ -5,7 +5,8 @@ import '../../consts/colorTheme.dart';
 import '../../views/main/main_view.dart';
 
 class Income extends StatefulWidget {
-  const Income({Key? key}) : super(key: key);
+  String axxtok;
+   Income({ required this.axxtok, Key? key}) : super(key: key);
 
   @override
   State<Income> createState() => _IncomeState();
@@ -14,13 +15,13 @@ class Income extends StatefulWidget {
 class _IncomeState extends State<Income> {
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => MainView()),
+              MaterialPageRoute(builder: (context) => MainView(Axtok: widget.axxtok)),
               (Route<dynamic> route) => false,
             );
           },
@@ -34,5 +35,4 @@ class _IncomeState extends State<Income> {
       ),
     );
   }
-    
-  }
+}

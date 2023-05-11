@@ -19,29 +19,30 @@ import '../../ui/widgets/transactions_gridview.dart';
 import '../../ui/widgets/transactions_row.dart';
 
 class DashBoardView extends StatefulWidget {
-  const DashBoardView({Key? key}) : super(key: key);
+  String axxtok;
+  DashBoardView({required this.axxtok, Key? key}) : super(key: key);
 
   @override
   State<DashBoardView> createState() => _DashBoardViewState();
 }
 
 class _DashBoardViewState extends State<DashBoardView> {
-  MainView mainView = MainView();
+  // MainView mainView = MainView(Axtok: widget.axxtok,);
 
   // dynamic jsondat;
 
-  String? accesTok;
+  // String? accesTok;
 
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
+  // Future getAccessToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String? stringValue = prefs.getString('accesstoken');
+  //   setState(() {
+  //     accesTok = stringValue!;
+  //   });
 
-    return stringValue;
-  }
+  //   return stringValue;
+  // }
 
   // fetchUserData() async {
   //   final response = await http.get(
@@ -58,9 +59,9 @@ class _DashBoardViewState extends State<DashBoardView> {
   // }
   @override
   void initState() {
-    getAccessToken().then((value) {
+    // getAccessToken().then((value) {
       fetchUserData();
-    });
+    // });
 
     super.initState();
   }
@@ -70,7 +71,7 @@ class _DashBoardViewState extends State<DashBoardView> {
     final response = await http.get(
       Uri.parse('${globalUrl}auth/users/me/'),
       headers: {
-        HttpHeaders.authorizationHeader: "JWT $accesTok",
+        HttpHeaders.authorizationHeader: "JWT ${widget.axxtok}",
         "Accept": "application/json",
         'Content-Type': 'application/json'
       },
@@ -78,7 +79,7 @@ class _DashBoardViewState extends State<DashBoardView> {
 
     // if (response.statusCode == 200) {
     final jsondat = jsonDecode(response.body);
-    print("tok ni $accesTok");
+    // print("tok ni $accesTok");
     print(jsondat);
     return jsondat;
     // } else {
@@ -111,7 +112,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                       MainHeader(
                         name: name,
                       ),
-                      verticalSpaceRegular,
+                      verticalSpaceSmall,
                       Container(
                         padding: kEdgeInsetsHorizontalNormal,
                         decoration: BoxDecoration(
@@ -158,7 +159,7 @@ class _DashBoardViewState extends State<DashBoardView> {
                         ),
                         height: height * 0.20,
                       ),
-                      verticalSpaceRegular,
+                      verticalSpaceSmall,
                       Expanded(
                         child: SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
@@ -167,24 +168,27 @@ class _DashBoardViewState extends State<DashBoardView> {
                             children: [
                               Responsive(
                                 mobile: TransactionsGridView(
-                                  axtok: accesTok!,
+                                  axtok: widget.axxtok,
                                   crossAxisCount: _size.width < 650 ? 2 : 4,
                                   childAspectRatio:
                                       _size.width < 650 && _size.width > 350
                                           ? 1
                                           : 1,
                                 ),
-                                tablet:  TransactionsGridView(axtok: accesTok!,),
+                                tablet: TransactionsGridView(
+                                  axtok: widget.axxtok,
+                                ),
                                 desktop: TransactionsGridView(
-                                  axtok: accesTok!,
+                                  axtok: widget.axxtok,
                                   childAspectRatio:
                                       _size.width < 1400 ? 1.1 : 1.4,
                                 ),
                               ),
                               verticalSpaceRegular,
-                              const TransactionRow(
+                               TransactionRow(
                                 title: 'User(Employees)',
                                 cardText: 'More',
+                                acctok: widget.axxtok,
                               ),
                               verticalSpaceRegular,
                               // for (final transaction in userList) ...[

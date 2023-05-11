@@ -16,8 +16,9 @@ import '../../consts/colorTheme.dart';
 import '../../ui/shared/text_styles.dart';
 
 class UserConfig extends StatefulWidget {
-  // String acctok;
+  String acctok;
   UserConfig({
+    required this.acctok,
     Key? key,
   }) : super(key: key);
 
@@ -30,6 +31,7 @@ class _UserConfigState extends State<UserConfig> {
   UserProvider userProvider = UserProvider();
 
   List userList = [];
+    String? Tok;
 
   bool isloading = false;
 
@@ -38,7 +40,7 @@ class _UserConfigState extends State<UserConfig> {
   var fname, lname, phone;
 
   fetchUserinfo() async {
-    http.Response res = await userProvider.fetchInfoe(accesTok!);
+    http.Response res = await userProvider.fetchInfoe(Tok!);
 
     setState(() {
       isloading = false;
@@ -49,9 +51,11 @@ class _UserConfigState extends State<UserConfig> {
     // print(accesTok);
   }
 
-  String? refreshTok;
 
-  String? accesTok;
+
+  // String? accesTok;
+
+  
 
   String? stringValue;
 
@@ -65,20 +69,20 @@ class _UserConfigState extends State<UserConfig> {
 
   String? toooken;
 
-  Future getAccessToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? stringValue = prefs.getString('accesstoken');
-    setState(() {
-      accesTok = stringValue!;
-    });
+  // Future getAccessToken() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //Return String
+  //   String? stringValue = prefs.getString('accesstoken');
+  //   setState(() {
+  //     accesTok = stringValue!;
+  //   });
 
-    print(" tokeni $accesTok");
-    return stringValue;
-  }
+  //   print(" tokeni $accesTok");
+  //   return stringValue;
+  // }
 
   Future<void> _pullRefresh() async {
-    http.Response res = await userProvider.fetchInfoe(accesTok!);
+    http.Response res = await userProvider.fetchInfoe(Tok!);
 
     setState(() {
       isloading = false;
@@ -94,7 +98,7 @@ class _UserConfigState extends State<UserConfig> {
               Uri.parse(
                   "http://tona-production.up.railway.app/tona_users/users/14/"),
               headers: {
-                HttpHeaders.authorizationHeader: "JWT $accesTok",
+                HttpHeaders.authorizationHeader: "JWT ${widget.acctok}",
                 "Accept": "application/json",
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -122,14 +126,15 @@ class _UserConfigState extends State<UserConfig> {
 
   @override
   void initState() {
-    getAccessToken().then((value) {
+    // getAccessToken().then((value) {
+      Tok = widget.acctok;
       setState(() {
         isloading = true;
         fetchUserinfo();
         // fetchToks();
         isloading = false;
       });
-    });
+    // });
 
     // getmyToken();
     // getRefreshToken();
@@ -183,7 +188,7 @@ class _UserConfigState extends State<UserConfig> {
             // Navigator.pushReplacementNamed(context, '/dash');
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => MainView()),
+              MaterialPageRoute(builder: (context) => MainView(Axtok: widget.acctok,)),
               (Route<dynamic> route) => false,
             );
             // Navigator.of(context)
@@ -221,6 +226,7 @@ class _UserConfigState extends State<UserConfig> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => RegisterUsers(
+                      axxtok: widget.acctok,
                           fname: fname,
                           lname: lname,
                           phone: phone,
@@ -353,6 +359,7 @@ class _UserConfigState extends State<UserConfig> {
                                                             heading:
                                                                 "User Editor",
                                                             whatpart: "user",
+                                                            accesstok: widget.acctok,
                                                             id: e.id,
                                                             islod: isloading,
                                                             data1: e.last_name,
@@ -375,6 +382,8 @@ class _UserConfigState extends State<UserConfig> {
                                                     builder: (_) =>
                                                         myDeletedialog(
                                                             pid: e.id,
+                                                            salename: "null",
+                                                            acctok: widget.acctok,
                                                             whatpart: "user",
                                                             email: e.last_name,
                                                             tit: e.first_name));
