@@ -14,19 +14,27 @@ class SupplierSerializer(serializers.ModelSerializer):
 
 
 class PurchasedProductSerializer(serializers.ModelSerializer):
+    product_name = serializers.ReadOnlyField(source='product.title')
     class Meta:
         model = PurchasedProduct
-        fields = ('__all__')
+        fields = ['id', 'unit_price', 'quantity', 'product', 'product_name']
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
     total_amount = serializers.IntegerField(read_only=True)
-    # supplier = SupplierSerializer()
+    supplier_full_name = serializers.ReadOnlyField(source='supplier.full_name')
+    supplier_address = serializers.ReadOnlyField(source='supplier.address')
+    supplier_phone_number = serializers.SerializerMethodField(source='supplier.phone_number', read_only=True)
     purchased_products = PurchasedProductSerializer(many=True)
+    product_name = serializers.ReadOnlyField(source='PurchasedProduct.product.title')
+
+    def get_supplier_phone_number(self, obj):
+        return str(obj.supplier.phone_number)
 
     class Meta:
         model = Purchase
-        fields = ['id', 'date', 'total_amount','payment_method', 'supplier', 'purchased_products']
+        fields = ['id', 'date', 'total_amount','payment_method', 'supplier','supplier_full_name',
+        'supplier_address','supplier_phone_number', 'purchased_products', 'product_name']
 
     def create(self, validated_data):
         # Remove/Pop supplier and purchased_products_data from dict called validated_data

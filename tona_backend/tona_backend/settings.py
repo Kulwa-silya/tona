@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'django_filters',
+    "debug_toolbar",
     'drf_yasg',
     'phonenumber_field',
     'tona_users',
@@ -60,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     # 'tona_users.UserActivityMiddleware.UserActivityMiddleware',
 ]
 
@@ -173,6 +175,12 @@ DJOSER = {
 }
 
 CSRF_TRUSTED_ORIGINS = ['https://tona-production.up.railway.app']
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 
 # PHONENUMBER_DEFAULT_REGION = "TZ"
 
