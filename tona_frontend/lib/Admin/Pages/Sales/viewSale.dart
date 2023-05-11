@@ -16,6 +16,7 @@ import 'package:machafuapp/Admin/Shared/backarrow.dart';
 import 'package:machafuapp/Admin/Shared/myDeleteDialog.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
+import 'package:machafuapp/Admin/ui/shared/spacing.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 
 class ViewSales extends StatefulWidget {
@@ -156,6 +157,11 @@ class _ViewSalesState extends State<ViewSales> {
                             int quantity = snapshot.data[i]["quantity"];
                             int sid = snapshot.data[i]["id"];
                             double oPrice = snapshot.data[i]['original_price'];
+                            bool returnsts = snapshot.data[i]
+                                ['return_inwards_authorised']['status'];
+                            int? returnId = snapshot.data[i]
+                                    ['return_inwards_authorised']
+                                ['unauthorised_return_id'];
 
                             double disprice =
                                 oPrice * (double.parse(discout) / 100);
@@ -210,7 +216,6 @@ class _ViewSalesState extends State<ViewSales> {
                                     foregroundColor: Colors.white,
                                     icon: Icons.archive,
                                     label: 'Archive',
-                                    
                                   ),
                                   SlidableAction(
                                     onPressed: (context) {
@@ -240,8 +245,20 @@ class _ViewSalesState extends State<ViewSales> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(13),
                                       child: Container(
-                                          color: ColorTheme
-                                              .m_blue_mpauko_zaidi_zaidi,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(13),
+                                            color: ColorTheme
+                                                .m_blue_mpauko_zaidi_zaidi,
+                                            border: returnsts == true
+                                                ? null
+                                                : Border.all(
+                                                    color: ColorTheme
+                                                        .m_red, // Set your desired border color
+                                                    width:
+                                                        2.0, // Set your desired border width
+                                                  ),
+                                          ),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Row(
@@ -317,6 +334,38 @@ class _ViewSalesState extends State<ViewSales> {
                                                                 ),
                                                               ),
                                                             ),
+                                                            horizontalSpaceSmall,
+                                                            returnsts == true
+                                                                ? SizedBox
+                                                                    .shrink()
+                                                                : ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          20,
+                                                                      color: ColorTheme
+                                                                          .m_white,
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(4.0),
+                                                                        child:
+                                                                            Center(
+                                                                          child: Text(
+                                                                              "awaiting approval",
+                                                                              style: GoogleFonts.poppins(
+                                                                                fontWeight: FontWeight.normal,
+                                                                                fontSize: 10,
+                                                                                height: 1.5,
+                                                                                color: ColorTheme.m_red,
+                                                                              )),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
                                                           ],
                                                         ),
                                                         Text(
