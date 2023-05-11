@@ -11,7 +11,7 @@ import '../shared/text_styles.dart';
 
 class SideMenu extends StatefulWidget {
   String acctok;
-   SideMenu({
+  SideMenu({
     required this.acctok,
     Key? key,
   }) : super(key: key);
@@ -49,13 +49,17 @@ class _SideMenuState extends State<SideMenu> {
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (BuildContext context) => MainView(Axtok: widget.acctok)));
+                  builder: (BuildContext context) =>
+                      MainView(Axtok: widget.acctok)));
 
               //option 2
 
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => MainView(Axtok: widget.acctok,)),
+                MaterialPageRoute(
+                    builder: (context) => MainView(
+                          Axtok: widget.acctok,
+                        )),
                 (Route<dynamic> route) => false,
               );
             },
@@ -66,7 +70,9 @@ class _SideMenuState extends State<SideMenu> {
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                  builder: (BuildContext context) => UserConfig(acctok: widget.acctok,)));
+                  builder: (BuildContext context) => UserConfig(
+                        acctok: widget.acctok,
+                      )));
             },
           ),
           DrawerListTile(
@@ -80,11 +86,13 @@ class _SideMenuState extends State<SideMenu> {
           ),
           DrawerListTile(
             title: "Return Inwards",
-            icon: Icons.calculate,
+            icon: Icons.reset_tv_rounded,
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                  builder: (BuildContext context) => ReturnInwardsHome(Axtok: widget.acctok,)));
+                  builder: (BuildContext context) => ReturnInwardsHome(
+                        Axtok: widget.acctok,
+                      )));
             },
           ),
           DrawerListTile(
@@ -93,7 +101,9 @@ class _SideMenuState extends State<SideMenu> {
             press: () {
               Navigator.pop(context);
               Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                  builder: (BuildContext context) => ExpenditureExpenses(axxtok: widget.acctok,)));
+                  builder: (BuildContext context) => ExpenditureExpenses(
+                        axxtok: widget.acctok,
+                      )));
             },
           ),
           DrawerListTile(

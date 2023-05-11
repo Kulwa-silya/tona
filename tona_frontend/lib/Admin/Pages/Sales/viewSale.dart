@@ -179,6 +179,7 @@ class _ViewSalesState extends State<ViewSales> {
                                 motion: ScrollMotion(),
 
                                 // A pane can dismiss the Slidable.
+                                dragDismissible: false,
                                 dismissible:
                                     DismissiblePane(onDismissed: () {}),
 
@@ -254,7 +255,7 @@ class _ViewSalesState extends State<ViewSales> {
                                                 ? null
                                                 : Border.all(
                                                     color: ColorTheme
-                                                        .m_red, // Set your desired border color
+                                                        .m_warning_mpauko, // Set your desired border color
                                                     width:
                                                         2.0, // Set your desired border width
                                                   ),
@@ -355,7 +356,7 @@ class _ViewSalesState extends State<ViewSales> {
                                                                         child:
                                                                             Center(
                                                                           child: Text(
-                                                                              "awaiting approval",
+                                                                              "pending return",
                                                                               style: GoogleFonts.poppins(
                                                                                 fontWeight: FontWeight.normal,
                                                                                 fontSize: 10,
