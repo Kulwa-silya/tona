@@ -14,6 +14,7 @@ import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:machafuapp/Admin/views/main/main_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:machafuapp/Shared/generalLoadn.dart';
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -124,7 +125,10 @@ class _SalesHomeState extends State<SalesHome> {
       appBar: AppBar(
         backgroundColor: ColorTheme.m_white,
         elevation: 0,
-        leading: backArrow(towhere: MainView(Axtok: widget.Axtok,)),
+        leading: backArrow(
+            towhere: MainView(
+          Axtok: widget.Axtok,
+        )),
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -150,12 +154,7 @@ class _SalesHomeState extends State<SalesHome> {
             future: fetchSalesCategory(),
             builder: (context, AsyncSnapshot snapsht) {
               if (!snapsht.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1,
-                    color: ColorTheme.m_blue,
-                  ),
-                );
+                return Center(child: Myloading());
               } else {
                 return Column(
                   children: [

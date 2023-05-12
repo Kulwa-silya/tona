@@ -21,8 +21,9 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class AddSales extends StatefulWidget {
   int? pid;
-  String? titl,axxtok;
-  AddSales({this.pid, required this.axxtok, this.titl, Key? key}) : super(key: key);
+  String? titl, axxtok;
+  AddSales({this.pid, required this.axxtok, this.titl, Key? key})
+      : super(key: key);
 
   @override
   State<AddSales> createState() => _AddSalesState();
@@ -191,7 +192,9 @@ class _AddSalesState extends State<AddSales> {
           onTap: () {
             Navigator.pop(context);
             Navigator.of(context).pushReplacement(new MaterialPageRoute(
-                builder: (BuildContext context) => SalesHome(Axtok: widget.axxtok!,)));
+                builder: (BuildContext context) => SalesHome(
+                      Axtok: widget.axxtok!,
+                    )));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
@@ -225,10 +228,7 @@ class _AddSalesState extends State<AddSales> {
                   child: Column(
                     children: [
                       Center(
-                        child: Text(
-                          "New Sale",
-                          style: kHeading2TextStyle
-                        ),
+                        child: Text("New Sale", style: kHeading2TextStyle),
                       ),
                       SizedBox(height: 20),
 
@@ -446,7 +446,8 @@ class _AddSalesState extends State<AddSales> {
                                               saleId: id,
                                               title: "Add Sold Product!",
                                               showdropdown: true,
-                                              accessTok:accesTok,
+                                              date: "null",
+                                              accessTok: accesTok,
                                               salename:
                                                   "Sale to ${cnameC.text} for $dayOfWeek ${gdate == null ? DateTime.now().toString().substring(0, 16) : gdate.toString().substring(0, 16)}",
                                             );

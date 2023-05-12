@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -9,13 +11,21 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:machafuapp/Admin/Controllers/productsProvider.dart';
 import 'package:machafuapp/Admin/Models/getProducts.dart';
 import 'package:machafuapp/Admin/Pages/Sales/salesHome.dart';
+import 'package:machafuapp/Admin/Pages/Sales/viewSale.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
 import 'package:machafuapp/Admin/ui/shared/text_styles.dart';
 import 'package:machafuapp/Shared/gettingTokens.dart';
 import 'package:machafuapp/globalconst/globalUrl.dart';
+import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+// import 'blur_transition.dart';
+// import 'custom_toast_content_widget.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../Shared/LoadinDialog/loadingDialogs.dart';
 import '../../consts/colorTheme.dart';
 
 class AddSoldProd extends StatefulWidget {
@@ -25,6 +35,8 @@ class AddSoldProd extends StatefulWidget {
       this.pname,
       required this.accessTok,
       required this.saleId,
+      this.price,
+      required this.date,
       this.discount,
       this.quntt,
       this.productId,
@@ -32,9 +44,11 @@ class AddSoldProd extends StatefulWidget {
       required this.showdropdown,
       Key? key})
       : super(key: key);
-  String? salename, title, discount, accessTok, pname;
+  String? salename, title, discount, date, accessTok, pname;
 
   bool? showdropdown = true;
+
+  double? price;
 
   int? saleId, Pid, quntt, productId;
   @override
@@ -85,7 +99,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
   int? selectedIndex;
   String? _selectedItem;
-
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
   List listprod = [];
 
   List productIds = [];
@@ -97,6 +111,8 @@ class _AddSoldProdState extends State<AddSoldProd> {
   bool shoetextfield = false;
 
   var count;
+
+  double? discount;
 
   getProducts() async {
     final response = await http.get(
@@ -144,7 +160,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
       // print("id ni $id");
       count = jsonProdData['inventory'];
 
-      print("idadi ni: $count");
+      print("idadi kwa update ni: $count");
     });
 
     return count;
@@ -164,12 +180,45 @@ class _AddSoldProdState extends State<AddSoldProd> {
               body: json.encode({
                 "quantity": int.parse(quantityC.text),
                 "product": selectedProductId,
-                "discount": discoutC.text,
+                "discount": discount.toString(),
                 "sale": widget.saleId
               }))
           .then((value) async {
         setState(() {
           success = false;
+          //  showToastWidget(IconToastWidget.success(msg: 'success'),
+          //           context: context,
+          //           position: StyledToastPosition.center,
+          //           animation: StyledToastAnimation.scale,
+          //           reverseAnimation: StyledToastAnimation.fade,
+          //           duration: Duration(seconds: 4),
+          //           animDuration: Duration(seconds: 1),
+          //           curve: Curves.elasticOut,
+          //           reverseCurve: Curves.linear);
+
+          showToast('(${quantityC.text}) ${_selectedItem} was just added!',
+              textStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.normal,
+                fontSize: 14,
+                height: 1.5,
+                color: ColorTheme.m_white,
+              ),
+              context: context,
+              backgroundColor: ColorTheme.m_blue.withOpacity(0.7),
+              animation: StyledToastAnimation.slideFromTop,
+              reverseAnimation: StyledToastAnimation.slideToTopFade,
+              toastHorizontalMargin: 0.0,
+              position:
+                  StyledToastPosition(align: Alignment.topCenter, offset: 20.0),
+              startOffset: Offset(-1.0, 0.0),
+              reverseEndOffset: Offset(-1.0, 0.0),
+              //Toast duration   animDuration * 2 <= duration
+              duration: Duration(seconds: 4),
+              //Animation duration   animDuration * 2 <= duration
+              animDuration: Duration(seconds: 1),
+              curve: Curves.bounceInOut,
+              reverseCurve: Curves.fastOutSlowIn);
+
           showsnack = true;
         });
       });
@@ -183,6 +232,30 @@ class _AddSoldProdState extends State<AddSoldProd> {
     }
 
     print(success);
+  }
+
+  Future<void> _handleSubmit(BuildContext context) async {
+    try {
+      Dialogs.showLoadingDialog(context, _keyLoader); //invoking login
+      await _addsoldProd();
+      Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+          .pop(); //close the dialoge
+      // Navigator.pushReplacementNamed(context, "/home");
+
+      // await Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => ViewSales(
+      //             accessTok: widget.accessTok!,
+      //             date: widget.date,
+      //             salename: widget.salename!,
+      //             saleId: widget.saleId,
+      //           )),
+      //   (Route<dynamic> route) => false,
+      // );
+    } catch (error) {
+      print(error);
+    }
   }
 
   Future updateSoldProd() async {
@@ -239,6 +312,8 @@ class _AddSoldProdState extends State<AddSoldProd> {
 
     getProductsCount2();
 
+    print("price ni ${widget.price}");
+
     widget.quntt == null
         ? quantityC.text = ""
         : quantityC.text = widget.quntt.toString();
@@ -250,9 +325,6 @@ class _AddSoldProdState extends State<AddSoldProd> {
         ? discoutC.text = ""
         : discoutC.text = widget.discount!;
 
-    print("${widget.gettingToken.getAccessToken()}");
-
-    print("qunt ni  $quantity ");
     super.initState();
   }
 
@@ -512,9 +584,18 @@ class _AddSoldProdState extends State<AddSoldProd> {
                               keyboardType: TextInputType.phone,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              onChanged: (val) {
+                                discount =
+                                    discoutC.text == ""? 0.0 : double.parse(discoutC.text) / widget.price!;
+
+                                print("dicount ni $discount");
+                              },
                               validator: (emailValue) {
                                 if (emailValue!.isEmpty) {
                                   return "Fill in discount";
+                                }
+                                if (double.parse(emailValue) >= widget.price!) {
+                                  return "Discount is over the price";
                                 }
                                 RegExp regExp =
                                     new RegExp(r'^\d+(\.\d{1,2})?$');
@@ -604,6 +685,7 @@ class _AddSoldProdState extends State<AddSoldProd> {
                                               : updateSoldProd();
                                           setState(() {
                                             success = true;
+                                            _handleSubmit(context);
                                             // widget.showdropdown = true;
                                             // successErr = true;
                                           });

@@ -108,6 +108,8 @@ class _ViewSalesState extends State<ViewSales> {
                             return AddSoldProd(
                               saleId: widget.saleId,
                               pname: pname,
+                              price: 1000.4,
+                              date: widget.date,
                               showdropdown: true,
                               accessTok: widget.accessTok,
                               title: "Add Sold Product!",
@@ -152,7 +154,7 @@ class _ViewSalesState extends State<ViewSales> {
                             ));
                           } else {
                             pname = snapshot.data[i]['product_title'];
-                            productId = snapshot.data[i]['product'];
+                            int productId = snapshot.data[i]['product'];
                             String discout = snapshot.data[i]['discount'];
                             int quantity = snapshot.data[i]["quantity"];
                             int sid = snapshot.data[i]["id"];
@@ -221,7 +223,7 @@ class _ViewSalesState extends State<ViewSales> {
                                   SlidableAction(
                                     onPressed: (context) {
                                       myEditor(context, sid, quantity, discout,
-                                          pname, productId);
+                                          pname, productId, oPrice);
                                     },
                                     flex: 2,
                                     backgroundColor: Color(0xFF0392CF),
@@ -442,13 +444,15 @@ class _ViewSalesState extends State<ViewSales> {
   }
 
   Future<dynamic> myEditor(BuildContext context, int sid, int qunt,
-      String discount, String pname, int productId) {
+      String discount, String pname, int productId, double pric) {
     return showDialog(
         context: context,
         builder: (context) {
           return AddSoldProd(
             saleId: widget.saleId,
             quntt: qunt,
+            date: widget.date,
+            price: pric,
             discount: discount,
             showdropdown: false,
             pname: pname,
