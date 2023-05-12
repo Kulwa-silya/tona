@@ -13,15 +13,27 @@ from django.db.models import Sum
 # procurement
 from datetime import date
 
+
 class DailyPurchaseTotal(models.Model):
     date = models.DateField(default=date.today, unique=True)
-    total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_cost = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)
+    total_quantity = models.IntegerField(default=0)
+
+    def calculate_total_quantity(self):
+        total_quantity = 0
+        for purchase in self.purchase.all():
+            for purchased_product in purchase.purchased_products.all():
+                total_quantity += purchased_product.quantity
+        return total_quantity
 
     @classmethod
     def recalculate_total(cls, purchase_date):
-        total_cost = Decimal(Purchase.objects.filter(date=purchase_date).aggregate(Sum('total_amount'))['total_amount__sum'] or 0)
+        total_cost = Decimal(Purchase.objects.filter(date=purchase_date).aggregate(
+            Sum('total_amount'))['total_amount__sum'] or 0)
         daily_total, created = cls.objects.get_or_create(date=purchase_date)
         daily_total.total_cost = total_cost
+        daily_total.total_quantity = daily_total.calculate_total_quantity()
         daily_total.save()
         return daily_total
 
@@ -73,7 +85,8 @@ class Purchase(models.Model):
         max_length=255, default=PAYMENT_METHOD_CASH, choices=PAYMENT_METHOD_CHOICES)
     purchased_products = models.ManyToManyField(
         PurchasedProduct, related_name='purchase')
-    supplier = models.ForeignKey(Supplier, related_name='purchase', on_delete=models.CASCADE)
+    supplier = models.ForeignKey(
+        Supplier, related_name='purchase', on_delete=models.CASCADE)
 
     # include receipts
 
@@ -81,6 +94,7 @@ class Purchase(models.Model):
         return str(self.id)
 
         return total_amount
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         DailyPurchaseTotal.recalculate_total(self.date)
