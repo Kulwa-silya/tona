@@ -446,6 +446,7 @@ class _AddSalesState extends State<AddSales> {
                                               saleId: id,
                                               title: "Add Sold Product!",
                                               showdropdown: true,
+                                              price: 1000.4,
                                               date: "null",
                                               accessTok: accesTok,
                                               salename:

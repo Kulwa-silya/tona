@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:machafuapp/Admin/consts/colorTheme.dart';
 import 'package:machafuapp/Admin/ui/shared/loading.dart';
+import 'package:machafuapp/Admin/ui/shared/spacing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../globalconst/globalUrl.dart';
 import '../shared/colors.dart';
@@ -43,6 +44,9 @@ class _WalletCardState extends State<WalletCard> {
   String? totalsales = "loading...";
   String? totalpurchases = "loading...";
   String? accesTok;
+
+  int totalpurchasesquantity = 0;
+  int totalsalesquantity = 0;
 
   Future getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -148,6 +152,7 @@ class _WalletCardState extends State<WalletCard> {
       productcount = endpoint1Data.length.toString();
       try {
         totalsales = endpoint2Data['total_sales_revenue_on_day'];
+        totalsalesquantity = endpoint2Data['total_quantity_sold_on_day'];
       } catch (e) {
         if (totalsales == "loading...") {
           setState(() {
@@ -162,6 +167,7 @@ class _WalletCardState extends State<WalletCard> {
     setState(() {
       try {
         totalpurchases = endpoint3Data['total_cost'];
+        totalpurchasesquantity = endpoint3Data['total_quantity'];
       } catch (e) {
         if (totalpurchases == "loading...") {
           setState(() {
@@ -236,9 +242,31 @@ class _WalletCardState extends State<WalletCard> {
                       style: kBodyTextStyle,
                     );
                   case "Sales":
-                    return Text(
-                      totalsales!.toString(),
-                      style: kBodyTextStyle,
+                    return Row(
+                      children: [
+                        Text(
+                          totalsales!.toString(),
+                          style: kBodyTextStyle,
+                        ),
+                        horizontalSpaceSmall,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: Container(
+                            width: 30,
+                            height: 30,
+                            color: ColorTheme.m_blue_mpauko_zaidi,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Center(
+                                child: Text(
+                                  totalsalesquantity.toString(),
+                                  style: kInfoRegularTextStyle,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     );
                   case "Purchases":
                     return Text(

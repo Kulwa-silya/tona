@@ -180,12 +180,15 @@ class _AddSoldProdState extends State<AddSoldProd> {
               body: json.encode({
                 "quantity": int.parse(quantityC.text),
                 "product": selectedProductId,
-                "discount": discount.toString(),
+                "discount": discount.toString().substring(0, 3),
                 "sale": widget.saleId
               }))
           .then((value) async {
         setState(() {
           success = false;
+          // print(value.body['non_field_errors']);
+
+          var errsms = json.decode(value.body);
           //  showToastWidget(IconToastWidget.success(msg: 'success'),
           //           context: context,
           //           position: StyledToastPosition.center,
@@ -195,6 +198,32 @@ class _AddSoldProdState extends State<AddSoldProd> {
           //           animDuration: Duration(seconds: 1),
           //           curve: Curves.elasticOut,
           //           reverseCurve: Curves.linear);
+          print('sms ni  $errsms');
+          errsms['non_field_errors'][0] ==
+                  "The fields product, sale must make a unique set."
+              ? showToast('${_selectedItem} already exist, try to update it!',
+                  textStyle: GoogleFonts.poppins(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
+                    height: 1.5,
+                    color: ColorTheme.m_white,
+                  ),
+                  context: context,
+                  backgroundColor: ColorTheme.m_red.withOpacity(0.7),
+                  animation: StyledToastAnimation.slideFromTop,
+                  reverseAnimation: StyledToastAnimation.slideToTopFade,
+                  toastHorizontalMargin: 0.0,
+                  position: StyledToastPosition(
+                      align: Alignment.topCenter, offset: 20.0),
+                  startOffset: Offset(-1.0, 0.0),
+                  reverseEndOffset: Offset(-1.0, 0.0),
+                  //Toast duration   animDuration * 2 <= duration
+                  duration: Duration(seconds: 4),
+                  //Animation duration   animDuration * 2 <= duration
+                  animDuration: Duration(seconds: 1),
+                  curve: Curves.bounceInOut,
+                  reverseCurve: Curves.fastOutSlowIn)
+              : null;
 
           showToast('(${quantityC.text}) ${_selectedItem} was just added!',
               textStyle: GoogleFonts.poppins(
@@ -585,8 +614,10 @@ class _AddSoldProdState extends State<AddSoldProd> {
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               onChanged: (val) {
-                                discount =
-                                    discoutC.text == ""? 0.0 : double.parse(discoutC.text) / widget.price!;
+                                discount = discoutC.text == ""
+                                    ? 0.0
+                                    : double.parse(discoutC.text) /
+                                        widget.price!;
 
                                 print("dicount ni $discount");
                               },
