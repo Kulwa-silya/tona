@@ -51,3 +51,4 @@ class ReturnInwardsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReturnInwards
         fields = ['id','sold_product','sold_product_name','date','quantity_returned','return_reason','is_authorized','authorized_by']
+        read_only_fields = ['id','sold_product','sold_product_name','date','quantity_returned','return_reason','authorized_by']
